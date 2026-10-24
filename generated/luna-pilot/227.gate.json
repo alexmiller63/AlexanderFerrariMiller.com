@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203379"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M105: The Quiet Oval in Leo\n\n*An elliptical galaxy with a softly active core rewards patient searching\u2014and averted vision.*\n\nSome galaxies announce themselves with grand, unmistakable spirals. M105 asks for a different kind of attention: a dark sky, a steady view, and a little time for its faint oval glow to emerge.\n\nAlso cataloged as NGC 3379, M105 is classified as an E1 elliptical galaxy. The \u201cE\u201d marks its broad family; \u201c1\u201d indicates a shape only slightly stretched from circular. Its apparent dimensions are about 5.13 by 4.68 arcminutes\u2014roughly a small, soft patch against the much larger dark field of space. SIMBAD lists its visual magnitude as 9.76, a useful reminder that a galaxy\u2019s integrated brightness can be misleading: its light is spread across an extended area, rather than concentrated in a pinpoint like a star. [SIMBAD: M105/NGC 3379](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203379)\n\nAt the galaxy\u2019s center, the story grows more energetic. SIMBAD identifies M105 as having a LINER-type active galactic nucleus. LINER refers to a nucleus whose spectrum shows emission from relatively low-ionization atoms and ions. \u201cActive\u201d here does not mean a brilliant beacon in an amateur telescope; the listing is a clue about the galaxy\u2019s central environment, not a promise of a visible flare. In the eyepiece, M105 is likely to remain a subdued, rounded glow.\n\nThat contrast is part of its appeal. The telescope gathers light that has crossed an immense stretch of space, but the view may be understated: a luminous haze with a brighter middle, set against a field where stars remain sharply defined. There is no need to force detail that the sky does not offer. Let your eyes adapt, look slightly to one side of the galaxy, and give the faint patch time to settle into view.\n\n## Finding M105\n\nM105 lies in Leo. For a precise starting point, SIMBAD gives its J2000 coordinates as right ascension 10 hours 47 minutes 49.6 seconds and declination +12 degrees 34 minutes 53.9 seconds. Enter those coordinates into a computerized mount or a planetarium app, or use them to locate the object on a detailed star chart. The coordinates are a destination, not a substitute for a chart: begin with a bright, familiar star in Leo and work inward through the surrounding star field.\n\nChoose a moonless night if possible, and observe when Leo is well above the horizon. First center a nearby reference star, then move carefully toward the galaxy\u2019s plotted position. At low power, scan slowly; a wider field makes it easier to recognize the pattern of guide stars. Once you suspect the galaxy is in view, try averted vision\u2014looking just off the object\u2014and avoid staring continuously at the faint center.\n\nA small telescope may show only a subtle blur under dark skies. A larger aperture can make the oval more apparent, but transparency and patience matter as much as magnification. Start low, then increase power modestly if the image remains steady. If M105 disappears, pause and let your eyes readjust rather than sweeping rapidly across the field.\n\nM105 does not need a dramatic silhouette to hold attention. Its quiet oval is a reminder that a galaxy can be both visually restrained and physically complex: a vast stellar system with a nucleus that carries its own signature. Find it, wait with it, and the faintness becomes part of the encounter.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203379",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "coordinates",
+              "declination",
+              "defined",
+              "degrees",
+              "elliptical",
+              "field",
+              "galaxy",
+              "ident",
+              "image",
+              "liner"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
