@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%208903"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sheratan, the Ram\u2019s Quiet Double\n\n*An autumn beacon in Aries looks like one steady point of light. Its spectrum tells a more complicated story.*\n\nOn a clear evening, Sheratan offers no obvious spectacle. It is a bright, pale point in Aries, the Ram\u2014easy to mistake for a solitary star. But the catalogue entry for this familiar sky-marker carries a clue: Sheratan is listed as **\u03b2 Arietis**, a spectroscopic binary. Two stars share the system, though from Earth they blend into a single glimmer. ([SIMBAD: HIP 8903](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%208903))\n\nThat hidden partnership is a reminder that a star\u2019s appearance is not the whole story. In a spectroscopic binary, the stars are too close together\u2014or too far away\u2014to be separated as distinct points in ordinary viewing. Instead, astronomers detect their motion through changes in the light\u2019s spectrum: as a star moves toward or away from us, its spectral lines shift slightly. The telescope may show one light; careful measurement reveals motion within it.\n\nSheratan is bright enough to see without optical aid under a reasonably dark sky. SIMBAD gives it a visual magnitude of 2.65. The same database lists a parallax of 55.60 milliarcseconds; converted into distance, that puts it roughly 59 light-years away. Its listed coordinates\u2014right ascension 1 hour 54 minutes, declination +20 degrees 48 minutes\u2014place it in the northern half of the celestial sphere. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%208903))\n\nThe name itself feels like an invitation to look for a pattern. Aries is not among the sky\u2019s most elaborate constellations, but its brighter stars make a modest line and angle, like a small, spare sketch. Sheratan is one of the points that helps define the Ram. Give your eyes a few minutes to adjust, and the surrounding field will begin to emerge: fainter stars, subtle differences in brightness, and the dark spaces between them.\n\n**When and how to look:** From mid-northern latitudes, Aries is an evening constellation in late autumn and winter. Find a location with an open view toward the east or south, away from direct lights. A sky map or planetarium app can help you locate Aries, but let your eyes do the final work: scan slowly rather than staring at one spot. If you can identify Sheratan without an aid, try binoculars next. They will not split the binary, but they can enrich the surrounding star field and make the constellation\u2019s shape easier to trace. A small telescope is also unlikely to separate the pair; the point is not to resolve the two stars, but to know what the single point represents.\n\nFor a simple observing exercise, compare Sheratan with nearby stars. Which seem warmer or cooler in color? Which are brighter? The eye is not a precision instrument, but patient looking builds a sense of the sky\u2019s patterns\u2014and a reason to return.\n\nThen consider the invisible motion: two stars bound together, circling beyond the reach of unaided vision, while their combined light crosses nearly 59 light-years to reach you. Sheratan\u2019s quiet appearance is not a lack of activity. It is a distant system keeping its most intimate dance just out of sight.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%208903",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "binary",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "define",
+              "degrees",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
