@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204449"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 7-26-9: A restless galaxy in the spring sky\n\n*Look past the stars of Canes Venatici to find NGC 4449, a bright, sprawling galaxy whose catalog numbers hint at a deeper story.*\n\nSome galaxies announce themselves with elegant spirals. MCG 7-26-9 is less orderly: a nearby galaxy whose light comes from a broad, irregular patch of sky. It is also known as NGC 4449. In SIMBAD, the galaxy is classified as an emission-line galaxy, and its listed optical dimensions are about 6.7 by 4.0 arcminutes\u2014an extended target, not a point of light.[SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204449)\n\nThat distinction matters at the eyepiece. A galaxy spreads its light over an area, so even one with a relatively bright cataloged magnitude can look faint against a washed-out sky. NGC 4449 is listed at visual magnitude 9.64 in the AB system. Treat that number as a guide, not a promise: transparency, light pollution and how well your eyes adapt to darkness all affect what you\u2019ll see.\n\nThe label \u201cemission-line galaxy\u201d points to light recorded at particular wavelengths, rather than only a smooth continuum across the spectrum. Emission lines can arise when gas is energized and emits light at characteristic wavelengths. The catalog classification tells us that such lines are part of this galaxy\u2019s observed identity; it does not, by itself, explain what is energizing the gas.\n\nThe catalog also lists a heliocentric radial velocity of about 204 kilometres per second. That modest figure is a measured motion along our line of sight, not a complete account of the galaxy\u2019s motion through space. Its listed redshift is 0.000680. Together, those measurements place NGC 4449 in the realm of nearby galaxies, where local motions matter and a simple conversion from redshift to distance can be misleading.[SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204449)\n\nFor observers, the practical route in is its position: right ascension 12 hours 28 minutes, declination +44\u00b0 05\u2032 (J2000). That puts the target in Canes Venatici, a northern-sky constellation best placed for evening viewing in spring. Use a star chart or planetarium app to hop from a familiar nearby star; at the telescope, a low-power eyepiece gives you a wider field to search.\n\nChoose a moonless night, get well away from bright lights if you can, and give your eyes at least 20 minutes to adapt. Start with a small telescope and low magnification. Look for a soft, diffuse glow rather than a sharply bounded disk; increasing magnification too soon can make the galaxy harder to find by dimming the view. A larger telescope and dark, transparent skies may reveal more uneven structure, but don\u2019t expect a camera-like view: the eye is much less sensitive to faint detail than a long exposure.\n\nNGC 4449\u2019s cataloged span is several times the apparent width of the full Moon, though its light is far dimmer and more diffuse. That contrast is part of the pleasure of observing it. You are not looking at a crisp emblem in the sky, but at an entire galaxy\u2019s faint glow, gathered patiently by eye.\n\n**Source:** [SIMBAD record for NGC 4449](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204449)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204449",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "declination",
+              "emission",
+              "field",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "increasing",
+              "known",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "emission-line galaxy",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204449"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
