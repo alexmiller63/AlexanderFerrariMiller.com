@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206341"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M92: A Quiet City of Stars in Hercules\n\n*Under a dark sky, a small telescope turns a faint, compact glow into a gathering of distant suns\u2014and a reminder that the Milky Way has many kinds of neighborhoods.*\n\nAt first glance, M92 is easy to mistake for a soft smudge. Find it in Hercules on a clear summer night, though, and that dim patch becomes an invitation: look closely, and the blur begins to suggest a crowd.\n\nM92 is also catalogued as NGC 6341. SIMBAD identifies it as a globular cluster and gives its position as right ascension 17h 17m 07.39s, declination +43\u00b0 08\u2032 09.4\u2033. Its listed visual magnitude is 6.52, and its apparent diameter about 11.2 arcminutes\u2014roughly a third of the Moon\u2019s width in the sky. Those numbers describe a target that is faint to the unaided eye, but within reach of binoculars or a small telescope under favorable conditions. ([SIMBAD: M92 / NGC 6341](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206341))\n\nA globular cluster is a dense, roughly spherical gathering of stars held together by gravity. Unlike the loose patterns of bright stars that make familiar constellations, a globular cluster is a physical community: its stars occupy the same compact system. Seen from Earth, the cluster\u2019s concentrated light blends into a hazy patch. A telescope does not simply magnify that patch; it gathers more light and helps separate the crowded points within it.\n\nThat transformation is part of M92\u2019s appeal. At low magnification, the cluster may remain a rounded glow, brighter toward its middle. Increase the power and give your eyes time to adapt, and individual stars may begin to flicker into view around the edges. The view depends on aperture, sky darkness, atmospheric steadiness and the observer\u2019s vision. Even when the center stays unresolved, the delicate change from concentrated core to scattered outer stars can make the object rewarding to study.\n\nTo find it, begin with Hercules and use a current star chart or planetarium app to locate M92 by its coordinates. Under a dark sky, binoculars may show it as a small, misty spot; a telescope will give a more defined view. Start with a wide field and low power, then increase magnification gradually. Avoid rushing: averted vision\u2014looking slightly to one side of the object\u2014can make faint detail easier to notice. Let the telescope settle after each adjustment, and give your eyes several minutes away from bright phone screens or white light.\n\nM92 is a reminder that not every celestial destination announces itself with a brilliant point or a dramatic shape. Some begin as a question in the eyepiece: Is that haze really there? Stay with it, and the answer resolves into a multitude. The cluster\u2019s subtle glow is the combined light of stars too numerous and too tightly gathered for the naked eye to distinguish one by one\u2014a small, ancient-looking island of light, quietly waiting in Hercules.\n\n**Sources**\n\n- [SIMBAD database entry for M92 / NGC 6341](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206341)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206341",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "crowded",
+              "current",
+              "database",
+              "declination",
+              "defined",
+              "depends"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
