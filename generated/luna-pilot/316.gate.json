@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205746"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 0-38-5: A Thin Island in Virgo\n\n*This broad, edge-on galaxy is easy to overlook at the eyepiece. Its coordinates and generous apparent size make it a rewarding challenge under a dark, steady sky.*\n\nSome galaxies announce themselves with a bright core. MCG 0-38-5 is subtler: a long, faint streak whose light is spread across nearly ten arcminutes of sky. Listed as NGC 5746 in SIMBAD, it lies in Virgo, close to the celestial equator. Its cataloged position is right ascension 14h 44m 56s, declination +01\u00b0 57\u2032 17\u2033 (J2000). [SIMBAD: NGC 5746](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205746)\n\nThe numbers hint at the view. SIMBAD gives the galaxy an optical size of about 9.9 by 1.75 arcminutes: a markedly elongated shape, consistent with a spiral disk seen nearly edge-on. A disk galaxy is a vast, rotating collection of stars, gas and dust. From this angle, its depth is compressed into a narrow profile, and intervening dust may dim light from the disk\u2019s far side. The result is not necessarily a dramatic dark lane in a small telescope; more often, the challenge is detecting the galaxy\u2019s faint, extended glow against the background.\n\nIts cataloged blue magnitude is 12.3, but that single number can mislead. The light is distributed over a large area, so the galaxy\u2019s surface brightness\u2014the light per patch of sky\u2014matters as much as its total brightness. A compact object of similar magnitude can look much more obvious. NGC 5746\u2019s measured redshift is 0.005777, corresponding to a heliocentric recession velocity of about 1,730 kilometers per second in the SIMBAD record. That is a measure of its motion away from us, not a precise distance by itself: the expansion of the universe and the galaxy\u2019s own motion both matter when estimating distance.\n\n**To find it:** aim for Virgo on a clear evening in spring, when the constellation is well placed for observers in the Northern Hemisphere. Use the coordinates above with a planetarium app or a telescope\u2019s setting circles, then compare the field with a detailed chart. The galaxy is not a naked-eye target. A telescope of roughly 20 centimeters (8 inches) or more under a dark sky gives a reasonable starting point, though visibility depends strongly on transparency, light pollution and the observer\u2019s experience.\n\nBegin at low or moderate magnification to keep the whole elongated form in view. Let your eyes adapt to darkness, block stray light, and use averted vision: look just to one side of the suspected glow rather than directly at it. If the galaxy appears only as a dim oval at first, take time to notice its orientation and uneven brightness. Avoid pushing magnification too high; enlarging a diffuse object also spreads its light across more of your view.\n\nNGC 5746 is a reminder that a galaxy\u2019s apparent faintness need not mean it is small or simple. In the eyepiece, the first impression may be a delicate slash of light. With patience, that slash becomes the visible edge of a vast stellar disk, tilted toward our line of sight across the deep field of Virgo.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205746",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "celestial",
+              "coordinates",
+              "corresponding",
+              "declination",
+              "depends",
+              "field",
+              "galaxies",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
