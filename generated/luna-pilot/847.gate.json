@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2041312"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Vol: An Orange Beacon in Volans\n\n*This southern-sky giant is easy to overlook in a dim constellation, but its brightness and measured motion give observers plenty to look for.*\n\nIn the faint southern constellation Volans, Beta Vol offers a useful reminder that a star\u2019s apparent stillness is only an illusion. It shines at about magnitude 3.76\u2014bright enough for the unaided eye under a reasonably dark sky\u2014and lies roughly 108 light-years away. In telescope or binoculars, it is not a dramatic double-star showpiece; the appeal is the star itself, a nearby giant whose catalogue measurements reveal both its nature and its slow drift across the sky.\n\nSIMBAD lists Beta Vol as a K2III star. The \u201cK2\u201d marks a star cooler than the Sun, with the warm, orange hue associated with K-type stars; \u201cIII\u201d identifies it as a giant. A giant has expanded beyond the more compact stage of its life, though this classification alone does not tell us its exact age or future. Its apparent brightness is not proof that it is exceptionally close: Beta Vol\u2019s measured parallax is about 30.2 milliarcseconds. Since a parallax of one arcsecond corresponds to one parsec, that measurement places it at about 33 parsecs, or 108 light-years.\n\nThe star also has a modest but measurable proper motion: SIMBAD gives components of about \u221235 and \u2212152 milliarcseconds per year in right ascension and declination. Together, those amount to roughly 0.16 arcsecond of motion across the sky each year. That is far too small to notice during an evening\u2019s observing, but over centuries the change adds up. The database\u2019s designation of Beta Vol as a high-proper-motion star reflects this gradual celestial drift, not a sudden movement.\n\nTo find it, use the coordinates listed in SIMBAD: right ascension 8 hours 25 minutes 44 seconds, declination \u221266\u00b008\u2032. A finder chart for Volans will help, especially because the constellation\u2019s stars are relatively faint. Beta Vol\u2019s magnitude makes it a naked-eye target from a dark site, but binoculars can help pick it out if the sky is bright or you are unfamiliar with the pattern. A small telescope will show a sharper point of light; the star\u2019s orange tint may be more apparent when viewed slightly away from its glare.\n\nBeta Vol is best placed for evening observing in the southern summer, around January and February, though the precise hour depends on date and location. Its far-southern declination makes latitude especially important. At the equator it reaches only about 24\u00b0 above the northern horizon; at latitude 35\u00b0 south, it climbs to about 58\u00b0 above the horizon. Observers north of roughly 24\u00b0 north cannot see it rise at all. Wherever you observe, choose a clear southern horizon and give your eyes time to adapt to the dark.\n\nThere is satisfaction in observing a star that asks for no elaborate equipment: locate Volans, confirm the position on a chart, and let Beta Vol\u2019s steady light be the destination. Its catalogue figures turn that small point into a measurable object\u2014an evolved orange giant, more than a hundred light-years away, changing its place in the sky by a fraction of an arcsecond at a time.\n\n**Source:** [SIMBAD: HIP 41312 / Beta Vol](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2041312)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2041312",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "depends",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
