@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204214"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 6-27-42: A Starburst Beyond the Dipper\n\n*An expansive galaxy in Canes Venatici offers a quiet reminder that even a faint smudge can mark a place where stars are being made.*\n\nIn the spring sky, the Big Dipper draws the eye first. Follow its familiar curve away from the bowl and you reach Arcturus; look back toward the dipper\u2019s handle, and you are in the neighborhood of Canes Venatici, the Hunting Dogs. There, several degrees from the bright star Cor Caroli, lies MCG 6-27-42, also catalogued as NGC 4214.\n\nAt the eyepiece, this galaxy is not a glittering pinwheel. It is a broad, soft patch of light, more suggestion than spectacle\u2014an island whose structure is easy to miss if the sky is bright or the gaze is impatient. That subdued appearance makes the object a useful lesson in scale: a galaxy can span several arcminutes on the sky and still look delicate, because its light is spread across a wide area.\n\nNGC 4214 is classified as a starburst galaxy. The term describes a galaxy with an especially active period of star formation: gas is being turned into new stars at a heightened rate compared with a more sedate system. The label does not mean that a visual observer should expect to see stars erupting through the eyepiece. Rather, it points to processes that astronomers study through observations across different wavelengths. In visible light, the galaxy\u2019s overall glow is the invitation; the physical story takes instruments and careful analysis to unravel.\n\nFor a finder, the coordinates are a more reliable guide than the catalogue name: right ascension 12h 15m 39.2s, declination +36\u00b0 19\u2032 37\u2033 (J2000). SIMBAD lists an optical extent of about 5.3 by 4.1 arcminutes and a V-band magnitude near 9.9. Because the light belongs to an extended object, that magnitude is spread out; it should not be read as a promise that the galaxy will look like a ninth-magnitude star. [SIMBAD\u2019s NGC 4214 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204214) gives these coordinates and measurements.\n\nTry it on a clear, moonless spring evening, when this part of the northern sky is well placed. Use a star chart or a telescope\u2019s coordinate setting to locate the field; a low-power eyepiece is a good starting point. Give your eyes time to adapt to darkness, then look slightly away from the galaxy rather than staring straight at it. Averted vision can make faint, diffuse light easier to detect. Under a darker sky and with a larger telescope, you may notice unevenness in the glow, but don\u2019t force detail that the conditions won\u2019t support. A modest instrument may show only a dim oval, and that is still a successful observation.\n\nThe pleasure here is not in a dramatic reveal. It is in holding a distant system in view long enough for its faintness to become meaningful. That blur is not empty: it is a whole galaxy, catalogued and measured, with a vigorous chapter of star formation underway. The eyepiece offers only a small piece of the evidence\u2014but on a quiet night, that piece is enough to make the sky feel deeper.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204214",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "degrees",
+              "extent",
+              "field",
+              "formation",
+              "galaxy",
+              "ident",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
