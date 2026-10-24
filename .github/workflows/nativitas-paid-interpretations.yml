@@ -27,12 +27,35 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Generate checkpointed unpublished drafts
+      - name: Generate with remote checkpoints every 10 drafts
+        shell: bash
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           BATCH: ${{ inputs.batch_size }}
           BUDGET: ${{ inputs.budget_usd }}
-        run: python nativitas/tools/generate_paid_interpretations.py --batch-size "$BATCH" --budget "$BUDGET"
+          TARGET_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          remaining="$BATCH"
+          while (( remaining > 0 )); do
+            size=$(( remaining < 10 ? remaining : 10 ))
+            before=$(python -c 'import json,pathlib; p=pathlib.Path("nativitas/data/paid-interpretation-drafts.json"); print(len(json.loads(p.read_text())["entries"]) if p.exists() else 0)')
+            generation_status=0
+            python nativitas/tools/generate_paid_interpretations.py --batch-size "$size" --budget "$BUDGET" || generation_status=$?
+            git add -f nativitas/data/paid-interpretation-drafts.json nativitas/paid-interpretation-progress.json
+            if ! git diff --cached --quiet; then
+              git commit -m "Checkpoint Nativitas paid drafts [skip ci]"
+              git push origin "HEAD:$TARGET_BRANCH"
+            fi
+            after=$(python -c 'import json,pathlib; p=pathlib.Path("nativitas/data/paid-interpretation-drafts.json"); print(len(json.loads(p.read_text())["entries"]) if p.exists() else 0)')
+            gained=$(( after - before ))
+            echo "Persisted checkpoint: $after interpretations ($gained new in this chunk)"
+            if (( generation_status != 0 )); then exit "$generation_status"; fi
+            if (( gained == 0 )); then echo "No more drafts generated; stopping (budget or completed library)."; break; fi
+            remaining=$(( remaining - gained ))
+          done
       - name: Upload recoverable draft checkpoint
         if: always()
         uses: actions/upload-artifact@v4
