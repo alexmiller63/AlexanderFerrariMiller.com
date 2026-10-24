@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203242"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Ghost of Jupiter: A Small Cloud with a Stellar Afterlife\n\n*NGC 3242 is no gas giant but a planetary nebula: a brief, delicate phase in the life of a star.*\n\nThe Ghost of Jupiter got its name from a telescope-age illusion. Through a small instrument, NGC 3242 can look like a tiny, pale planetary disk\u2014something more like a distant planet than a cloud of gas. The likeness ends there. This object in Hydra is a planetary nebula, the expanding remains of a star\u2019s outer layers, illuminated by the hot stellar remnant at its center.\n\nThe word *planetary* is a historical description of appearance, not a claim about planets. In the late stages of a Sun-like star\u2019s life, it sheds gas into space. Radiation from the exposed, very hot core makes that surrounding material glow. Over time, the cloud disperses into its surroundings; the central remnant cools. NGC 3242 offers a view of that transformation on a scale far beyond what the nickname suggests.\n\nThe SIMBAD astronomical database identifies NGC 3242 as a planetary nebula and lists its J2000 position as right ascension 10h 24m 46.13s, declination \u221218\u00b0 38\u2032 32.3\u2033. Its record gives a V-band magnitude of 12.15 and an angular dimension of roughly half an arcminute. Those numbers help explain why the Ghost can be hard to spot: it is compact, and its light is spread across a small patch rather than concentrated in a star-like point. A catalog magnitude is a useful guide, but what you see will depend on your telescope, sky darkness and observing conditions.\n\nFor a search, use a current planetarium app or star atlas to locate Hydra, then enter the SIMBAD coordinates into a mount or chart. The coordinates are for epoch J2000; most modern observing apps account for the small shifts needed to place an object accurately today. NGC 3242\u2019s southerly declination means it climbs higher for observers in the Southern Hemisphere. From northern latitudes, it is best sought when Hydra is well above the horizon, rather than through the thick, turbulent air near the horizon.\n\nGive your eyes time to adapt to the dark, and begin at low power to sweep the field. A nebula filter, such as an O III or UHC filter, may improve contrast by passing selected wavelengths of nebular light while reducing some background glow. Try higher magnification once you have found the object; changing power can help distinguish a small, diffuse disk from a star. Under light-polluted skies, a GoTo mount or careful chart work can be especially useful for reaching this faint target.\n\nThe Ghost of Jupiter rewards patience more than spectacle. It may appear as a modest blur, but that blur is a star\u2019s cast-off envelope, lit from within by the remnant that made it. The telescope turns a misleading name into a better story: not a world, but a world-making star in the act of letting go.\n\n**Source:** SIMBAD Astronomical Database, NGC 3242: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203242",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203242",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "epoch",
+              "filter",
+              "ident",
+              "magnitude",
+              "nebula",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
