@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204039"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# The Antennae Galaxies: A Collision Written in Starlight\n\n*Two galaxies meet in Corvus, their slow gravitational encounter drawing out a faint signature best appreciated with patience, dark skies and a little imagination.*\n\nThe Antennae Galaxies take their name from the long streamers that flare from their paired cores in deep photographs. At the eyepiece, those famous \u201cantennae\u201d are not the first thing to look for. Begin with the close, hazy shapes of the galaxies themselves: two distant systems caught in a meeting that is still unfolding.\n\nOne member of the pair, NGC 4039, is listed by SIMBAD as a galaxy in a pair of galaxies. Its catalogued position is right ascension 12h 01m 53.51s, declination \u221218\u00b0 53\u2032 10.3\u2033 (J2000), and its listed morphological type is Sc. The entry gives an angular size of 3.1 by 1.6 arcminutes. These are useful signposts, not a promise of what a telescope will show: the galaxies\u2019 low surface brightness means the view depends heavily on sky darkness and observing conditions. [SIMBAD: NGC 4039](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204039)\n\nA galaxy encounter is not a crash of stars like billiard balls. The immense distances between individual stars make direct collisions unlikely. Instead, gravity reshapes the galaxies, tugging at their stars and gas and stretching material into extended arcs and tails. The spectacular structures in long-exposure images are a record of that disturbance, gathered over immense spans of time. At the telescope, you are seeing only a small, subdued glimpse of a much larger event.\n\nLook for the pair in the constellation Corvus, the Crow, under a dark spring sky in the Northern Hemisphere. A star chart or planetarium app can help you reach the target; the catalog coordinates above are a more precise destination for a telescope\u2019s setting circles or computerized mount. Let your eyes adapt to the dark, and use averted vision\u2014looking slightly to the side of the target\u2014to catch faint detail. Start with a low-power eyepiece, then increase the magnification if the image remains sharp and the sky is steady.\n\nIn a small telescope, expect a dim blur rather than the dramatic hooks of a processed image. Under good conditions, a larger aperture may help separate the central glow into two close patches. The tidal streamers are much harder visual targets: long-exposure photographs collect light far longer than the eye can, so don\u2019t be discouraged if they remain invisible. The challenge is part of the visit. You are observing a real pair of galaxies, not a picture on a screen, and even their faint central glow carries the story.\n\nGive the view a few minutes. The eye is an imperfect instrument, but it learns: the shape that seemed to vanish may return when you glance aside. Then the Antennae become more than two smudges in Corvus. They become a reminder that galaxies are not fixed ornaments in the sky. They move, respond to gravity and change\u2014slowly enough that a night\u2019s observing catches only a still frame, yet vividly enough that distant light can tell us something is happening.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204039",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "depends",
+              "frame",
+              "galaxies",
+              "galaxy",
+              "ident",
+              "image",
+              "images"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
