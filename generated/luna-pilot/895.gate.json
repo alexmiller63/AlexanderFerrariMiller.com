@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051172"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Ant: A Steady Light in the Southern Sky\n\n*This modest naked-eye star is a cool giant whose measured motion is real\u2014but far too slow to notice in a single night.*\n\nAlpha Ant keeps no dramatic schedule. It does not flare into view at dusk or change its place from one evening to the next. Instead, it offers the quieter pleasure of finding a small, steady point of light in the southern constellation Antlia, then learning what measurements have revealed about it.\n\nThe star\u2019s catalogued position is right ascension 10 hours 27 minutes 9 seconds and declination 31 degrees 4 minutes south, placing it well below the celestial equator. That southerly address makes it a natural target for observers in the Southern Hemisphere, though it also rises for many observers farther north. For a particular evening, use a current star chart or planetarium app to locate Antlia and check when it will be highest above your horizon.\n\nAlpha Ant is listed at visual magnitude 4.25\u2014bright enough to see with the unaided eye under a reasonably dark sky, but easily washed out by city lights, haze or a bright Moon. Give your eyes time to adjust to the darkness, and scan the region without staring directly at the star: looking slightly to one side can help reveal faint points of light. Binoculars make a useful second step, gathering more stars in the field and helping confirm the target. They are not essential, however; the pleasure of the observation is in spotting the star itself.\n\nIts scientific classification adds another dimension to that simple act of looking. SIMBAD lists Alpha Ant as K3III. The K3 designation places it among cooler, orange-toned stars; the Roman numeral III identifies it as a giant. Its light is not a measure of how close it is, though. SIMBAD reports a parallax of 8.9069 milliarcseconds. Converting that angle gives an estimated distance of about 112 parsecs, or roughly 366 light-years. This is an estimate based on the catalogued parallax, not a distance you can judge by eye.\n\nThe same catalog records a proper motion: Alpha Ant\u2019s apparent position shifts against the distant background by about 82 milliarcseconds per year. That works out to roughly 2.5 arcseconds in 30 years\u2014far too little to notice during an observing session, but enough for careful astrometry to measure. The sky seems fixed when we watch it; the instruments show that its stars are moving.\n\nSo take a moment with Alpha Ant before moving on. Find it with a chart, note its steady, modest gleam, and remember that the point of light is a giant star hundreds of light-years away, slowly changing its place against the backdrop of the sky. A quiet target can still tell a far-reaching story.\n\n**Source:** SIMBAD database entry for HIP 51172 (Alpha Ant): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051172",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2051172",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
