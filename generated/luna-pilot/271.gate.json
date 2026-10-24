@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204494"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 4-30-2: A Quiet Glow in Coma Berenices\n\n*An elliptical galaxy\u2019s modest-looking patch of light carries a measured recession speed\u2014and a reminder that the deep sky rewards patient viewing.*\n\nSpring nights bring Coma Berenices high overhead, where the constellation\u2019s scattered stars make a delicate backdrop for a far more distant object: MCG 4-30-2, also catalogued as NGC 4494. It is not a dramatic spiral with bright arms, but an elliptical galaxy: a broad, softly concentrated glow, easy to overlook until you know where to look.\n\nThe catalog numbers put some scale to that faint presence. NGC 4494\u2019s listed visual magnitude is 9.74, and its apparent dimensions are about 4.36 by 3.87 arcminutes\u2014several times the Moon\u2019s apparent width, though vastly dimmer and less sharply defined. Its classification as an elliptical galaxy and its listing as a member of a galaxy pair come from SIMBAD, an astronomical object database maintained by the Strasbourg astronomical data center. The entry also gives a heliocentric radial velocity of about 1,318 kilometers per second and a redshift near 0.0044. In plain terms, the galaxy\u2019s light is shifted slightly toward longer wavelengths as it moves away from us. That measured motion is not, by itself, a precise distance: nearby galaxies can have substantial motions within their local neighborhood, as well as the general expansion of the universe.\n\nFor observers, the important fact is not the decimal place in the velocity but the nature of the light. A galaxy spreads its brightness across an extended area; it does not behave like a star, whose light is concentrated in a point. MCG 4-30-2 may therefore look subtler than its magnitude suggests, especially under a bright sky or through a small telescope. Dark surroundings and averted vision\u2014the trick of looking just to one side of a faint target\u2014can help reveal its central glow.\n\n**Finding it:** Look for Coma Berenices during spring evenings in the Northern Hemisphere, when the constellation is well placed. Use a star atlas or planetarium app to center on the J2000 coordinates listed for NGC 4494: right ascension 12h 31m 24s, declination +25\u00b0 46\u2032 30\u2033. A telescope is recommended; begin at low magnification to take in the galaxy\u2019s full, softly edged shape, then increase the power if the sky is steady. In a modest instrument, expect a diffuse oval rather than crisp detail. Give your eyes time to adapt, and shield them from nearby lights.\n\nThe view is a small one, but it links the eyepiece to a much larger story. The photons entering your telescope began their journey in a galaxy beyond the Milky Way, and their measured shift gives astronomers a way to study motion on cosmic scales. At the eyepiece, that grand context arrives quietly: a faint oval in a spring constellation, waiting for a dark sky and an attentive eye.\n\n**Sources:** [SIMBAD: NGC 4494](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204494) \u2014 coordinates, classification, angular size, photometry and radial velocity.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204494",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "defined",
+              "elliptical",
+              "galaxies",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
