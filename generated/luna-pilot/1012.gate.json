@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2075695"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Nusakan, the Quiet Spark in the Northern Crown\n\n*An F-type variable star marks a delicate turn in Corona Borealis\u2014and rewards a little patience more than a powerful telescope.*\n\nNusakan is not a blaze but a steady-looking point in a small, graceful constellation. Find it in Corona Borealis, the Northern Crown: a curved chain of stars between the better-known patterns of Bo\u00f6tes and Hercules. The Crown\u2019s arc is easy to recognize once you spot it, and Nusakan, also cataloged as Beta Coronae Borealis, sits among its jewels.\n\nIts name may sound like a spell, but the star\u2019s scientific identity is wonderfully specific. SIMBAD lists Nusakan as an Alpha2 Canum Venaticorum variable, a category of variable star, and gives it the spectral classification F2VpSrCrEuSi. In that notation, F2 describes its spectral type; the remaining letters flag unusual spectral features, including those associated with strontium, chromium, europium and silicon. The classification hints that this is not an entirely ordinary star, even if it looks calm to the unaided eye. [SIMBAD: Nusakan (HIP 75695)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2075695)\n\nThe word \u201cvariable\u201d needn\u2019t mean a star that visibly pulses like a warning light. Nusakan\u2019s listing gives a visual magnitude of about 3.68\u2014bright enough for naked-eye viewing under a reasonably dark sky\u2014but its cataloged variability is a reason for closer study, not a promise of an obvious nightly change. The star\u2019s measured position and parallax also give us a way to place it in space: SIMBAD reports a parallax of about 27.9 milliarcseconds. In plain language, that tiny apparent shift as Earth moves around the Sun puts Nusakan roughly 117 light-years away. The estimate is approximate; the catalog\u2019s listed parallax uncertainty matters at that scale. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2075695)\n\nTo observe Nusakan, start with your eyes. In Northern Hemisphere evenings, Corona Borealis is a rewarding target in the late spring and summer, when the constellation climbs into a comfortable part of the sky. Look for its semicircle of stars rather than searching for Nusakan in isolation. A star chart or planetarium app can help you identify the Crown; then compare the sky with the chart until the arc\u2019s shape clicks into place.\n\nBinoculars are useful if city glow or haze makes the fainter members of the constellation hard to pick out, though Nusakan itself should be visible without them under decent conditions. A small telescope will show a tighter field and sharpen the surrounding star pattern, but don\u2019t expect a dramatic surface or color change: stars remain points of light in ordinary amateur instruments. For an observing log, note the date, time, sky conditions and whether you used optical aid. If you want to investigate the variable-star designation, repeated estimates over many nights are more meaningful than a single glance.\n\nThere is a particular pleasure in finding this star by its neighborhood. The Crown\u2019s curve offers a simple route through the sky, and Nusakan\u2019s catalog details open a deeper one: a measured distance, a spectral signature, and a place in a class of variable stars. The light reaches your eye as a quiet point; the science reveals a star with a more intricate story.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2075695",
+            "overlap_terms": [
+              "alpha",
+              "around",
+              "catalog",
+              "class",
+              "ident",
+              "known",
+              "listed",
+              "magnitude",
+              "optical",
+              "parallax",
+              "particular",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
