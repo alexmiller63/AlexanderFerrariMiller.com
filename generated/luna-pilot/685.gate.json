@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014879"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Dalim: A Nearby Sun with a Southern Address\n\n*An easy naked-eye star in Fornax, Alpha Fornacis is close enough for its changing position to register across millennia.*\n\nSome stars announce themselves with brilliance. Dalim makes a quieter impression: a fourth-magnitude point in the southern constellation Fornax, best enjoyed by finding it and staying with it for a moment. Its catalogue identity is Alpha Fornacis, also listed as HIP 14879. The name is the invitation; the numbers tell a story of a nearby star slowly crossing the sky.\n\nDalim shines at visual magnitude 3.98, bright enough to see without optical aid under a reasonably dark sky. Its spectral classification is F6V: an F-type main-sequence star, still fusing hydrogen in its core. That classification offers a scientific description, not a promise of a striking color to the unaided eye. To most observers, the star is a clean point of light\u2014one that rewards a little patience more than magnification.\n\nThe distance comes from parallax, the tiny apparent shift in a star\u2019s position as Earth travels around the Sun. SIMBAD lists Dalim\u2019s parallax as 71.4337 milliarcseconds. Inverting that measurement gives a distance of about 14 parsecs, or roughly 46 light-years. In cosmic terms, that puts Dalim in the Sun\u2019s neighborhood, though it is not a twin: its F6V classification places it at a different point on the main sequence.\n\nDalim also has a substantial proper motion\u2014the gradual change in a star\u2019s position against more distant background stars. Its measured motion across the sky is about 0.72 arcseconds per year, combining its east\u2013west and north\u2013south components. That is far too subtle to watch from night to night, but over centuries it adds up. The star\u2019s position in old charts is not quite its position today. Its catalogued radial velocity is \u221217.52 kilometers per second; the negative sign indicates motion toward us along the line of sight. Together, these motions describe a star travelling through space, not fixed to the celestial sphere.\n\n**For observing:** Look for Dalim in Fornax on southern-sky evenings in late autumn and early summer\u2014November through January in the Northern Hemisphere, with the season reversed south of the equator. It lies at right ascension 3 hours 12 minutes and declination \u221229 degrees. That far-southern declination makes it a rewarding target from southern latitudes; from mid-northern locations, it stays low above the southern horizon. Choose a site with an open view to the south and observe near its nightly highest point, when the star climbs as high as it can. Around December, that puts it in a convenient evening position.\n\nStart with the unaided eye under a dark sky. If Fornax is unfamiliar, use a sky chart or planetarium app to identify the constellation and pinpoint Alpha Fornacis; binoculars can help in a bright urban sky, though they are not needed once you have found it. Then take in the scale of the sight: a modest point of light, separated from us by decades of travel, whose slow drift is written into precision measurements.\n\nDalim is not a spectacle in the usual sense. Its appeal is more intimate: the chance to look at a nearby star, know how its distance was measured, and remember that even the apparently steady lights overhead are on the move.\n\n**Source:** SIMBAD Astronomical Database, HIP 14879 / Alpha Fornacis: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014879",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014879",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
