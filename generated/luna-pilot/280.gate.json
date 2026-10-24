@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204567"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Siamese Twins: A Close Pair in Virgo\n\n*Two spiral galaxies share a name that hints at their appearance. Spotting the resemblance takes dark skies, patience and a telescope.*\n\nIn the spring sky, the Siamese Twins offer a quiet lesson in perspective. NGC 4567 and NGC 4568 are two galaxies seen close together from Earth; in a telescope, their faint light can suggest a pair of overlapping forms. The nickname makes a promise, but not a guarantee: these are subtle targets, and the \u201ctwins\u201d may appear more like a soft patch than two neatly separated spirals.\n\nThe catalog entry for NGC 4567 places it at right ascension 12h 36m 32.7s and declination +11\u00b0 15\u2032 29\u2033 (J2000). It lists the galaxy\u2019s apparent visual magnitude as 11.31 and its angular size as about 3.9 by 2.4 arcminutes. Those figures help set expectations: the target is small on the sky and faint compared with the stars used to find it. The entry classifies it as an SA galaxy, a designation for an unbarred spiral. [SIMBAD: NGC 4567](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204567)\n\nA galaxy\u2019s glow is the combined light of many stars, spread across a wide area. That makes a dim galaxy harder to see than a star of similar total brightness: its light does not arrive at one sharp point. In a close pair, apparent proximity also doesn\u2019t mean the galaxies are side by side in space in the simple way two stars in a constellation might be. They are distant systems, and their shapes are projected onto the same small region of our sky. A telescope gathers more light than the eye alone, but dark skies and careful observing matter too.\n\nLook for the pair on a clear spring evening, when the constellation Virgo climbs high in the sky. A star chart or planetarium app can guide you to the coordinates; use a low-power eyepiece first to identify the surrounding star field, then increase magnification if the view allows. A telescope of moderate aperture under a dark, transparent sky offers a better chance than binoculars. Let your eyes adapt to the dark for 20 minutes or more, and shield the eyepiece from stray lights.\n\nDon\u2019t expect a colorful portrait. Galaxies usually appear as pale, low-contrast smudges in amateur telescopes. Try averted vision: look just to one side of the target rather than directly at it, so the more light-sensitive parts of your eye can detect the faint glow. Averted vision won\u2019t reveal details that the sky and equipment can\u2019t deliver, but it can help make a faint object easier to notice. Give yourself time at the eyepiece; brief glances can miss a feature that emerges after patient viewing.\n\nIf the Siamese Twins remain indistinct, the night is not wasted. The search itself draws the eye across a rich stretch of spring sky, and the pair\u2019s name invites a useful question: how much of what we see is the object itself, and how much is the way distance and direction arrange it for us? With a little patience, a faint patch becomes a reminder that the sky\u2019s smallest-looking encounters can belong to immense worlds.\n\n**Source:** [SIMBAD database entry for NGC 4567](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204567)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204567",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "database",
+              "declination",
+              "galaxy",
+              "ident",
+              "magnitude",
+              "minutes",
+              "object",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
