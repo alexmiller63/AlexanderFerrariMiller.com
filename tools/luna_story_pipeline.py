@@ -13,7 +13,7 @@ from urllib.error import HTTPError
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "generated" / "luna-pilot"
-CAP = 1.00  # Only draft and optional correction invoke the paid API.
+CAP = 1.50  # Only draft and optional correction invoke the paid API.
 MAX_INPUT = 6000
 MAX_OUTPUT = 1600
 
@@ -245,7 +245,7 @@ def main():
     reserve = 1.25 * (MAX_INPUT * args.input_price + MAX_OUTPUT * args.output_price) / 1_000_000
     def ask(stage, instruction, source):
         if ledger["estimated_usd"] + reserve > CAP:
-            raise RuntimeError("Application spending reservation exceeds $1 ceiling; stopping")
+            raise RuntimeError("Application spending reservation exceeds $1.50 ceiling; stopping")
         prompt = instruction + "\n\n" + source
         if len(prompt) > 18000:
             prompt = prompt[:18000]
