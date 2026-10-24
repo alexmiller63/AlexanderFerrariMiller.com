@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206124"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6124: A Wide Doorway in Scorpius\n\n*An open cluster spread across nearly a degree invites binoculars, a dark sky and a little patience.*\n\nThe first thing to do with NGC 6124 is not to magnify it. Find Scorpius, let your eyes settle, and give the cluster room. This gathering of stars lies at right ascension 16h 25m, declination \u221240\u00b0 39\u2032 (J2000), in the southern sky. Its catalogue span is about 48 arcminutes\u2014nearly a degree across\u2014so a low-power eyepiece or binoculars can make a better introduction than a telescope set to high magnification.\n\nAn open cluster is a family of stars formed together from a cloud of gas and dust. The family resemblance is subtle: stars vary in brightness and color, and the cluster\u2019s apparent outline has no sharply drawn edge. NGC 6124\u2019s wide spread is part of its appeal. Rather than a compact knot, it offers a field to explore, with stars appearing gradually as your gaze adapts.\n\nThe numbers give that impression some scale. SIMBAD classifies NGC 6124 as an open cluster and lists an angular size of 48.1 arcminutes. Its listed parallax is 1.557 milliarcseconds; taking the inverse gives a rough distance of about 640 parsecs, or 2,100 light-years. SIMBAD also lists a visual magnitude of 5.8, though the entry marks that photometry as low quality. Treat the figure as a guide, not a promise: how conspicuous the cluster looks depends on sky darkness, transparency and the observing instrument.\n\nFor a first look, choose a clear night and a site with an unobstructed southern horizon. NGC 6124 is best placed for evening observing when Scorpius is well up\u2014typically during the southern-hemisphere winter and around the middle of the year for observers farther north. From southern latitudes it climbs high; from much of the north it remains low, where haze and buildings can get in the way. Let your eyes adjust for several minutes, then scan slowly with binoculars. If you use a telescope, begin with the widest field available. A narrow view may show individual stars beautifully while hiding the cluster\u2019s broad shape.\n\nTry a second look after a few minutes away from bright lights. At first, the field may seem like a sprinkling without a pattern. Then the eye begins to connect points\u2014not into a picture imposed on the sky, but into a loose gathering with its own texture. Shift the instrument slightly and the arrangement changes; return to the center and familiar stars reappear. That quiet back-and-forth is a fine way to observe a cluster whose size is easier to appreciate than to frame.\n\nThe catalogue gives NGC 6124 a position and a span. The observer supplies the rest: a dark pause, a steady hand and the patience to let a wide patch of sky resolve into company.\n\n**Sources:** SIMBAD, NGC 6124 object record: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206124",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206124",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "declination",
+              "degree",
+              "depends",
+              "field",
+              "frame",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
