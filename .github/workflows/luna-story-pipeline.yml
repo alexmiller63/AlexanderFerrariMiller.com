@@ -10,7 +10,7 @@ on:
       model:
         description: "Verified OpenAI API model ID"
         required: true
-        default: "gpt-4.1-nano"
+        default: "gpt-6-luna"
         type: string
       input_price:
         description: "Verified USD per 1M input tokens"
@@ -19,7 +19,7 @@ on:
         type: string
       output_price:
         description: "Verified USD per 1M output tokens"
-        default: "0.40"
+        default: "0.50"
         required: true
         type: string
       paid_execute:
