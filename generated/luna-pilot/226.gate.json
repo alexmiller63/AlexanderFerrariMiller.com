@@ -1,0 +1,84 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203372"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Carina Nebula: A Southern Sky Full of Beginnings\n\n*An immense cloud of glowing gas, NGC 3372 rewards patient observing\u2014and offers a glimpse of stars reshaping their birthplace.*\n\nOn a clear southern night, the Carina Nebula can seem less like an object than a place: a luminous patch in the Milky Way, set among the crowded stars of Carina. Its catalogue name is NGC 3372. SIMBAD classifies it as an H II region, a region of interstellar gas where energetic stars have ionized hydrogen. In other words, this is not simply a cloud lit from outside. It is a landscape transformed by the stars within and around it.\n\nThat transformation is the quiet drama of a star-forming region. Gas gathers, stars ignite, and their radiation changes the surrounding material. The nebula\u2019s light is a visible sign of that exchange: matter becomes a nursery, then a stage on which young stars announce themselves. The details are too fine for the unaided eye, but even a modest view can suggest that the Milky Way is not a smooth river of light. It is a place with structure, depth and weather.\n\nThe names gathered around NGC 3372 hint at its many faces. SIMBAD lists \u201cCarina Nebula\u201d and \u201cEta Car Nebula\u201d among its identifiers, and notes that the Keyhole Nebula is part of the Carina Nebula. Those names point to features and objects associated with the larger region, not to separate destinations you need to find first. Begin with the broad glow; let your eye settle, and the surrounding star field becomes part of the view.\n\nFor an observing guide, use the nebula\u2019s approximate J2000 coordinates: right ascension 10 hours 45 minutes, declination 59 degrees 42 minutes south. Its far-southern position makes it a natural target for observers in the Southern Hemisphere; from more northerly locations, it may sit low or be out of view. In southern skies, look toward Carina in the Milky Way. A planisphere or sky app can help you identify the constellation and choose a clear view toward the southern horizon.\n\nGive your eyes time in darkness before searching. Under a dark sky, the nebula may appear as a soft, diffuse glow rather than a sharply edged shape. Binoculars can help distinguish the region from the surrounding star fields; a small telescope at low power gives a wider context than a high-power view. Try a moonless night and avoid nearby streetlights. If the glow seems elusive, sweep slowly through the field rather than fixing on one point: faint light is often easier to notice in peripheral vision.\n\nSIMBAD places NGC 3372 at 10:45:02.23, \u221259:41:59.8 (J2000), and records its association with the Keyhole Nebula. Those coordinates are useful as a locator, not a promise that every telescope or sky will reveal the same detail. Weather, darkness and equipment all shape what reaches the eye. Still, the essential view is generous: a bright region of the southern Milky Way where the science of star formation becomes a moment of looking.\n\n**Source:** [SIMBAD: NGC 3372](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203372)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203372",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "association",
+              "before",
+              "bright",
+              "carina",
+              "catalogue",
+              "coordinates",
+              "crowded",
+              "declination",
+              "degrees",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Carina Nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203372"
+        ],
+        "exact_text_confirmed": true
+      },
+      {
+        "quoted_text": "Eta Car Nebula",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203372"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
