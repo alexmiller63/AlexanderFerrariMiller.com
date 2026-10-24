@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2074824"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Cir: A Southern Star on the Move\n\n*This fourth-magnitude star in Circinus offers a simple naked-eye view\u2014and a reminder that the sky\u2019s familiar patterns are not fixed forever.*\n\nBeta Cir is easy to overlook. At magnitude 4.06, it is not a beacon that overwhelms the darkness; under a dark sky, it is a modest point of light in the southern constellation Circinus. But this unassuming star carries a quiet distinction: measured against the far more distant background, its position is changing.\n\nThe SIMBAD astronomical database gives Beta Cir\u2019s position as right ascension 15h 17m 31s and declination \u221258\u00b0 48\u2032, and classifies it as an A3Va star. Its listed parallax is 33.82 milliarcseconds. Turning that parallax into a distance gives roughly 30 parsecs, or about 97 light-years. These are catalog measurements, not things the eye can detect at the eyepiece; their value is in adding depth to a point of light that otherwise seems pinned to the celestial dome. [SIMBAD: HIP 74824](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2074824)\n\nThe \u201cmoving\u201d part is called proper motion: the star\u2019s apparent shift across the sky as it travels through space relative to the Sun. SIMBAD lists Beta Cir\u2019s motion as about 97 milliarcseconds per year in right ascension (with the database\u2019s cosine-of-declination convention) and 136 milliarcseconds per year in declination. Combined, that is roughly 0.17 arcseconds a year. Tiny\u2014far less than the apparent width of a typical naked-eye star\u2014but over decades the displacement adds up in precise measurements. The star is not darting across the sky; rather, modern astrometry lets us notice a slow drift that a single evening\u2019s observing cannot reveal.\n\nIts classification supplies another clue to its nature. A3 places it among A-type stars, and the \u201cV\u201d indicates the dwarf, or main-sequence, luminosity class. Beta Cir\u2019s cataloged visual magnitude, 4.057, makes it a plausible naked-eye target away from bright city lights. The same entry reports a radial velocity of 9.6 kilometres per second: a measurement of motion along our line of sight, distinct from the sideways drift that produces proper motion.\n\nFor a look, choose a clear evening and give your eyes time to adapt to the dark. Circinus lies in the southern sky, so Beta Cir is best placed for observers south of the equator. Its declination means it hugs the southern horizon for many northern observers and never rises at all from locations north of about 31\u00b0 north latitude. A planetarium app or star chart can guide you to its listed coordinates; set the chart to the current date and location, then look when the constellation is well above the horizon. Binoculars are optional, but can help pick the star out of a bright or hazy sky.\n\nThe pleasure here is not a dramatic spectacle. It is the contrast between what the eye sees\u2014a steady point in a familiar pattern\u2014and what measurement reveals: a nearby star with a measurable journey of its own. Beta Cir asks for no elaborate equipment, only a dark enough sky and a moment to consider that the star patterns we inherit are temporary arrangements, slowly reshaped by motion.\n\n**Source:** [SIMBAD entry for HIP 74824 / Beta Cir](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2074824)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2074824",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "celestial",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
