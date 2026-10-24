@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202362"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Tau Canis Majoris Cluster: The Brilliant Heart of a Winter Gathering\n\n*In Canis Major, one bright star leads the eye to a much wider company. A small telescope turns that glimmer into a scene of suns.*\n\nThe first thing you notice is the beacon. Tau Canis Majoris shines in the southern constellation of the Great Dog, bright enough to catch the eye before the rest of its stellar neighborhood resolves. Stay with it, though. In a telescope, the single point becomes the anchor of the Tau Canis Majoris Cluster, also catalogued as NGC 2362: a gathering of stars set against the dark.\n\nThat contrast is the pleasure of the view. Tau dominates, while fainter stars seem to gather around it, like sparks held close to a lamp. The cluster is an open cluster\u2014a classification recorded for NGC 2362 in the SIMBAD astronomical database. Open clusters are groups of stars associated with one another, rather than a chance pattern of unrelated foreground and background lights. A telescope does not show their history directly, but it lets you linger over the company they keep.\n\nThe database places NGC 2362 at right ascension 7 hours 18 minutes 41 seconds and declination \u221224 degrees 57 minutes 14 seconds, in the J2000 coordinate system. SIMBAD also lists a parallax of 0.742 milliarcseconds. Inverting that value gives a rough distance of about 1,350 parsecs, or 4,400 light-years. That conversion is a useful scale-setter, not a claim that every star in the field sits at precisely the same distance.\n\nFor northern observers, look for Canis Major on winter evenings, low toward the south. The bright stars of the constellation help guide you to the region; a sky map or planetarium app can take you from there to Tau Canis Majoris. The target is best placed when it has climbed clear of rooftops, trees and the thickest layer of horizon haze. Observers farther south can seek it during their warmer-season evenings.\n\nBegin with binoculars, which will help you steady the star field and find the bright landmark. Then switch to a small telescope at low or moderate power. Keep Tau in the view and give your eyes time to adapt: the fainter members are easier to notice when you are not staring straight at the brilliant center. If glare overwhelms the surrounding stars, try a slightly higher magnification or shift Tau just off-center. A transparent, moonless night makes the delicate points easier to pick out.\n\nThere is no need to rush to a high-powered view. The cluster\u2019s appeal lies in the difference between the bold central light and the smaller stars nearby. Take a moment to look, look away, and return. Some of the quieter points may appear only after your eye has settled.\n\nThen let the image widen again. The bright star is not the whole story, but the doorway into it. What began as one unmistakable gleam becomes a neighborhood: many lights, gathered in the same small patch of sky, waiting patiently for a dark night and an attentive observer.\n\n**Sources:** SIMBAD entry for NGC 2362, including its object classification, coordinates and parallax: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202362",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%202362",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "field",
+              "ident",
+              "image"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
