@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207635"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Bubble Nebula: A Shell in the Queen\u2019s Sky\n\n*In Cassiopeia, a faint cloud takes its familiar shape around a star. Finding it is easier than seeing its delicate bubble.*\n\nThe Bubble Nebula is a name that promises a neat outline. In the eyepiece, though, the sky rarely delivers a picture-book circle. NGC 7635 is cataloged as an H II region\u2014a cloud of ionized gas\u2014and SIMBAD identifies it as a shell around the star SAO 20575. The name is a useful invitation, not a guarantee that the bubble\u2019s edge will leap out at you.\n\nAn H II region forms when energetic light from stars strips electrons from hydrogen atoms in surrounding gas. As the atoms recombine, the gas can emit visible light, including the deep-red glow of hydrogen-alpha. In the Bubble Nebula, the cataloged shell gives the scene a sense of motion: a star set in a cloud, with a rim traced by glowing material. A telescope shows us that light after it has crossed the gulf between the nebula and Earth; it does not make the structure\u2019s depth or distance obvious.\n\nFor a finder, the coordinates are a better starting point than the name. SIMBAD lists NGC 7635 at right ascension 23h 20m 48.3s and declination +61\u00b0 12\u2032 06\u2033 (J2000), in the constellation Cassiopeia. Look for the familiar W-shaped constellation in the northern sky, then use a current chart or a Go-To mount to reach the target. The nebula lies close to the celestial pole compared with many showpiece objects, so it is well placed for observers at many northern latitudes. Its visibility at any particular hour still depends on your location, season and horizon.\n\nGive your eyes time to adjust before judging the view. Start with low power to locate the field, then increase magnification if the sky and optics allow. Under suburban skies, the nebula may be elusive: a small, low-contrast patch rather than an obvious bubble. Dark, transparent skies help. An H-beta or UHC-style nebula filter may improve the contrast of emission structure, though the result depends on the instrument, sky and filter; no filter can replace a dark sky. Try averted vision\u2014looking slightly to one side of the target\u2014and pause between checks rather than expecting a sharp outline at once.\n\nAstrophotographs often reveal far more color and detail than the eye can gather through an amateur telescope. That is not a failure of observing. It is a reminder that vision and cameras collect light differently: a long exposure can build a detailed record from faint photons that arrive too sparsely for the eye to register as color. The telescope\u2019s live view has its own reward: you are looking at the actual sky, with its softness, its limits and its changing transparency.\n\nStay with the field for a few minutes. The \u201cbubble\u201d may emerge first as a change in texture, a dim arc, or simply the knowledge that a shell surrounds a star. Let the name guide your imagination, but let the eyepiece set the terms. In Cassiopeia, a modest patch of light becomes a meeting place between a star, a cloud and the patient observer.\n\n**Scientific and observing reference:** [SIMBAD: NGC 7635](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207635) \u2014 object classification, identifiers, shell association and coordinates.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207635",
+            "overlap_terms": [
+              "allow",
+              "around",
+              "ascension",
+              "association",
+              "before",
+              "between",
+              "bubble",
+              "celestial",
+              "collect",
+              "coordinates",
+              "current",
+              "declination"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
