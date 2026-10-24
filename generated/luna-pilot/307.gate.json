@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205139"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Omega Centauri: A City of Stars in the Southern Sky\n\n*An ancient globular cluster gathers thousands of points of light into one soft glow. Here\u2019s how to find it\u2014and what to look for when you do.*\n\nAt first, Omega Centauri may not look like a city. From a dark southern-sky site, it appears as a milky smudge, suspended among the stars of Centaurus. But give your eyes time to adjust, and the blur begins to suggest its true nature: not a cloud, but a globular cluster, a dense, roughly spherical gathering of stars bound together by gravity.\n\nThe name can mislead. Omega Centauri is also catalogued as NGC 5139, and it is not a lone star in the constellation. SIMBAD classifies it as a globular cluster and lists its position as right ascension 13h 26m 47.28s, declination 47\u00b0 28\u2032 46.1\u2033 south. Its catalogue angular diameter is 36.3 arcminutes\u2014slightly wider than the full Moon appears in the sky. That measurement describes its apparent extent, not a sharply edged disk; the cluster fades gradually into its surroundings. ([SIMBAD: NGC 5139](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205139))\n\nA globular cluster offers a different kind of stellar spectacle from a familiar constellation. Constellation stars may look close together from Earth while lying at very different distances. In a globular cluster, the stars really are members of one immense stellar assembly. Their combined light makes the object easy to recognize as a glow; resolving that glow into individual stars is the reward of closer observing.\n\nTo find it, start with the constellation Centaurus and use a star chart or planetarium app set for your location and date. Omega Centauri\u2019s southern declination means it is best placed for observers in the Southern Hemisphere. From many northern locations it either stays below the horizon or skims low above it, where haze and buildings can hide it. Look when Centaurus is high enough to clear your local horizon, and choose a transparent, dark night.\n\nUnaided eyes may show a rounded, diffuse patch. Binoculars make the cluster easier to pick out, though it will still look like a compact glow. A small telescope, used at low or moderate power, can begin to separate stars around the edges. Let your vision settle, and try looking slightly to one side of the cluster: averted vision can make faint detail more apparent. Keep the target in view for a few minutes rather than expecting the whole swarm to resolve at once.\n\nThe catalogue gives another measure of the object\u2019s motion: a heliocentric radial velocity of about 232.7 kilometres per second. That is motion along our line of sight, not a speed across the sky; it tells only part of the cluster\u2019s journey through the Milky Way. Even without calculating its path, you can appreciate the contrast between scale and appearance. A vast stellar system occupies a patch of sky only a little wider than the Moon.\n\nWhen you find Omega Centauri, pause before reaching for higher magnification. Let the soft center hold your gaze, then notice the scattered points at its edge. The view is at once a single object and a multitude: a bright, close-looking knot in the night, made of stars gathered far beyond the reach of any one telescope\u2019s field.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205139",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "cluster",
+              "declination",
+              "extent",
+              "field",
+              "globular",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
