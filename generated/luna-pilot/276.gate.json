@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204548"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M91: The Bar Behind the Haze\n\n*An elusive spring galaxy in Coma Berenices rewards patient eyes\u2014and a little help from a chart.*\n\nOn a clear spring night, M91 waits in Coma Berenices, far from the familiar brilliance of the Milky Way\u2019s bright stars. It is not a showpiece that leaps into view. Think of it instead as a quiet destination: a faint oval of light whose subtlety is part of the pleasure. To find it, you\u2019ll need a telescope, a reasonably dark sky and a moment to let your eyes settle.\n\nM91 is also catalogued as NGC 4548. Its position is about 12 hours 35 minutes right ascension and +14\u00b030\u2032 declination (J2000). That coordinate is a reliable address for a star chart or a telescope\u2019s setting circles. The database SIMBAD lists the galaxy\u2019s optical dimensions as about 5.25 by 4.32 arcminutes and its visual magnitude as 13.57\u2014numbers that help explain why it can be a challenge in the eyepiece. [SIMBAD: M91 / NGC 4548](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204548)\n\nThe catalog gives M91 a barred-spiral classification, SB_a. The bar is a structure of stars crossing the galaxy\u2019s central region; spiral arms extend from the ends of such bars. That architecture is easier to appreciate in images than through a small telescope. Visually, M91 may remain a soft, elongated glow, with its central details blurred together. The galaxy\u2019s listing also identifies a LINER-type active nucleus. LINER describes a kind of emission from a galaxy\u2019s central region; it\u2019s a reminder that even a modest-looking smudge can have complicated activity at its heart.\n\nTo observe it, start with a current chart of Coma Berenices and use the coordinates rather than trying to recognize M91 among the stars. If your telescope has a go-to system, enter the J2000 position; otherwise, work from a chart at low power, then increase magnification once you\u2019re confident you have the field. A wide-field eyepiece can help with the initial search. Under a dark sky, give the view time: look slightly to one side of the target, then back, since averted vision can make a faint object easier to detect. Keep expectations modest. The first sighting may be no more than a small, dim patch, and patience matters more than magnification.\n\nM91\u2019s coordinates put it in a useful part of the spring sky for Northern Hemisphere observers. Choose a night when Coma Berenices is well placed, and let the galaxy climb clear of nearby obstructions. Shield your eyes from stray light and avoid rushing from the finder to the eyepiece; a few minutes in darkness can make the difference between an empty-looking field and a faint trace.\n\nThere is a particular satisfaction in finding an object that doesn\u2019t announce itself. M91 asks you to slow down, consult the map and look carefully. Once its pale oval settles into view, the reward is not a dramatic display but a connection: a barred spiral, catalogued and measured, appearing as a delicate mark in your own night sky.\n\n**Source:** [SIMBAD database entry for M91 (NGC 4548)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204548)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204548",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "display",
+              "emission",
+              "galaxy",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
