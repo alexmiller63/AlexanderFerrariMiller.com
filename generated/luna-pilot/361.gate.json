@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206656"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sagittarius Cluster: A City of Stars in the Archer\n\n*In Sagittarius, M22 offers a compact lesson in stellar gravity\u2014and a rewarding target for a clear summer night.*\n\nThe **Sagittarius Cluster** is better known by its catalogue names: Messier 22, or NGC 6656. In the SIMBAD astronomical database, it is classified as a globular cluster\u2014a dense, roughly spherical gathering of stars held together by gravity. Look toward the constellation Sagittarius and you\u2019re looking into a rich stretch of the Milky Way, where this ancient stellar city waits amid the Archer\u2019s crowded star fields.\n\nThe scale is striking even before you can resolve individual stars. SIMBAD lists M22\u2019s apparent diameter as 24 arcminutes, about four-fifths the width of the full Moon. That is the cluster\u2019s span on our sky, not its physical diameter. Its listed coordinates are right ascension 18h 36m 23.94s and declination \u221223\u00b0 54\u2032 17.1\u2033 (J2000). The negative declination places it south of the celestial equator, a useful clue for observers: from mid-northern latitudes, M22 appears low in the southern sky.\n\nA cluster is not a single sun but a multitude of stars sharing a gravitational home. M22\u2019s stars are so concentrated that, through a small instrument, the object can first resemble a soft, luminous knot. A larger telescope and steady air may begin to pick out individual points, especially around the outer edge, while the crowded center remains a haze. The view changes with aperture, magnification, sky darkness and atmospheric steadiness; the pleasure is in watching that haze gradually break apart.\n\nThere is motion as well as structure. SIMBAD lists a heliocentric radial velocity of \u2212147.8 kilometers per second. The negative sign means M22\u2019s motion along our line of sight is toward the Sun. That figure describes only the toward-or-away component; it does not capture the cluster\u2019s full motion across the sky.\n\n**How to observe it:** Choose a clear, dark night when Sagittarius is above the horizon. Find the constellation\u2019s familiar Teapot shape, then use a current star chart or planetarium app to guide you to M22; its position is in the southern part of Sagittarius. A pair of binoculars is a comfortable first instrument: sweep slowly, letting the star field settle into view. Then try a telescope at low power to frame the cluster, increasing magnification only if the image remains sharp. If you are observing from a northern location, wait until the target reaches its highest point in the south; looking through less atmosphere generally helps. Give your eyes time to adapt to the dark, and avoid nearby white lights.\n\nM22 is a reminder that a small patch of sky can hold a vastly crowded neighborhood. Let the first glimpse be a faint blur. Stay with it. With patience\u2014and a darker sky\u2014the blur may begin to sparkle at its edges.\n\n**Source:** SIMBAD entry for NGC 6656 (M22): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206656",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206656",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "current",
+              "database",
+              "declination",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
