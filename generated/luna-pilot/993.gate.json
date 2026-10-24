@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071908"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Cir: A Southern Beacon with a Peculiar Spectrum\n\n*Look low in the southern sky for Circinus\u2019s brightest star: a blue-white point whose catalogued details reveal more than the eye can see.*\n\nSome stars announce themselves with color or a dramatic change in brightness. Alpha Cir does neither to casual observers. It appears as a modest, steady point in the far-southern constellation Circinus\u2014but it is bright enough to find without optical aid under a dark sky, and its scientific classification hints at complexity beyond its calm appearance.\n\nThe star\u2019s catalogued visual magnitude is about 3.2, making it a naked-eye target away from bright city lights. The SIMBAD astronomical database identifies it as HIP 71908 and gives its position as right ascension 14h 42m 30s, declination \u221264\u00b0 58\u2032 30\u2033 (J2000). Its measured parallax is about 61 milliarcseconds, corresponding to a distance of roughly 53 light-years. [SIMBAD: Alpha Cir](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071908)\n\nSIMBAD lists Alpha Cir\u2019s spectral type as A7VpSrCrEu and classifies it as an \u201calpha2 CVn\u201d variable. In plain language, it is an A-type star with a spectrum marked as peculiar: the letters Sr, Cr and Eu flag prominent signatures of strontium, chromium and europium. These chemical clues come from studying the star\u2019s light spread into a spectrum\u2014not from anything a backyard telescope can reveal directly. The alpha2 CVn label places it in a class of variable stars whose brightness or spectral features can change over time. Such changes are generally subtle; Alpha Cir will not visibly pulse or flicker as you watch.\n\nFor observers, the main challenge is location. Circinus lies in the southern celestial hemisphere, near Centaurus and Triangulum Australe. Alpha Cir\u2019s far-southern declination means it climbs high for observers south of the equator, but stays low or never rises for many northern locations. From a site at latitude 35\u00b0 south, for example, it reaches about 80\u00b0 above the horizon at its highest point. It is not visible from locations north of roughly 25\u00b0 north latitude.\n\nIn the evening sky, Circinus is best placed around May through July, when the constellation is well positioned after nightfall. The exact time depends on your location and date; a planetarium app or star chart can show when Alpha Cir clears local obstructions. Choose a site with an unobstructed southern horizon. In the Northern Hemisphere\u2019s tropics, haze and buildings can easily hide a star that never rises far above the horizon.\n\nStart with your unaided eyes under a dark sky. Binoculars can help distinguish the surrounding star pattern, while even a small telescope will show Alpha Cir as a point of light rather than a disk. Give your eyes time to adapt to darkness, and avoid staring at bright phone screens. Once you have found the star, compare its position with a chart rather than expecting visible changes in brightness.\n\nAlpha Cir is a reminder that a star\u2019s quiet appearance is only the beginning of its story. Its distance, temperature class and unusual chemical signatures are written in measurements collected across the sky\u2014details to ponder while its small point of light rests above the southern horizon.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071908",
+            "overlap_terms": [
+              "alpha",
+              "around",
+              "ascension",
+              "celestial",
+              "class",
+              "corresponding",
+              "database",
+              "declination",
+              "depends",
+              "ident",
+              "magnitude",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
