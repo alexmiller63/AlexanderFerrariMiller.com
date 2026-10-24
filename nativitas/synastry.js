@@ -141,6 +141,10 @@
       results.querySelector('.aspect-rows').innerHTML=rows.map(a=>`<tr><td>${title(a.first_body)}</td><td>${a.symbol} ${title(a.aspect)}</td><td>${title(a.second_body)}</td><td>${a.orb.toFixed(2)}°</td><td>${a.moon_time_uncertain?'Moon uncertain':a.birth_time_uncertain?'Approximate snapshot':'Known times'}</td></tr>`).join('');
     }
     results.querySelectorAll('[data-aspect]').forEach(box=>box.addEventListener('change',()=>{if(box.checked)enabled.add(box.dataset.aspect);else enabled.delete(box.dataset.aspect);redraw();}));redraw();
+    if (window.NativitasDraftLibrary) {
+      const box=document.createElement('section');box.className='synastry-interpretations';results.append(box);
+      window.NativitasDraftLibrary.synastry(report,box).catch(e=>{box.textContent=e.message;});
+    }
     if(downloadURL)URL.revokeObjectURL(downloadURL);downloadURL=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));results.querySelector('.download').href=downloadURL;
   }
   form.addEventListener('submit',async event=>{
