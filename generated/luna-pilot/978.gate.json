@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2068756"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Thuban, the North Star Before Polaris\n\n*An unassuming star in Draco once marked the direction of Earth\u2019s north pole. Tonight, it offers a reminder that even the sky\u2019s most dependable landmarks are temporary.*\n\nOn a dark evening, Thuban does not announce itself. At magnitude 3.7, it is a modest point of light in Draco, the long, winding constellation that threads between the Big and Little Dippers. Yet roughly 4,700 years ago, the direction of Earth\u2019s north pole lay close to this star. Thuban was then the North Star.\n\nThe change is written not in the star, but in Earth. Our planet rotates like a spinning top, and the slow gravitational tug of the Sun and Moon makes its axis trace a circle across the sky. This motion, called axial precession, takes about 26,000 years to complete. The north celestial pole\u2014the point in the sky where Earth\u2019s axis points\u2014therefore shifts among the stars. Polaris is its current near-neighbor; Thuban held that distinction long ago, and the title will pass to other stars in the distant future.\n\nThuban\u2019s ancient role is striking partly because the star itself is not especially bright. Its name comes from an Arabic word for \u201cserpent,\u201d fitting its home in Draco. Catalogues identify it as Alpha Draconis, a type A0 giant about 260 light-years away. It is also a spectroscopic binary: observations of its spectrum reveal the motion of a companion star, even though the two are not presented to the eye as a readily split pair. A steady-looking point of light can contain more than one sun\u2014and carry the memory of a changing sky.\n\nTo find it, start with the Big Dipper, a familiar landmark in the northern sky. Look between the Dipper and the Little Dipper for Draco\u2019s winding chain of stars. Thuban lies along the dragon\u2019s body, not among the brighter stars that form its head. It is visible to the unaided eye under reasonably dark skies, though city glare or a bright Moon may wash it out. Give your eyes 15 to 20 minutes to adapt, avoid looking at phone screens, and use binoculars if you need help picking out the surrounding pattern. A telescope is not necessary.\n\nFor observers at many northern mid-latitudes, Draco circles the pole and never sets. In late spring and summer evenings, it is well placed for a leisurely search. If you can identify Polaris, imagine the pole\u2019s slow celestial journey: the point has not always been there, and it will not remain there forever.\n\nThat is Thuban\u2019s quiet gift. It is both a star to locate and a lesson in scale. A human lifetime barely registers against Earth\u2019s 26,000-year axial cycle, but the sky preserves the movement. Find this faint marker in the dragon\u2019s coils, and you are looking at a former guidepost\u2014one that still points toward a past North.\n\n**Sources**\n\n- SIMBAD astronomical database, Alpha Draconis (HIP 68756): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2068756  \n- Encyclopaedia Britannica, \u201cThuban\u201d: https://www.britannica.com/place/Thuban-star  \n- Encyclopaedia Britannica, \u201cPrecession of the equinoxes\u201d: https://www.britannica.com/science/precession-of-the-equinoxes",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2068756",
+            "overlap_terms": [
+              "before",
+              "binary",
+              "catalogues",
+              "celestial",
+              "current",
+              "database",
+              "ident",
+              "magnitude",
+              "motion",
+              "north",
+              "other",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Precession of the equinoxes",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
