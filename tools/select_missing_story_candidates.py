@@ -55,8 +55,8 @@ if __name__ == "__main__":
     parser.add_argument("--limit", type=int, default=10)
     parser.add_argument("--output", default="generated/luna-pilot-selected.json")
     args = parser.parse_args()
-    if not 1 <= args.limit <= 100:
-        parser.error("limit must be 1..100")
+    if not 1 <= args.limit <= 1000:
+        parser.error("limit must be 1..1000")
     selected = candidates(args.limit)
     if not selected:
         raise SystemExit("No new eligible objects found; no paid calls allowed")
