@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207000"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# North America Nebula: A Continent in the Summer Sky\n\n*In Cygnus, a glowing cloud takes the shape of a familiar shore. The view is subtle, but a dark sky and wide field of vision can bring its coastline into focus.*\n\nOn a clear summer night, look high in the northern sky for Deneb, the bright star at the tail of Cygnus. A few degrees east lies the North America Nebula, catalogued as NGC 7000. Its outline resembles the continent on a map: the Gulf of Mexico is a dark indentation, while a bright rim suggests the eastern coast. The resemblance is a happy accident of perspective, but once noticed, it is hard to forget.\n\nThe nebula is not a solid object with a sharp edge. It is a vast region of glowing gas, shaped in silhouette by both bright clouds and darker bands of dust. In an emission nebula such as this, energetic light from hot stars can strip electrons from hydrogen atoms. As the atoms recombine, they release light\u2014including the red glow often captured in photographs. That light is spread across an enormous patch of sky, so the nebula may look less striking through an eyepiece than in a long-exposure image.\n\nThat\u2019s part of the pleasure of observing it: the view asks for patience and a little imagination. NGC 7000\u2019s catalog position is near right ascension 20h 58m 47s and declination +44\u00b0 19\u2032 (J2000). The SIMBAD astronomical database lists North America Nebula among its identifiers, alongside NGC 7000 and Sh 2-117. [1]\n\n**Try this:** Choose a moonless night away from streetlights, and give your eyes at least 20 minutes to adapt to the dark. Find Deneb, then sweep slowly eastward with binoculars. The nebula is large\u2014often too large to appreciate through a high-power telescope\u2014so use the widest field you have. Under a dark sky, binoculars may reveal a hazy glow; a narrowband nebula filter can improve contrast by suppressing some background light. Averted vision helps: look slightly to the side of the suspected glow rather than straight at it.\n\nThe dark lanes matter as much as the bright gas. They interrupt the nebula\u2019s glow and help define the \u201ccoastline,\u201d especially around the Gulf-shaped notch. Don\u2019t expect a crisp map outline. The nebula\u2019s surface brightness is uneven, and light pollution can erase its fainter reaches. Let your gaze wander across the field, and the continent may emerge gradually, like a shape appearing in clouds.\n\nIf the view remains elusive, you are not doing anything wrong. The North America Nebula rewards dark skies, broad views and repeated visits more than magnification. Take a moment to compare the eyepiece view with a star chart, then look again. The real sky won\u2019t reproduce a photograph\u2019s color or detail, but it offers something a picture cannot: the quiet thrill of recognizing a distant cloud of gas with your own eyes.\n\n**Source**\n\n[1] SIMBAD astronomical database, NGC 7000: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207000",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207000",
+            "overlap_terms": [
+              "america",
+              "around",
+              "ascension",
+              "astronomical",
+              "bright",
+              "catalog",
+              "database",
+              "declination",
+              "define",
+              "degrees",
+              "field",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
