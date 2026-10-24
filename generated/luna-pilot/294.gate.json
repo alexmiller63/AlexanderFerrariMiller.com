@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204725"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 4-30-22: A spiral with a restless heart\n\n*In the spring sky, a galaxy\u2019s faint glow carries two stories: the slow sweep of its spiral arms and the activity hidden in its core.*\n\nMCG 4-30-22 is cataloged as NGC 4725, a galaxy whose light reaches us as a soft, extended patch rather than a point of fire. That distinction matters at the eyepiece: even a galaxy listed at magnitude 12.44 spreads its light across a broad area, making it subtler than a star of the same brightness. The catalog gives its apparent dimensions as roughly 10.6 by 5.9 arcminutes\u2014about a third of the Moon\u2019s width along its longer axis. [SIMBAD\u2019s NGC 4725 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204725) lists those measurements, along with its position and classification.\n\nThe coordinates are right ascension 12h 50m and declination +25\u00b0 30\u2032 (J2000), placing the galaxy well north of the celestial equator. Its right ascension makes it a spring-evening target for northern observers: the sky turns it into a convenient destination as the season advances. Find it with a detailed star chart or planetarium app, using the coordinates to confirm the field. A low-power eyepiece can help you locate the surrounding stars before you increase magnification.\n\nGive your eyes time to adjust, and shield them from nearby white light. Under a dark sky, try averted vision\u2014looking slightly to one side of the galaxy\u2019s position. The eye\u2019s peripheral vision is often more sensitive to faint light. A larger telescope helps, but sky darkness matters greatly; haze, moonlight and urban skyglow can wash out the galaxy\u2019s diffuse glow. Don\u2019t expect a crisp photograph in the eyepiece. Look instead for a faint oval haze, then stay with it. Details may emerge gradually.\n\nThe catalog describes NGC 4725 as an SABab spiral. In this notation, \u201cSAB\u201d indicates an intermediate form between a strongly barred and an unbarred spiral, while \u201cab\u201d places its spiral type between the Sa and Sb classes. It is also classified as a Seyfert 2 galaxy: its central region belongs to the active-galaxy family, where material around a central supermassive black hole can produce intense emission. The \u201c2\u201d is an observational category, not a measure of how powerful the galaxy is. In the standard picture of active galactic nuclei, viewing angle and obscuring material help shape what we see; the label alone does not reveal every detail of this particular galaxy\u2019s core.\n\nThere is another scale hidden in the numbers. SIMBAD gives NGC 4725 a redshift of 0.003951 and a heliocentric radial velocity of about 1,182 kilometers per second. Redshift shifts the galaxy\u2019s spectral lines toward longer wavelengths, a sign of its recession. That motion is not visible in the eyepiece. The faint glow is the evidence our eyes can gather directly; the spectrum supplies a different kind of witness.\n\nAt the telescope, MCG 4-30-22 asks for patience rather than spectacle. Its light may arrive as little more than a dim smudge. Yet that smudge marks a vast spiral system, with a classified active core, suspended in a spring sky.\n\n**Source:** [SIMBAD: NGC 4725](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204725)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204725",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "declination",
+              "emission",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
