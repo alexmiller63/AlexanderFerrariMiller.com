@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%204725"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M25: A Little City of Stars in Sagittarius\n\n*This summer cluster rewards binoculars and wide views: look for a loose gathering of suns just north of the Milky Way\u2019s bright southern sweep.*\n\nOn a clear summer evening, Sagittarius hangs low in the south for many observers in the Northern Hemisphere. Its familiar Teapot shape is a useful landmark, but the constellation holds more than a route into the Milky Way\u2019s crowded star fields. Nearby, the open cluster M25 offers a quieter spectacle: a sprinkling of stars gathered in a patch of sky about as wide as the full Moon.\n\nAstronomical catalogues list M25 as IC 4725 and classify it as an open cluster. SIMBAD gives its position as right ascension 18h 31m 44.9s, declination \u221219\u00b0 06\u2032 50\u2033, and its apparent size as about 31 arcminutes. Those coordinates place it in Sagittarius, in a region rich with the glow of the Milky Way. The catalogue\u2019s parallax measurement, 1.5043 milliarcseconds, corresponds to a rough distance of about 665 parsecs\u2014or 2,170 light-years\u2014if converted directly. That is an estimate, not a yardstick laid precisely between Earth and every member star. ([SIMBAD: IC 4725](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%204725))\n\nAn open cluster is a family of stars that formed in the same broad neighbourhood of gas and dust. Its members are not packed into a tight ball: seen from Earth, they can appear scattered across the field. Over time, gravitational encounters and the wider pull of the Galaxy can disperse such groupings. For M25, the cluster\u2019s generous apparent span is part of the pleasure. It is not a single glittering point, but a small stellar scene to explore.\n\nStart with your eyes alone, away from streetlights, and give them time to adapt to the dark. Find Sagittarius\u2019s Teapot low in the southern sky, then scan the surrounding Milky Way with binoculars. M25 is best treated as a target for a wide field rather than high magnification: binoculars show a sprinkling of stars against the rich background, while a telescope at low power can frame much of the cluster at once. The catalogue size of roughly half a degree is a useful reminder to avoid zooming in too far.\n\nChoose a night when Sagittarius is well above the horizon from your location; low altitude means more atmosphere to look through, and haze or buildings can easily swallow the view. A clear southern horizon helps. If the cluster seems subtle, steady your binoculars against a wall or tripod, and sweep slowly rather than staring at one spot. Under bright skies, the surrounding Milky Way may fade, but the brighter stars can still make a rewarding pattern.\n\nM25 is a reminder that observing is not always about finding the most distant or dramatic object. Sometimes the pleasure lies in letting a field of stars resolve gradually, one point at a time. Through binoculars, the cluster\u2019s apparent half-degree width becomes a small neighbourhood; through the mind\u2019s eye, its light has crossed thousands of years to reach you.\n\n**Source:** [SIMBAD database entry for IC 4725](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%204725)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%204725",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "database",
+              "declination",
+              "degree",
+              "field",
+              "frame",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
