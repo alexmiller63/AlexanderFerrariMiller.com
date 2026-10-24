@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204414"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 5-29-85: A Spiral in Spring\u2019s Northern Sky\n\n*An unassuming galaxy in Coma Berenices rewards patient observing\u2014and offers a glimpse of how astronomers describe faraway worlds.*\n\nSome galaxies announce themselves with dramatic arms in a telescope view. MCG 5-29-85 is more reserved. Also known as NGC 4414, it lies in Coma Berenices, among the spring constellations. Its light has crossed the space between galaxies to reach us, carrying clues about both its shape and its motion.\n\nThe SIMBAD record for NGC 4414 lists its spiral classification as SAc and its apparent dimensions as about 5 by 3.2 arcminutes. That\u2019s a modest patch of sky: roughly one-sixth the Moon\u2019s apparent width along its longest axis. The catalog also gives a visual magnitude of 10.12. But a galaxy\u2019s light is spread across its face, so that number doesn\u2019t mean it will look like a bright star. In the eyepiece, expect a faint, extended glow rather than a showpiece. ([SIMBAD: NGC 4414](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204414); [SIMBAD lookup: MCG 5-29-85](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=MCG%205-29-85))\n\nThere\u2019s another story in the galaxy\u2019s spectrum. SIMBAD reports a redshift of 0.002388 and a heliocentric radial velocity of about 715 kilometres per second. Redshift describes how much a galaxy\u2019s light has been stretched toward longer wavelengths; radial velocity expresses its motion along our line of sight. These measurements are related, but a galaxy\u2019s motion also reflects local gravitational influences. Its measured velocity alone should not be treated as a precise distance.\n\nThat distinction is a useful reminder: astronomy often turns faint light into evidence, but interpreting the evidence takes care. A classification such as SAc is a compact way to describe a spiral galaxy\u2019s structure. A redshift is a measurement, not a complete map of where the galaxy sits in the cosmic neighbourhood.\n\n## Finding and observing it\n\nMCG 5-29-85\u2019s J2000 coordinates are right ascension 12h 26m 27s, declination +31\u00b0 13\u2032 25\u2033. (Coordinates and other catalog data: [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204414).) Use those coordinates in a planetarium app, star atlas or telescope\u2019s GoTo system to locate the field. In northern mid-latitudes, the galaxy climbs high in the sky and is a good target for spring evenings.\n\nFor the best chance of seeing it, choose a moonless night, get away from bright lights and give your eyes time to adapt to darkness. A modest telescope may reveal the galaxy as a soft oval haze; a larger aperture and darker sky can help bring out its extent. Start at low or medium power to take in the whole object, then increase magnification if the view remains steady. Don\u2019t be discouraged if the galaxy looks subtle: diffuse light is easy to lose against a bright sky, and averted vision\u2014looking slightly to one side of the target\u2014can help.\n\nIts catalog number may sound less evocative than its familiar NGC name, but either designation points to the same quiet destination. Find the coordinates, settle into the dark, and let your eye gather the light. The reward is not a brilliant spectacle, but the realisation that a faint smudge is an entire spiral galaxy, measured through the traces its light leaves behind.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204414",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "galaxies",
+              "galaxy",
+              "heliocentric",
+              "ident",
+              "known",
+              "magnitude",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
