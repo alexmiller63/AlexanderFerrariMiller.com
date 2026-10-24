@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204111"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 7-25-26: A slim island in the northern sky\n\n*An edge-on galaxy in Canes Venatici offers a quiet lesson in how much a distant world can reveal\u2014and how much it keeps to itself.*\n\nOn a clear spring evening, turn your telescope toward the northern constellation Canes Venatici and seek a small, elongated glow: MCG 7-25-26, also cataloged as NGC 4111. Its light has traveled across space to reach us, arriving as a narrow streak rather than a grand spiral. The galaxy\u2019s listed optical dimensions are about 6 by 1.3 arcminutes, and its apparent visual magnitude is 10.74\u2014faint to the unaided eye, but within reach of a modest telescope under dark skies. [SIMBAD: NGC 4111](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204111)\n\nThe catalog classifies NGC 4111 as an SA0 galaxy: a lenticular system, with a disk-like shape but without the prominent spiral arms of a classic spiral galaxy. We see it at a steep angle, giving it that slender appearance. Its cataloged position is right ascension 12 hours, 07 minutes, 03 seconds and declination +43 degrees, 03 minutes, 56 seconds (J2000). These coordinates are a useful way to find it with a computerized mount or planetarium app; a paper chart can help you work your way across the surrounding star field. [SIMBAD: NGC 4111](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204111)\n\nThere is more than starlight in the story. SIMBAD identifies the galaxy\u2019s nucleus as a LINER-type active galactic nucleus. LINER stands for \u201clow-ionization nuclear emission-line region,\u201d a description based on the particular pattern of light emitted by gas near a galaxy\u2019s center. The label signals activity in the nucleus, but it does not mean the galaxy will look dramatically different through an amateur telescope. At the eyepiece, the distant glow remains subtle: a small, soft patch whose central region may be easier to detect than its faint outer edges.\n\nThe catalog lists a redshift of about 0.0026, corresponding to a heliocentric recession speed near 790 kilometers per second. That is a measurement of motion inferred from the stretching of the galaxy\u2019s light. It is not, by itself, a precise distance: nearby galaxies can have motions influenced by their local surroundings, complicating a simple conversion from speed to distance.\n\nFor a rewarding search, choose a moonless night and give your eyes time to adapt to darkness. Start with low or medium magnification to locate the field, then increase the power if the view remains steady. An 8-inch telescope under a dark sky is a comfortable starting point; smaller instruments may show the galaxy as a faint smudge, especially away from city lights. Look for the elongated orientation rather than expecting a bright, detailed portrait. Averted vision\u2014looking slightly to one side of the target\u2014can help bring out dim, diffuse light.\n\nThe coordinates place MCG 7-25-26 in the northern sky, where it is well placed for evening viewing during the spring months. Use a current chart or app to confirm its position for your observing site and date. In the quiet of the eyepiece, this galaxy\u2019s appeal is not spectacle but scale: a far-off system, cataloged by its light and motion, reduced to a delicate streak above the trees.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204111",
+            "overlap_terms": [
+              "active",
+              "angle",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "corresponding",
+              "current",
+              "declination",
+              "degrees",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "low-ionization nuclear emission-line region,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
