@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045860"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Lyn: A Giant Moving Quietly Through the Lynx\n\n*The constellation\u2019s brightest star is a warm, aging giant\u2014and its slow drift across the sky is measurable, though not visible in a single night.*\n\nLynx is easy to overlook. Its stars are modest, its outline subtle, and its name promises an animal the sky never quite draws. But near the middle of this faint northern constellation, Alpha Lyn offers a steady point of light\u2014and a reminder that even the apparently fixed stars are travelling.\n\nAlpha Lyn shines at about magnitude 3.1, bright enough to see without optical aid under a reasonably dark sky. Its catalogue classification, K6 III, tells a compact story: it is a K-type star, cooler in surface temperature than the Sun, and luminosity class III, a giant. The star has expanded as it has evolved beyond the main sequence, where stars spend most of their lives converting hydrogen into helium in their cores. Its warm-toned light is a clue to that cooler surface, though colour is subtle to the unaided eye.\n\nThe numbers place it well beyond the neighbourhood of the naked-eye planets. Its measured parallax is about 14.7 milliarcseconds. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth circles the Sun; converting that value gives a distance of roughly 68 parsecs, or 222 light-years. In other words, the light arriving tonight began its journey before the first modern telescopes were built.\n\nAlpha Lyn is also moving across our line of sight. Its proper motion is about 219 milliarcseconds per year westward in right ascension, with a smaller northward component. That adds up to a shift of roughly a fifth of an arcsecond each year\u2014far too little to notice while watching, but enough to alter its position against more distant stars over decades. The sky is not a painted ceiling; it is a deep field of suns at different distances, each on its own course.\n\n**Finding it:** Look for Lynx between the more familiar patterns of Ursa Major and Auriga, then use a current star chart or planetarium app to trace the constellation\u2019s faint chain of stars. Search for \u201cAlpha Lyn\u201d or \u201cAlpha Lyncis\u201d; the SIMBAD catalogue gives its J2000 coordinates as right ascension 9h 21m and declination +34\u00b0 24\u2032. From a dark location, try first with the unaided eye, allowing several minutes for your vision to adapt. If the star pattern is difficult to pick out, binoculars will help distinguish the field; a small telescope can frame the star, though it will remain a point of light rather than a resolved disk.\n\nFor a simple observing exercise, note its position relative to nearby stars in a sketch, then return to the same field in several years\u2014or compare your drawing with an older chart. You will not see Alpha Lyn race across the page. The pleasure is in knowing the shift is real: a giant star, distant and bright, quietly changing its place in the celestial neighbourhood.\n\n**Source:** [SIMBAD astronomical database: Alpha Lyn / HIP 45860](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045860)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2045860",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "celestial",
+              "class",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "frame",
+              "ident",
+              "luminosity"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Alpha Lyncis",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
