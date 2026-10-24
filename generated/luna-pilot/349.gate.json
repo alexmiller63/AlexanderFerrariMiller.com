@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206520"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Collinder 361: A Small Lantern Near the Galactic Center\n\n*In Sagittarius, a compact open cluster offers a lesson in scale: a few arcminutes on the sky, and nearly six thousand light-years in depth from home.*\n\nSome clusters announce themselves with a sweep of stars. Collinder 361 asks for a closer look. In the catalog, it is listed as an open cluster under the designation NGC 6520. SIMBAD places it at right ascension 18h 03m 25.4s and declination \u221227\u00b0 53\u2032 02\u2033\u2014a southerly address in the rich Milky Way fields of Sagittarius. Its listed angular size is just 3.4 arcminutes across, small enough that a hurried sweep could pass it by. [SIMBAD: NGC 6520](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206520)\n\nThat small patch of sky carries a second kind of scale. SIMBAD lists a parallax of 0.556 milliarcseconds. Taking the reciprocal gives a rough distance of 1,800 parsecs, or about 5,900 light-years. This is an estimate from the catalog value, not a direct measurement with a tape measure: parallax infers distance from a star\u2019s apparent shift as Earth travels around the Sun. At this distance, the cluster\u2019s narrow apparent span corresponds to a region several light-years wide.\n\nThe same record gives a radial velocity of \u221223.24 kilometers per second. Radial velocity describes motion toward or away from us along the line of sight; the minus sign indicates approach in the convention used by the catalog. Its proper motion is listed separately, measuring the cluster\u2019s apparent drift across the sky. Together, these quantities remind us that a cluster is not a fixed ornament. It moves through the Galaxy, even when its motion is too subtle to notice at the eyepiece.\n\nFor observers, the coordinates provide a reliable starting point. Collinder 361 lies close to the celestial equator\u2019s southern side, so it climbs higher for observers in the Southern Hemisphere and stays relatively low in the south for many northern locations. Its right ascension puts it well placed in evening and nighttime skies around June; local visibility still depends on latitude, horizon, and season. Use a current chart or planetarium app to star-hop to the listed position rather than relying on a broad sweep of the Milky Way.\n\nBegin with a low-power eyepiece and a wide field, then increase magnification if the view seems crowded. At only 3.4 arcminutes across, the cluster is easy to frame in a telescope, but the surrounding star field may be part of the pleasure. Give your eyes time to adapt, keep stray light to a minimum, and observe when the target is highest above your horizon. A clear southern view matters especially at northern latitudes.\n\nThe catalog\u2019s listed V magnitude is 7.6, but treat that number as a catalog entry rather than a promise of what the cluster will look like through a particular instrument. Sky darkness, aperture, magnification and observing conditions all shape the view. The invitation is simple: find the coordinates, settle the image, and let a modest patch of sky expand in your imagination into a moving stellar neighborhood.\n\n**Source:** [SIMBAD astronomical database, NGC 6520](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206520)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206520",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "current",
+              "database",
+              "declination",
+              "depends"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
