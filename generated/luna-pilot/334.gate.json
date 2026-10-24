@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206266"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M62: A Crowded City in the Southern Sky\n\n*Look toward Ophiuchus for this compact globular cluster, where countless stars gather in a tight, ancient congregation.*\n\nM62 is not a single star but a globular cluster: a gravitationally bound swarm of stars, gathered into a roughly spherical shape. On a clear night, finding it can feel like discovering a small city tucked between brighter landmarks. The stars are not individually obvious at first. Instead, the cluster appears as a faint, concentrated patch\u2014an invitation to pause, steady your view and let detail emerge.\n\nCatalogued also as NGC 6266, M62 lies at right ascension 17 hours 01 minute and declination \u221230 degrees 06 minutes (J2000). Its listed optical diameter is about 14.1 arcminutes, roughly half the apparent width of the Moon. SIMBAD classifies it as a globular cluster and gives these coordinates and size. [SIMBAD: NGC 6266 / M62](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206266)\n\nThat compact profile suits the nature of a globular cluster. Its stars crowd together under gravity, with the apparent density increasing toward the center. A small telescope may show a soft glow; a larger aperture, dark skies and patient viewing can help resolve some of that glow into individual points. The view changes with experience, too: after a few minutes at the eyepiece, the eye becomes better at picking out faint detail.\n\nM62\u2019s position in Ophiuchus puts it in a part of the sky that favors observers farther south. From northern locations, it stays relatively low above the southern horizon, where atmospheric haze and buildings can blur the view. Choose a site with a clear southern outlook, and observe when the cluster has climbed as high as it will for your location. A star-chart app or planetarium program can guide you to its catalogued coordinates; use a low-power eyepiece first to find the field, then increase magnification if the image remains steady.\n\nGive your eyes time to adjust to darkness before observing, and shield them from phone screens and nearby lights. On a moonless night, averted vision\u2014looking slightly beside the object rather than directly at it\u2014may make the faint cluster easier to detect. Binoculars can help you sweep through the area, though a telescope is better suited to examining the cluster\u2019s concentrated appearance. The exact view depends on aperture, sky conditions and how high M62 sits above your horizon.\n\nThere is a quiet pleasure in tracing a precise coordinate on a map and then meeting the object itself\u2014not as a pinpoint, but as a patch of light made by many distant suns. M62\u2019s catalogue entry gives it a position and a measured span; the eyepiece supplies the human scale. Let the image settle, and that blur begins to feel less like a smudge than a gathering: stars held together across an immense distance, waiting in the southern dark.\n\n**Source:** [SIMBAD Astronomical Database: NGC 6266 (M62)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206266)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206266",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "crowd",
+              "crowded",
+              "database",
+              "declination",
+              "degrees",
+              "depends"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
