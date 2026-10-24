@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204274"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 5-29-60: A Spiral With a Quietly Active Heart\n\n*In the spring sky, this broad, faint galaxy offers a chance to look beyond its graceful spiral form\u2014to a nucleus whose light hints at energetic processes.*\n\nMCG 5-29-60 is also cataloged as NGC 4274, a spiral galaxy in Coma Berenices. Its measured position\u2014right ascension 12h 19m 50.6s, declination +29\u00b0 36\u2032 53\u2033\u2014puts it in a rich region of the northern sky. But the galaxy\u2019s interest is not only its appearance. Astronomers classify its nucleus as a LINER-type active galactic nucleus: a compact central region whose spectrum shows emission from relatively low-ionization atoms.\n\n\u201cActive\u201d need not mean spectacular. A LINER is not automatically a blazing quasar, and the label describes the character of its emission lines, not a dramatic change in brightness visible to backyard observers. In NGC 4274, the classification gives the galaxy a second story beneath its spiral structure: its central environment is producing energetic radiation, though the catalog designation alone does not specify exactly what powers it.\n\nThe galaxy\u2019s cataloged morphology is SAa, a classification indicating an unbarred spiral of the \u201ca\u201d subtype. Its optical dimensions are about 7.8 by 3.0 arcminutes\u2014large enough to span a noticeable patch of sky, though its light is spread thinly across that area. SIMBAD lists a V-band magnitude of 10.41. That number is a useful guide, not a promise of easy visibility: a galaxy\u2019s diffuse light is harder to detect than a star of the same total brightness.\n\nNGC 4274\u2019s measured redshift is 0.003147, corresponding in the catalog to a radial velocity near 943 kilometres per second. Redshift is the stretching of light as space expands; for a nearby galaxy, its measured motion can also include local gravitational motions. So the value is a clue to the galaxy\u2019s cosmic context, not a simple, exact distance gauge.\n\nFor observers at northern mid-latitudes, spring evenings are a good time to seek it, when Coma Berenices climbs high. Use the coordinates above with a planetarium app or a detailed finder chart, and first locate the field in binoculars or a low-power eyepiece. Under a dark, transparent sky, a telescope with moderate aperture should show a faint, elongated glow; larger instruments and averted vision can help bring out its uneven edges. Try averted vision by looking slightly to one side of the target, where the eye is more sensitive to faint light. Avoid judging the view against a bright nearby Moon, and allow your eyes time to adapt to darkness.\n\nThe visual impression may be understated: a soft spindle against black, not a photograph\u2019s crisp arms and glowing core. That contrast is part of the appeal. The telescope gathers ancient light into a view that looks quiet, while the spectrum tells a more complex story about the galaxy\u2019s center. MCG 5-29-60 rewards patient observing\u2014and reminds us that a subdued glow can still carry evidence of activity.\n\n**Source:** [SIMBAD: NGC 4274](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204274) (coordinates, classification, redshift, angular size and photometry).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204274",
+            "overlap_terms": [
+              "active",
+              "allow",
+              "angular",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "corresponding",
+              "declination",
+              "emission",
+              "first",
+              "galaxy",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
