@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203623"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M65: A Slender Island in Leo\n\n*In the spring sky, a telescope reveals a galaxy whose quiet, elongated glow hints at a much larger world.*\n\nAs Leo climbs the evening sky, M65 waits among the constellation\u2019s lesser-known treasures: not a star, but a vast galaxy seen from across the dark. In a small telescope it may look like a faint, narrow smudge. Stay with it, though, and its shape becomes a reminder that the night sky is not a flat scattering of lights. Some of its softest marks are entire star systems.\n\nM65 is also catalogued as NGC 3623. SIMBAD classifies it as a galaxy and lists its apparent dimensions as about 16 by 4.5 arcminutes\u2014roughly half the apparent width of the full Moon, but much thinner. Its catalogue entry gives a radial velocity of about 805 kilometres per second and a spiral morphology. These are clues to different aspects of the object: its stretched outline on the sky, its motion along our line of sight, and its broad family of form. ([SIMBAD: M65 / NGC 3623](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203623))\n\nThat slim appearance invites the imagination. We see only a projection, not a view from above, and the galaxy\u2019s faint light blends together across immense distances. A telescope cannot resolve its individual stars into points; instead, it gathers the combined glow into a delicate oval. The challenge is not to expect a bright, sharply outlined spectacle. It is to let a low-contrast shape emerge gradually from the darkness.\n\nM65 belongs to the celebrated Leo Triplet, a gathering of galaxies that also includes M66 and NGC 3628. The three lie close together in the sky, making the area especially rewarding for a patient observer. Their proximity on a star chart does not mean they are close to one another in the same way a pair of stars might be. Rather, their shared patch of sky gives us a useful field for exploring galaxies as a group.\n\n**Finding the field.** Choose a clear spring evening when Leo is well above the horizon, and begin with the constellation\u2019s familiar Sickle, the backward question-mark pattern that marks the Lion\u2019s head and mane. From there, consult a current star chart or planetarium app to locate the Triplet. A finder scope or binoculars can help you navigate, but M65 itself is a more demanding binocular target than a bright star cluster. A small telescope under a dark sky is a better starting point.\n\nUse low magnification first, which gives a wider view and makes it easier to take in the surrounding field. Look for a faint, elongated patch; then try averted vision, glancing slightly to one side rather than staring straight at it. If the sky is hazy or brightly lit, the galaxy may disappear. Give your eyes time to adapt, keep stray lights out of view, and try again after a few minutes.\n\nThe reward may be subtle: a narrow wash of light, then a sense of structure in the darkness around it. M65 asks for attention rather than spectacle. In return, it offers a small but astonishing perspective shift: that pale mark, barely distinct from the sky, is a galaxy in its own right.\n\n**Sources**\n\n- [SIMBAD: NGC 3623 (M65)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203623)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203623",
+            "overlap_terms": [
+              "around",
+              "catalogue",
+              "current",
+              "field",
+              "galaxies",
+              "galaxy",
+              "ident",
+              "known",
+              "minutes",
+              "motion",
+              "object",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
