@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%205146"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Cocoon Nebula: A Cluster Inside the Cloud\n\n*In Cygnus, a compact young star cluster and its surrounding nebula share one small patch of sky. A wide-field view helps bring the whole scene into focus.*\n\nSome celestial names promise more than they can deliver to the eye. The Cocoon Nebula is a case where the image and the underlying structure meet: the object cataloged as IC 5146 is an open cluster embedded in a nebula, according to [SIMBAD\u2019s IC 5146 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%205146).\n\nThe cluster and nebula are not separate sights accidentally lined up. Young stars formed within a cloud of gas and dust; their light illuminates and energizes material around them. The result combines starlight with glowing gas and obscuring dust. In photographs, that mix can look like a luminous cocoon wrapped around a bright center. At the eyepiece, the impression is subtler: a small concentration of stars against a field that rewards patient, dark-adapted viewing.\n\nSIMBAD lists IC 5146\u2019s position as right ascension 21 hours 53 minutes 29 seconds and declination +47 degrees 14 minutes 46 seconds, placing it in Cygnus. Its listed optical size is 8.2 arcminutes across\u2014about a quarter of the Moon\u2019s apparent diameter. That is compact enough to fit comfortably in a telescope\u2019s low-power view, but broad enough that very high magnification can make the full scene harder to take in.\n\nThe same database gives a parallax of 1.213 milliarcseconds. Taking the simple inverse of that value gives a rough distance of about 825 parsecs, or 2,700 light-years. This is an estimate from the listed parallax, not a claim that every part of the nebula sits at precisely the same distance. It does offer a sense of scale: the little patch in the eyepiece is a large physical environment, not a tiny object.\n\nFor observing, start with a dark location and let your eyes adapt. In binoculars or a low-power, wide-field telescope, look for the cluster\u2019s stars first; then give the surrounding region time to emerge. A nebula\u2019s faint glow is easily overwhelmed by moonlight, haze and nearby artificial lights, and the view may be much less dramatic than a long-exposure image. Averted vision\u2014looking just to one side of the target\u2014can help reveal faint detail. If the nebula itself remains elusive, the cluster still offers a rewarding sight.\n\nFrom northern latitudes, Cygnus is an evening constellation in late summer and autumn. Use the coordinates or a reliable star chart to identify the field, rather than relying on the nebula\u2019s modest naked-eye appearance. A wide field is a useful choice: the goal is not simply to magnify the central stars, but to see them in their setting.\n\nThe Cocoon is a reminder that a star cluster is not always a tidy island separated from its birthplace. Here, the stellar grouping and its natal surroundings occupy the same view\u2014and, in the catalog\u2019s concise phrase, the cluster is embedded in the nebula. That relationship is the real spectacle, whether it appears as a delicate haze or a richly textured photographic cloud.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%205146",
+            "overlap_terms": [
+              "about",
+              "according",
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "embedded"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
