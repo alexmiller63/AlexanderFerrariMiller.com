@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2013147"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# **Beta For: A Gold Pin in the Southern Dark**\n\n*An autumn-evening guide to a modest star with a giant\u2019s story*\n\nBeta For doesn\u2019t announce itself. In the constellation Fornax, the Furnace, it shines like a small, steady ember\u2014easy to overlook amid the sweep of the southern sky. But this quiet point of light is a red giant, a star in a later chapter of its life. Find it on a clear night and you\u2019re looking at something far larger than the dot suggests.\n\nSIMBAD lists Beta For as a G9IIIb star and classifies it as a red-giant-branch star. Its apparent visual magnitude is 4.46: bright enough to see without optical aid under a dark sky, though city lights or haze can wash it out. The same catalogue gives a parallax of 18.4596 milliarcseconds. Turning that measurement around gives a distance of about 54 parsecs, or roughly 177 light-years. These measurements and classifications are collected in the [SIMBAD entry for HIP 13147](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2013147).\n\nThe \u201cG9\u201d in its spectral type places it near the cooler end of the G stars, while \u201cIII\u201d identifies it as a giant. A star reaches the red-giant branch after it has used up the hydrogen in its core; its outer layers expand as its internal structure changes. \u201cRed giant\u201d is an astronomical category, not a promise that the star will look vividly red to the eye. At magnitude 4.46, Beta For is more likely to appear as a restrained point of light, with its color subtle or imperceptible.\n\n**When and where to look**\n\nFornax is a southern constellation, and Beta For\u2019s position\u2014right ascension 2h 49m, declination about 32\u00b0 south\u2014makes it a better target from southern latitudes. It is most conveniently placed in evening skies during the Southern Hemisphere\u2019s late spring and summer, when this part of the sky is up after dark. From northern locations it stays low above the southern horizon, if it rises at all; a clear, unobstructed view is essential.\n\nStart with a sky map or a planetarium app and search for **Beta Fornacis** or **HIP 13147**. The catalogue position is especially useful if you\u2019re using an app that lets you enter coordinates. Once you\u2019ve found Fornax, give your eyes time to adapt to the darkness, then scan the region without a telescope. Under a bright suburban sky, binoculars may make the star easier to pick out, but they aren\u2019t needed when conditions are good.\n\nA simple observing note can make the view more rewarding: record the date, location, and whether the star appeared steady or twinkled. Twinkling is caused mainly by Earth\u2019s turbulent atmosphere, not by the star flickering. If Beta For is low in the sky, its light travels through more atmosphere, so it may shimmer more\u2014and look dimmer\u2014than it would higher overhead.\n\nThe reward here isn\u2019t spectacle. It\u2019s scale: a faint-looking point, a giant star, and a measured distance of about 177 light-years. Fornax may be the Furnace, but Beta For offers a quieter kind of warmth: a small light with a long stellar history.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2013147",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "branch",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "giant",
+              "ident",
+              "magnitude",
+              "measurement",
+              "optical",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
