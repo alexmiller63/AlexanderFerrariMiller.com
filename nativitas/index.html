@@ -15,6 +15,7 @@ layout: null
     .eyebrow{text-transform:uppercase;letter-spacing:.17em;color:var(--accent);font-size:.8rem}h1{font-family:Georgia,serif;font-size:clamp(3.5rem,10vw,7rem);line-height:1.05;margin:.5rem 0}h2{font-family:Georgia,serif;font-size:1.5rem;margin-top:0}
     .tagline{font-size:clamp(1.25rem,3vw,1.7rem);color:var(--accent)}.intro{max-width:730px;font-size:1.1rem;color:var(--muted)}
     .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.2rem;margin-top:3rem}.card{background:var(--card);border:1px solid #39506d;border-radius:14px;padding:1.6rem}.card p{color:var(--muted);margin-bottom:0}
+    .about{margin-top:2.5rem;max-width:730px}.about p{color:var(--muted);margin:.75rem 0}
     .note{margin-top:3rem;padding:1rem 1.3rem;border-left:3px solid var(--accent);color:var(--muted)}footer{border-top:1px solid #39506d;color:var(--muted)}
   </style>
   <link rel="stylesheet" href="nativitas.css">
@@ -26,13 +27,16 @@ layout: null
     <h1>Nativitas</h1>
     <p class="tagline">Your sky. Your moment. Your story.</p>
     <p class="intro">What did the heavens look like when you were born? Nativitas is being developed to reconstruct the celestial positions at a particular place and moment in time, using astronomy as its foundation and exploring astrology as a historical and cultural tradition.</p>
-    <section class="cards" aria-label="Features and plans">
-      <article class="card"><h2><a href="ephemera.html">Ephemera</a></h2><p>Calculate solar-system positions and local rise/set times for a date, time and location. Includes city search and a downloadable report.</p></article>
+    <section class="cards" aria-label="Chart generators">
       <article class="card"><h2><a href="natal-chart.html">Natal</a></h2><p>Explore your birth sky with a natal chart for your birth date, time and place, including planet positions, Placidus houses and major aspects.</p></article>
       <article class="card"><h2><a href="synastry.html">Synastry</a></h2><p>Compare two birth charts in a bi-wheel, with cross-chart aspects and house overlays.</p></article>
-      <article class="card"><h2>Accurate Astronomy</h2><p>Computed celestial positions, with transparent methods and clear distinctions between measured facts and interpretations.</p></article>
-      <article class="card"><h2>Traditions &amp; History</h2><p>Learn how people, including historical astronomers, interpreted celestial configurations across centuries.</p></article>
-      <article class="card"><h2>Accessible by Design</h2><p>A useful free experience is the goal, with optional enhancements planned at a simple one-time price.</p></article>
+    </section>
+    <p><a href="ephemera.html">Explore Ephemera</a> for celestial positions and local rise/set times.</p>
+    <section class="about" aria-labelledby="about-nativitas">
+      <h2 id="about-nativitas">About Nativitas</h2>
+      <p>Nativitas uses computed celestial positions and transparent methods, clearly distinguishing astronomical calculations from traditional interpretations.</p>
+      <p>Explore how people, including historical astronomers, interpreted celestial configurations across centuries, with historical sources alongside interpretations.</p>
+      <p>A useful free experience is the goal, with optional enhancements planned for a single one-time payment.</p>
     </section>
     <p class="note"><strong>Ephemera is available now.</strong> Birth charts and other features remain under development. Astrology's claims about personality and future events have not been scientifically validated.</p>
   </main>
