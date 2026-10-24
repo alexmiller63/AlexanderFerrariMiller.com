@@ -268,7 +268,7 @@ def main():
             print("SKIP: already generated", ident)
             continue
         if ledger["estimated_usd"] + reserve * sum(not (OUT / (ident + "." + name + ".stage.txt")).exists() for name in ("draft", "correction")) > CAP:
-            print("STOP: cannot reserve 3 stages within budget")
+            print("STOP: cannot reserve paid writing stages within budget")
             break
         evidence_path = OUT / (ident + ".evidence.json")
         if evidence_path.exists():
@@ -309,11 +309,8 @@ def main():
                           "Return the complete 450-650 word story, without commentary.",
                           json.dumps(initial_gate["checks"]) + "\\nRESEARCH:\\n" +
                           research + "\\nDRAFT:\\n" + draft)
-            revised_audit = stage(ident, "reaudit",
-                                "Independently audit this revised story against the supplied research. "
-                                "Identify unsupported claims and missing citations.",
-                                research + "\\nDRAFT:\\n" + revised)
-            draft, audit = revised, revised_audit
+            draft = revised
+            audit = "Free deterministic review only; factual claims require independent editorial verification."
         # Exclusive create, never replace existing work. Audit is saved separately.
         with dest.open("x", encoding="utf-8") as f:
             f.write(draft + "\n")
