@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036188"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Gomeisa: A Small Dog\u2019s Blue-White Beacon\n\n*Canis Minor has only two stars that stand out to the naked eye. One of them is a hot, emission-line star whose quiet glimmer hints at a lively story.*\n\nOn a clear winter evening, Orion gets the attention. Follow the line of his belt, then look toward brilliant Procyon, a little east of the Hunter. Nearby, a fainter blue-white point marks Gomeisa, Beta Canis Minoris. It is one of the two principal stars of Canis Minor, the \u201cLesser Dog\u201d\u2014a modest constellation with a bright companion and a lesser-known star worth seeking out.\n\nGomeisa\u2019s light is easy to underestimate. At visual magnitude 2.89, it is comfortably visible without optical aid from a reasonably dark site, though city glare can wash it out. Its catalogued position is right ascension 7 hours 27 minutes, declination +8 degrees 17 minutes. On the sky, that places it roughly four degrees northwest of Procyon\u2014about the width of your fist held at arm\u2019s length. Start with Procyon, then sweep a little north and west to pick out Gomeisa. Binoculars help in bright skies, but the star is best appreciated unaided: binoculars show more surrounding stars, while a telescope\u2019s magnification can make locating it less convenient.\n\nThe name comes with a scientific clue. SIMBAD lists Gomeisa as a B8Ve star and a Be star. \u201cB8\u201d identifies a hot, blue-white spectral type; the \u201ce\u201d marks emission lines in its spectrum. These lines indicate that the star\u2019s light carries the signature of glowing gas. Be stars are associated with gas around the star, a reminder that a point of light can be more physically complicated than it appears to the eye. Gomeisa\u2019s brightness is therefore not the whole story: astronomers can study the light spread into a spectrum to learn about material around the star.\n\nIt is also a neighbor, by stellar standards. SIMBAD lists a parallax of 20.17 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Turning that value into a distance gives about 50 parsecs, or roughly 162 light-years. The number is too vast to feel in a backyard, but it adds scale to the view: the starlight arriving tonight began its journey when the first modern humans were spreading across Earth.\n\nFor observing, choose a night when Canis Minor is well above the horizon. In mid-northern latitudes, that usually means winter evenings into early spring. Find Orion first, then use Procyon as your stepping-stone. Give your eyes 15 to 20 minutes to adapt to darkness, and avoid looking at a phone screen just before searching. If Gomeisa seems elusive, try binoculars and sweep slowly around the expected spot; then look again without them. Its steady blue-white point is the target, not a dramatic pattern.\n\nA small constellation rewards a patient glance. Procyon may be the dog\u2019s unmistakable lantern, but Gomeisa offers a subtler invitation: a visible star whose spectrum reveals activity hidden inside its simple pinprick of light.\n\n**Sources**\n\n- SIMBAD, HIP 36188 / Beta Canis Minoris: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036188",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2036188",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "declination",
+              "degrees",
+              "ident",
+              "inside",
+              "known",
+              "length",
+              "magnitude",
+              "minor",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
