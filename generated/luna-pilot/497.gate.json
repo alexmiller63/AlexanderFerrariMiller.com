@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095347"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rukbat, Low in the Southern Bowl\n\n*An understated Sagittarius star rewards observers who know when\u2014and where\u2014to look.*\n\nIn the crowded country of Sagittarius, Rukbat is a quiet point of light rather than a showstopper. Its catalog designation is Alpha Sagittarii, but that Greek-letter title can make it sound more prominent than it appears: at magnitude 3.94, it is a modest naked-eye star, easy to miss amid a rich stretch of Milky Way. Its appeal is partly the contrast between a simple point of light and the immense distances and motions recorded in its catalog data.\n\nSIMBAD places Rukbat at right ascension 19 hours 23 minutes and declination \u221240\u00b0 37\u2032, in Sagittarius. The same entry lists a visual magnitude of 3.943 and spectral type B8V. The \u201cB\u201d identifies a hot, blue-white kind of star; \u201cV\u201d indicates a main-sequence star, one powered chiefly by fusing hydrogen in its core. Rukbat\u2019s color may be subtle to the unaided eye, especially at low altitude, but its classification offers a reminder that a steady-looking point is not necessarily sunlike. [SIMBAD: Rukbat / HIP 95347](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095347)\n\nThe catalog gives Rukbat a parallax of 18.1088 milliarcseconds. Taking the reciprocal of that angle gives a distance of about 55 parsecs, or roughly 180 light-years. That calculation is an estimate based on the listed parallax, not a direct measurement of the distance in miles. SIMBAD also records the star\u2019s proper motion: across the sky, its position shifts by about 32 milliarcseconds per year eastward and 120 milliarcseconds per year southward. Such a change is imperceptible in a single night, but accumulated over generations it means the star slowly alters its place against the more distant background.\n\nFor observers, Rukbat\u2019s declination is the practical challenge. From northern mid-latitudes it climbs only a little above the southern horizon; at 40\u00b0 north, its highest point is about 9\u00b0 up. Haze, buildings, trees and atmospheric murk can all swallow a star at that height. Farther south, it rises higher and is easier to separate from the horizon glow. Around 49\u00b0 north it barely reaches the horizon at all. These altitude estimates follow from the catalog\u2019s coordinates and the observer\u2019s latitude, so your own view will depend on where you stand.\n\nTiming helps. Rukbat\u2019s right ascension places it in the evening sky during the northern summer and early autumn, with its highest point in the south around midnight in late July. Look for Sagittarius low in the southern sky on a clear evening, then use a reliable sky chart or planetarium app to identify Alpha Sagittarii rather than trying to pick it out by brightness alone. A pair of binoculars can help you orient yourself among the surrounding stars, but Rukbat itself should be visible without optical aid from a dark site with an unobstructed horizon.\n\nGive your eyes time to adapt, and choose a place away from streetlights. Most importantly, don\u2019t judge the star by a fleeting glimpse near the skyline: observe when it is highest, and return to it on a steadier, clearer night. Rukbat does not need to dominate Sagittarius to be worth finding. Its light has crossed roughly 180 years of space to reach us; a patient look is a small way of meeting it halfway.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095347",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "catalog",
+              "coordinates",
+              "declination",
+              "depend",
+              "ident",
+              "letter",
+              "listed",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
