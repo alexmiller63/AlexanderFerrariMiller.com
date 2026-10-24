@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206193"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6193: A Small Circle in the Southern Sky\n\n*An open cluster\u2019s measured distance turns a patch of sky into a far-off neighborhood\u2014and a wide-field view is the way to begin.*\n\nThere is a particular pleasure in finding something whose apparent size fits inside a small circle. NGC 6193, an open cluster in the southern sky, spans about 18.7 arcminutes in SIMBAD\u2019s listing\u2014roughly a third of a degree, or a little less than the width of the full Moon. Its modest footprint is a useful reminder: the sky gives us angles, not distances.\n\nThe catalogue places the cluster at right ascension 16 hours 41 minutes and declination minus 48 degrees 46 minutes (J2000). Those coordinates are a precise address, but they also offer a practical observing clue. NGC 6193 is far south of the celestial equator. For observers in the Southern Hemisphere it climbs well above the horizon; from far northern latitudes it may remain low or never rise at all.\n\nThe distance is not something the eye can judge. SIMBAD lists a parallax of 0.812 milliarcseconds. Parallax is the tiny apparent shift of a nearby object against more distant stars as Earth moves around the Sun. In a simplified conversion, a parallax of 0.812 milliarcseconds corresponds to about 1,230 parsecs, or roughly 4,000 light-years. That estimate comes from inverting the listed parallax; it is a scale-setting calculation, not a direct view of the cluster\u2019s depth or dimensions.\n\nThe catalogue classifies NGC 6193 as an open cluster: a grouping of stars, rather than a single star or a galaxy. Its listed angular diameter, about 18.7 arcminutes, tells you how much sky the entry covers, not how tightly the stars will appear packed in an eyepiece. A wide field is therefore a sensible first approach. Instead of magnifying immediately, give the cluster room in the view and let your eyes take in the pattern. Then increase magnification gradually, comparing what changes and what remains.\n\n## Observing notes\n\nLook for NGC 6193 using its coordinates and a current planetarium app or star atlas; the position is more dependable than relying on a generic description of where it sits. Since its declination is nearly 49 degrees south, choose a clear southern horizon and observe when the target is highest in your sky. In a telescope, begin with a low-power eyepiece. Binoculars may also be worth trying under a dark sky, though the result will depend on aperture, sky conditions and how high the cluster gets above your horizon.\n\nIf you are observing from the north, check its altitude before setting up: an object at declination \u221248\u00b0 46\u2032 reaches only about 41\u00b0 above the southern horizon even at the most favorable latitude where it can rise. Trees, buildings and haze can take away much of that already limited window. Give your eyes time to adapt, and avoid expecting every member of a cluster to stand out equally; faint stars can disappear in bright skies or poor seeing.\n\nA small circle, a remote stellar neighborhood, a precise coordinate: each is a different way of describing the same target. NGC 6193 asks for no grand instrument to begin\u2014just a southern view, a little patience and a willingness to look closely.\n\n**Sources:** [SIMBAD entry for NGC 6193](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206193)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206193",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "current",
+              "declination",
+              "degree"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
