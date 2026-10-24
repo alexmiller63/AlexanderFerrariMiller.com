@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205033"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 6-29-62: A Quiet Spiral With an Active Heart\n\n*An oblique galaxy in Canes Venatici offers a patient observer a glimpse of a Seyfert nucleus\u2014though its faint glow is the first challenge.*\n\nSome galaxies announce themselves with spectacle. MCG 6-29-62 is subtler: a broad, tilted spiral, its light spread across a patch of sky several times wider than its bright central region. Catalogued as NGC 5033, it is classified as a Seyfert 2 galaxy\u2014a spiral whose nucleus is unusually energetic. The galaxy\u2019s catalogue position is right ascension 13h 13m 27.5s, declination +36\u00b0 35\u2032 37\u2033 (J2000). [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205033)\n\nThe Seyfert label points to the galaxy\u2019s core, not to a feature likely to leap out in an eyepiece. In an active galactic nucleus, matter falling toward a supermassive black hole can release enormous energy. Seyfert 2 galaxies are classified by the character of the light from that central region. But MCG 6-29-62 is also a galaxy of stars, gas and dust arranged in a spiral, and that extended structure is what an observer is trying to catch.\n\nIts apparent size is listed as about 6.3 by 2.8 arcminutes\u2014small beside the Moon, but generous for a distant galaxy. Its listed blue magnitude is about 11. That number describes the combined light, not how bright every part of the galaxy looks: spread over its full area, the glow can be faint. The practical lesson is to look for a soft, elongated haze rather than expect a sharply outlined object or a dramatic view of the nucleus.\n\nFor a first attempt, find a dark site and allow your eyes time to adapt. A chart or planetarium app can guide you to the J2000 position above; use nearby stars to complete the final hop, since a galaxy itself may not show in a small finder. Start with low magnification and a wide field, then raise the power if the image remains bright enough. Averted vision\u2014looking slightly to one side of the target\u2014often helps reveal dim, diffuse light. A moderate telescope under dark skies is a sensible starting point, but the view depends strongly on sky darkness, transparency and experience.\n\nGive the field time. At first, you may see only a faint oval that appears and disappears as your gaze shifts. Stay with it. The galaxy\u2019s long axis, recorded in catalogues as roughly 6 arcminutes, hints at its spread, while its compact-looking center marks the direction of the active core. That core\u2019s energy is a matter for instruments and analysis; visually, the pleasure is more modest and more intimate: recognizing a distant island of stars against the dark.\n\nMCG 6-29-62 rewards the observer who adjusts expectations. It is not a showpiece that fills the eyepiece, but a reminder that a galaxy can be both an extended spiral and a powerful source at its center. Find its pale smudge, hold it in view, and the catalogue entry becomes a place in the sky.\n\n**Source:** [SIMBAD: NGC 5033](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205033)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205033",
+            "overlap_terms": [
+              "allow",
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "declination",
+              "depends",
+              "field",
+              "galaxy",
+              "ident",
+              "image",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
