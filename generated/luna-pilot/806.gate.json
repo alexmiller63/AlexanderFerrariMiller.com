@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2032607"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Pic: A Bright Beacon Far South\n\n*This blue-white star in Pictor is easy to overlook on a crowded sky map\u2014but its light and measured motion tell a story of distance and change.*\n\nOn a clear southern-summer evening, look low toward the south and find Pictor, the small constellation of the Painter. Its brightest star is Alpha Pic, a blue-white point that shines at about magnitude 3.2\u2014bright enough to see without optical aid under a reasonably dark sky. The star\u2019s catalogue coordinates place it at declination \u221261\u00b056\u2032, firmly in southern skies. From much of the Northern Hemisphere, it never rises; from tropical latitudes it stays low, while southern observers can see it higher above the horizon. (SIMBAD: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2032607)\n\nThe view is modest, but the numbers behind it are revealing. SIMBAD lists Alpha Pic\u2019s parallax as 33.78 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth travels around the Sun. Converting that angle gives a distance of roughly 96 light-years. The catalogue also gives a spectral classification of A8VnkA6: broadly, an A-type star with a main-sequence luminosity class. That classification is a shorthand for stellar properties inferred from its spectrum, not a description of what the eye can resolve. To us, Alpha Pic remains a single point of light.\n\nThere is another quiet detail in the catalogue: Alpha Pic is moving across the sky. Its listed proper-motion components are \u221266.07 and +242.97 milliarcseconds per year. Together, those amount to about a quarter of an arcsecond annually\u2014far too little to notice from one night to the next, but measurable across years with precise astrometry. The star\u2019s position on a modern chart is therefore a snapshot, not a permanent pin in the celestial sphere.\n\nFor a practical search, begin with the broad southern-sky pattern rather than a telescope. Pictor lies among the constellations of the southern Milky Way\u2019s neighborhood, but it is not a bright, showy figure. Use a current sky chart or planetarium app to locate Pictor and identify Alpha Pic as its brightest star. Let your eyes adapt to darkness, then scan the region with the naked eye. Binoculars can help you compare the surrounding stars, though they are not needed to see Alpha Pic itself.\n\nTiming and location matter. With right ascension near 6 hours 48 minutes, the star is best placed for evening viewing during the southern summer months, when it is well up after dusk. From far-southern sites it climbs higher; nearer the tropics, observe when it has cleared haze and rooftops near the southern horizon. If you are observing from the Northern Hemisphere, check your latitude before planning: at about 28\u00b0 north, Alpha Pic only grazes the horizon at culmination, and farther north it does not rise.\n\nA simple naked-eye observation is enough to connect the scene to the science. Notice its steady, bright point, then remember that its apparent stillness is only an illusion of scale. Light has crossed nearly a century of space to reach you, while careful measurements reveal a star shifting against the background. Alpha Pic asks for no elaborate equipment\u2014just a dark sky, a southern view, and a little patience.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2032607",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "celestial",
+              "class",
+              "coordinates",
+              "crowded",
+              "current",
+              "declination",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
