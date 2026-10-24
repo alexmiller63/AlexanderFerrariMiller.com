@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205286"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 5286: A crowded city of stars\n\n*At the edge of Centaurus, this globular cluster turns a small patch of sky into a long view of the Milky Way\u2019s stellar past.*\n\nA globular cluster is a stellar city without streets: a dense, roughly spherical gathering of stars held together by gravity. NGC 5286 is one such gathering, cataloged as a globular cluster in SIMBAD. Its recorded position\u2014right ascension 13h 46m 26.81s, declination \u221251\u00b0 22\u2032 27.3\u2033\u2014places it deep in the southern sky, where it rewards observers with a telescope and a clear, dark night. [SIMBAD: NGC 5286](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205286)\n\nThe first impression may be modest: a hazy spot against a field of pinpoint stars. But a globular cluster asks for patience. Its light comes from many stars crowded into an area that, from Earth, is tiny. SIMBAD lists an angular size of about 9.1 arcminutes\u2014roughly a third of the full Moon\u2019s apparent width. That\u2019s a measure of how large the object appears in our sky, not a statement about its physical diameter. The stars themselves are far beyond the reach of the unaided eye as individual points; collectively, they create the cluster\u2019s soft glow.\n\nThere is a satisfying mismatch between the view and the reality. Through an eyepiece, NGC 5286 may look like a compact smudge. In space, a globular cluster is a large, gravitationally bound system, its stars sharing a common stellar neighborhood. Looking at one is a reminder that the Milky Way is not only a flat, star-filled disk but also a broader system with globular clusters orbiting around it.\n\nFor the finder, start with the coordinates rather than a guess at the eyepiece. NGC 5286 sits at a southerly declination, so it is best placed for observers in the Southern Hemisphere and remains low for many observers farther north. Use a chart or computerized mount set to the J2000 coordinates above; SIMBAD also gives the position in galactic coordinates as 311.61419\u00b0, +10.56780\u00b0. Give the object as much elevation above the horizon as your location allows: low-altitude views pass through more atmosphere, which can soften detail and make the cluster harder to pick out.\n\nA small telescope under a dark sky is a good starting point. Begin with low magnification to search a wider field, then increase it once you have the cluster centered. Let your eyes adapt to the dark, and use averted vision\u2014looking slightly to one side of the target\u2014to help detect faint light. If the cluster remains an unresolved glow, that is still a successful observation: the glow is the combined light of its stars, gathered across an immense distance.\n\nFor a reliable session, check that your chart or observing app uses the same coordinate frame and confirm that the target is above your local horizon. SIMBAD lists a heliocentric radial velocity of +62.2 km/s for NGC 5286, a reminder that the cluster is not a fixed ornament but a moving system. The telescope brings its light into view; the catalog helps place it in the sky. Between those two, a small blur becomes a destination. [SIMBAD data and references](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205286)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205286",
+            "overlap_terms": [
+              "allows",
+              "angular",
+              "around",
+              "ascension",
+              "catalog",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "crowded",
+              "declination",
+              "field",
+              "frame"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
