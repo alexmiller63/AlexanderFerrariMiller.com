@@ -1,0 +1,44 @@
+name: Curated Story Inventory Audit
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/curated-story-inventory.yml'
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Audit saved stories against full local registry
+        shell: bash
+        run: |
+          set +e
+          python tools/story_inventory.py > inventory-output.txt 2>&1
+          code=$?
+          cat inventory-output.txt
+          echo "inventory_exit_code=$code" >> "$GITHUB_STEP_SUMMARY"
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('generated/story-inventory.json')
+          if p.exists():
+              d=json.loads(p.read_text())
+              with open('inventory-summary.md','w') as f:
+                  f.write('# Saved Story Inventory\n\n')
+                  for k in ('scope','registry_objects','main_story_files','generated_luna_drafts','recovered_pilot_permanent_ids','unique_saved_permanent_ids','missing_registry_count'):
+                      f.write(f'- {k}: {d[k]}\n')
+                  f.write('\n## Identity errors\n')
+                  for error in d['pilot_errors']: f.write(f'- {error}\n')
+          PY
+          if test -f inventory-summary.md; then cat inventory-summary.md >> "$GITHUB_STEP_SUMMARY"; fi
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: story-inventory-audit
+          path: |
+            generated/story-inventory.json
+            inventory-output.txt
+            inventory-summary.md
+          if-no-files-found: warn
