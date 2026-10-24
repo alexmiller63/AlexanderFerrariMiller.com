@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206503"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# MCG 12-17-9: A Spiral Written in Faint Light\n\n*At the far northern edge of the sky, a modest telescope can find a galaxy whose catalog classifications hint at a more complicated heart.*\n\nThe night\u2019s quiet rewards often begin with an unromantic instruction: look up a coordinate. For MCG 12-17-9, the destination is 17h 49m 26s, +70\u00b0 08\u2032 40\u2033, in the northern sky. The SIMBAD entry for NGC 6503 gives that position and describes the galaxy as a spiral of type SA(s)cd, with an apparent span of about 6.8 by 2.2 arcminutes. MCG 12-17-9 is another designation for this galaxy. [SIMBAD: NGC 6503](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206503)\n\nThose numbers suggest what to look for: not a brilliant pinprick, but a small, elongated patch of light. The view through an eyepiece will depend on aperture, sky darkness, and transparency. Catalog dimensions describe the galaxy\u2019s measured extent, not a guarantee that every part will be visible to an observer.\n\nThe classification SA(s)cd places it among spiral galaxies: \u201cSA\u201d indicates a spiral without a strong central bar, while \u201ccd\u201d describes a relatively late spiral form, with loosely wound arms and a prominent disk. That taxonomy is a useful map, but it doesn\u2019t mean the arms will leap out in a backyard telescope. At the eyepiece, the first impression may be a soft oval glow; patient looking under dark skies can help reveal its shape.\n\nThere is another clue in the catalog: NGC 6503 is identified as having a LINER-type active galactic nucleus. LINER stands for \u201clow-ionization nuclear emission-line region,\u201d a description based on the characteristic emission lines in a galaxy\u2019s central spectrum. It signals activity in the nucleus, but it does not mean the galaxy will look like a blazing beacon through a telescope. The label belongs to the science of analyzing its light, not to a promise of spectacle at the eyepiece.\n\nFor observers in northern latitudes, the coordinates put the target high in the northern sky. To find it, enter the coordinates into a planetarium app or use a detailed chart, then center the telescope carefully. Start with a low-power eyepiece to make the field easier to navigate. Once you have the galaxy, try a little more magnification\u2014but don\u2019t push it so far that the image grows dim or unsteady. Give your eyes time to adapt to the dark, shield them from nearby lights, and use averted vision: looking slightly to the side of a faint object can make it easier to detect.\n\nA galaxy\u2019s catalog name can feel like a filing-cabinet label. At the eyepiece, it becomes a destination: a delicate smudge in a particular patch of sky, with a spiral structure and an active nucleus waiting behind the faintness. The reward is not necessarily a dramatic view. It is the moment when the coordinates, the catalog, and that small glow finally become the same thing.\n\n**Source:** [SIMBAD database entry for NGC 6503](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206503)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206503",
+            "overlap_terms": [
+              "active",
+              "catalog",
+              "coordinate",
+              "coordinates",
+              "database",
+              "galaxy",
+              "ident",
+              "liner",
+              "nucleus",
+              "object",
+              "particular",
+              "position"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "low-ionization nuclear emission-line region,",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
