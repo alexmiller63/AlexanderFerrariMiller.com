@@ -105,7 +105,7 @@
   function svg(report,enabled){
     const people=report.people, rotation=people[0].houses?.[0]??0;
     const xy=(degree,radius)=>{const a=(180+degree-rotation)*Math.PI/180;return [radius*Math.cos(a),radius*Math.sin(a)];};
-    const layouts=[];let baseRadius=125;
+    const layouts=[];let baseRadius=250;
     for(const person of people){
       const slots=[];
       for(const row of person.bodies){let radius=baseRadius,x,y;
@@ -120,10 +120,10 @@
       const [x,y]=xy(d,rim),[u,v]=xy(d,rim-(d%30===0?16:d%5===0?8:3));out+=`<path d="M${x},${y}L${u},${v}" stroke="#78889b" stroke-width="${d%30===0?1.3:.6}"/>`;
       if(d%30===0){const [a,b]=xy(d+15,rim+20);out+=`<text x="${a}" y="${b}" fill="#f0c987" font-size="18" text-anchor="middle" dominant-baseline="central">${signs[d/30]}</text>`;}
     }
-    if(people[0].houses)people[0].houses.forEach((cusp,i)=>{const [x,y]=xy(cusp,88),[u,v]=xy(cusp,111),[a,b]=xy(cusp+3,99);out+=`<path d="M${x},${y}L${u},${v}" stroke="#7e8d9f"/><text x="${a}" y="${b}" fill="#c2cbd8" font-size="9">${i+1}</text>`;});
+    if(people[0].houses)people[0].houses.forEach((cusp,i)=>{const [x,y]=xy(cusp,213),[u,v]=xy(cusp,236),[a,b]=xy(cusp+3,225);out+=`<path d="M${x},${y}L${u},${v}" stroke="#7e8d9f"/><text x="${a}" y="${b}" fill="#c2cbd8" font-size="9">${i+1}</text>`;});
     for(const match of report.aspects){if(!enabled.has(match.aspect)||match.aspect==='conjunction')continue;
       const a=people[0].bodies.find(p=>p.body===match.first_body),b=people[1].bodies.find(p=>p.body===match.second_body);
-      const [x,y]=xy(a.longitude,87),[u,v]=xy(b.longitude,87),color=['trine','sextile'].includes(match.aspect)?'#75b9f4':'#ef7e83';
+      const [x,y]=xy(a.longitude,212),[u,v]=xy(b.longitude,212),color=['trine','sextile'].includes(match.aspect)?'#75b9f4':'#ef7e83';
       out+=`<path d="M${x},${y}L${u},${v}" fill="none" stroke="${color}" opacity=".55" stroke-width="1" ${match.aspect==='sextile'?'stroke-dasharray="4 3"':''}/>`;
     }
     layouts.forEach((rows,i)=>{out+=`<circle r="${Math.min(...rows.map(s=>s.radius))-23}" fill="none" stroke="${colors[i]}" opacity=".5"/>`;
