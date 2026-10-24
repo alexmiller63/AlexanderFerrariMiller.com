@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071860"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Lup: A Blue Pulse in the Wolf\n\n*Look south for a brilliant, hot star whose subtle changes hint at the activity inside it.*\n\nSome stars announce themselves by changing. Alpha Lup, the bright star at the heart of the constellation Lupus, does so quietly: astronomers classify it as a Beta Cephei variable, a kind of hot star that gently pulsates. To the unaided eye it appears steady, but its small variations make it more than a point of light in the southern sky.\n\nThe SIMBAD astronomical database lists Alpha Lup as a B1.5III star, with a visual magnitude of about 2.29. That spectral classification marks it as a hot, blue-white giant. SIMBAD also gives a parallax of 7.02 milliarcseconds. Turning that into a distance by taking its inverse gives a rough estimate of about 142 parsecs, or 460 light-years. It is a useful scale-setting calculation, not a claim of an exact distance. [SIMBAD: Alpha Lup](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071860)\n\nA Beta Cephei classification points to the star\u2019s hidden rhythm. These variables undergo small, repeated changes associated with pulsations in their outer layers. The shifts are subtle enough that Alpha Lup\u2019s status as a variable is best appreciated through careful measurement, not by expecting a dramatic flicker at the eyepiece. For observers, the pleasure is twofold: seeing a bright star with the naked eye, and knowing that its apparently calm light carries a measurable beat.\n\n## Find it in the south\n\nAlpha Lup lies at right ascension 14h 41m 56s and declination \u221247\u00b0 23\u2032, in coordinates listed for the J2000 reference epoch by SIMBAD. Those southern coordinates matter for planning: the farther north you live, the lower Lupus will skim the horizon. From locations north of roughly 43\u00b0 N, the star never rises; farther south, it can still be very low. Observers in the Southern Hemisphere have a much easier view.\n\nFor an evening search, choose a dark site with an unobstructed southern horizon and consult a current sky chart or planetarium app to locate Lupus. Alpha Lup is bright enough to see without optical aid under a reasonably dark sky. Give your eyes time to adapt, then scan the southern sky rather than looking through binoculars first: a wider naked-eye view can make it easier to recognize the surrounding constellation. Binoculars can help confirm the star field, but they are not needed to see the star itself.\n\nIf you want to observe the variability rather than just the star, use a photometer or a camera setup designed for consistent brightness measurements. Record comparison stars in the same field and repeat measurements over time; a single glance cannot reveal the cycle. Avoid judging brightness by eye from one night to the next\u2014the changes are slight, and transparency, haze and altitude can all affect what you perceive.\n\nAlpha Lup offers a small but satisfying reminder of what observing can mean. The eye sees a steady blue-white point; instruments reveal a star with a changing light curve. Find it low in the southern sky, and let that contrast\u2014calm appearance, active interior\u2014be the night\u2019s story.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2071860",
+            "overlap_terms": [
+              "ascension",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "epoch",
+              "ident",
+              "inside",
+              "listed",
+              "magnitude",
+              "measurement",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
