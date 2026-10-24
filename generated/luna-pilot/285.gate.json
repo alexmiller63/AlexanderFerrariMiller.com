@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204594"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sombrero Galaxy: A Dark Line in Virgo\n\n*An edge-on galaxy turns a spring telescope into a study of light, dust and a remarkably active center.*\n\nOn a clear spring evening, the Sombrero Galaxy offers a quiet contrast to the brilliant stars of Virgo. At first it may look like little more than a faint oval. Stay with it, though, and the shape begins to suggest its famous namesake: a bright central bulge above a thin, dark line.\n\nThe galaxy is also catalogued as M104 and NGC 4594. SIMBAD places it at right ascension 12h 39m 59.4s and declination \u221211\u00b0 37\u2032 23\u2033 (J2000), and lists an optical extent of about 8.5 by 5 arcminutes. Its catalogued V-band magnitude is 8.00\u2014useful context, but not a promise of easy viewing. Galaxies spread their light across an area, so they can seem fainter at the eyepiece than a star with the same total brightness. [SIMBAD: NGC 4594](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204594)\n\nThe view is shaped by perspective. We see the galaxy\u2019s broad disk nearly edge-on, while its bright central bulge rises above the disk\u2019s narrow profile. The dusky band is a lane of interstellar dust, which blocks some of the light behind it. That recognizable stripe is not a surface marking; it is part of the galaxy\u2019s structure, seen along our line of sight.\n\nThere is more going on at the center than the eyepiece reveals. SIMBAD identifies M104 as having a LINER-type active galaxy nucleus. LINER refers to a pattern of emission lines in the nucleus\u2019s spectrum, associated with relatively low-ionization gas. It is a reminder that the galaxy is not simply a decorative silhouette: its central region has distinct physical conditions that astronomers can investigate through the light it emits.\n\nFor observers, the challenge is to let the faint shape emerge. Find Virgo with a star chart, then use the galaxy\u2019s coordinates if your mount supports them; otherwise, work from a detailed finder chart rather than guessing a long hop across the constellation. In mid-northern latitudes, M104 stays lower than the zenith, so choose a time when Virgo is high in the south and give yourself a clear southern horizon.\n\nA telescope in the small-to-medium range can show the galaxy under a dark sky, though the view depends on aperture, transparency and experience. Start at low or moderate power to frame the whole glow. Let your eyes adapt to darkness, keep stray light away, and try averted vision\u2014looking just beside the galaxy can make its faint edges easier to notice. Increase magnification only if the image remains steady and the central band begins to separate from the surrounding light.\n\nExpect subtlety, not a photograph. The dust lane may appear as a delicate interruption rather than a bold black stroke, and under brighter skies it may vanish altogether. Take a moment between looks: the eye often gathers the shape gradually. In that slender division between light and shadow, the Sombrero becomes more than a familiar outline. It becomes a distant system, presented edge-on for one patient observer at a time.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204594",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "coordinates",
+              "declination",
+              "depends",
+              "extent",
+              "frame",
+              "galaxy",
+              "ident",
+              "image",
+              "liner",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
