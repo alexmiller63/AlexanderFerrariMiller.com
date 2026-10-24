@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206694"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M26: A Small Gathering in the Summer Sky\n\n*In Scutum, a compact open cluster rewards patient searching\u2014and a pause to imagine the stars as members of one distant family.*\n\nThe night is warm, the horizon still holds a trace of dusk, and the Milky Way runs overhead like a pale road. In the constellation Scutum, M26 is easy to overlook. It is not a bright beacon or a sweeping cloud, but a small gathering of stars: the sort of object that asks you to slow down, steady your gaze and let darkness do its work.\n\nAstronomers also know M26 as NGC 6694. SIMBAD classifies it as an open cluster and gives its apparent optical size as about 7.1 arcminutes across\u2014small beside the Moon, which spans roughly half a degree. Its listed visual magnitude is 8.87, so the cluster is fainter than the unaided eye can generally pick out. Under dark skies, that faintness becomes an invitation rather than a barrier: find the right patch of sky, and let binoculars or a telescope gather the light.\n\nAn open cluster is a group of stars associated by their shared origin. M26\u2019s catalogued position places it in the rich star fields of our galaxy, at right ascension 18 hours 45 minutes and declination minus 9 degrees 23 minutes (J2000). SIMBAD lists a parallax of 0.524 milliarcseconds. Read as a simple distance estimate, that puts the cluster roughly 1,900 parsecs\u2014or about 6,200 light-years\u2014away. The number is a reminder that the tiny smudge in an eyepiece is not a nearby knot of stars, but a remote scene viewed across a vast stretch of the Milky Way.\n\nThere is a useful contrast in M26\u2019s catalog numbers: its apparent magnitude is near 8.9, yet its compact outline spans only a few arcminutes. It does not announce itself with a broad, bright glow. Instead, the eye may register a subtle patch before individual points begin to emerge. Give it time. Averted vision\u2014looking just to one side of the target\u2014can help reveal faint detail, and averted patience can be just as valuable.\n\n**How to observe:** Look for Scutum on a clear summer evening, when the constellation is well placed in the northern hemisphere\u2019s evening sky. A star chart or planetarium app can guide you to M26 using its coordinates; a wide-field telescope or binoculars will make the search easier. Begin with binoculars under a dark sky, then try a telescope at low magnification to locate the cluster before increasing power. Keep the focus sharp and shield your eyes from nearby lights. If the cluster appears as a dim haze rather than a spray of stars, that is still a successful view: your instrument is collecting ancient light from a compact stellar gathering far beyond the reach of unaided sight.\n\nM26 offers no grand flourish. Its appeal is quieter: a small patch of light, a precise place in the sky, and the thought that many of its stars share a history. On a summer night, that is more than enough reason to linger.\n\n**Source:** [SIMBAD: M26 / NGC 6694](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206694)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206694",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalog",
+              "cluster",
+              "coordinates",
+              "declination",
+              "degree",
+              "degrees",
+              "field",
+              "ident",
+              "increasing",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
