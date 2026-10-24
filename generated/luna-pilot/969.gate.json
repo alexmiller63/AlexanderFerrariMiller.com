@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2066657"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# HIP 66657: The Blue Giant That Won\u2019t Sit Still\n\n*Known to skywatchers as Epsilon Centauri, this bright southern star is a guidepost by eye\u2014and a subtle variable under careful measurement.*\n\nIn the rich southern constellation Centaurus, HIP 66657 shines steadily enough to the unaided eye to seem fixed and sure. Its familiar name is Epsilon Centauri, and it is bright: SIMBAD lists its visual magnitude as 2.30. But the star\u2019s catalog entry carries a quieter distinction. It is classified as a Beta Cephei variable, a hot star whose light changes as the star pulsates.\n\nThe numbers sketch a distant blue giant. SIMBAD gives its spectral type as B1III: a hot B-type star, with luminosity class III indicating a giant. Its measured parallax is 7.63 milliarcseconds. Turning that angle into a distance places Epsilon Centauri roughly 130 parsecs away\u2014about 420 light-years. That is close enough, in astronomical terms, for its brilliance to make it a conspicuous marker in the southern sky.\n\nBeta Cephei stars are massive, hot stars that undergo regular pulsations. Their outer layers expand and contract, producing small changes in brightness. These are not the dramatic eclipses of a star passing in front of another, nor the sudden flare of an eruption. The star itself is breathing in and out. For Epsilon Centauri, the classification signals variability, but the SIMBAD listing cited here does not give a period or the size of its brightness changes. Don\u2019t expect to watch it visibly blink during a night outdoors.\n\nThat contrast makes HIP 66657 a satisfying observing target: easy to find, harder to study. Its recorded position is right ascension 13h 39m 53.3s and declination \u221253\u00b0 27\u2032 59\u2033 (J2000). Look for it in Centaurus, where it belongs to a region of the sky crowded with bright stars. From southern locations, Centaurus is well placed on autumn evenings; from far northern latitudes, the star stays low or never rises.\n\nStart with the unaided eye, or use binoculars to take in the surrounding star field. A telescope is not needed to locate Epsilon Centauri, and high magnification won\u2019t reveal its pulsations. For a more scientific project, compare its brightness with nearby stars over repeated nights using a variable-star chart and a consistent method\u2014or use a camera or photometer to record measurements. The key is patience: small variations are best found in a sequence of observations, not by relying on memory.\n\nThe star\u2019s catalog identity also offers a reminder about astronomy\u2019s layered naming system. \u201cHIP 66657\u201d comes from the Hipparcos catalog; \u201cEpsilon Centauri\u201d is its Bayer designation; and SIMBAD connects the two. Whatever name you use, the point of light is the same: a hot giant, about 130 parsecs away, whose calm appearance hides a rhythmic change.\n\n**Source:** [SIMBAD: HIP 66657 (Epsilon Centauri)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2066657)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2066657",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "catalog",
+              "class",
+              "crowded",
+              "declination",
+              "field",
+              "hipparcos",
+              "ident",
+              "known",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Epsilon Centauri",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
