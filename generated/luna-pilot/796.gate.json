@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030867"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Mon: Three blue sparks in the Unicorn\n\n*In Monoceros, a modest-looking star becomes a delicate triple through a telescope\u2014and offers a lesson in how much detail the eye can miss.*\n\nAt first glance, Beta Monocerotis is easy to underestimate. Its combined visual magnitude is about 3.7: bright enough to see with the unaided eye under a reasonably dark sky, but not a beacon like nearby Orion\u2019s brightest stars. The surprise comes when a telescope turns that single point into a small gathering of stars. SIMBAD classifies Beta Mon as a double or multiple star and lists a spectral type indicating three hot, B-type components. [SIMBAD: Beta Mon](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030867)\n\nThat change of scale is the pleasure of observing Beta Mon. The naked eye blends the system\u2019s light into one speck; magnification separates its members into a striking triple. Their close spacing makes the view especially rewarding: instead of a wide scatter of stars, the telescope reveals a compact arrangement, with each point of light distinct against the dark. The colors are subtle\u2014often described as white or blue-white\u2014so give your eyes time at the eyepiece rather than expecting dramatic color.\n\nBeta Mon lies in Monoceros, the faint constellation of the Unicorn east of Orion. The constellation can be difficult to trace from a light-polluted location, so use Orion as your landmark and consult a current sky chart to locate Beta Mon. SIMBAD gives its J2000 coordinates as right ascension 6h 28m 49s and declination \u22127\u00b0 02\u2032. Those coordinates can also help you enter the star into a planetarium app or telescope\u2019s computerized mount. [SIMBAD: Beta Mon](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030867)\n\nFor the best chance of splitting the points, use a telescope and begin at low power to center the star. Then increase magnification gradually. A steady atmosphere matters: when stars shimmer and swell in the eyepiece, the closest pair can blur together. Try observing when Beta Mon is high above the horizon, where you look through less turbulent air. A small telescope may show the triple under good conditions; a larger aperture can help, but patience and sharp focus are just as important.\n\nBinoculars are useful for finding the field and appreciating the surrounding stars, but they generally won\u2019t provide the magnification needed to distinguish the close components. If the view refuses to resolve, wait a few moments for the air to settle, refocus carefully, or try again on another night. Avoid turning the focus knob too quickly: at high power, a tiny adjustment can make the difference between a point and a blur.\n\nThere is science behind the delicate appearance. SIMBAD lists a parallax of 4.82 milliarcseconds, with a sizable uncertainty. That measurement places the system roughly 200 parsecs away\u2014about 670 light-years, though the distance should be treated as approximate. The listed B-type classifications identify hot stars; the catalog\u2019s combined visual magnitude describes the light we receive from the system as a whole, not the brightness of each component separately. [SIMBAD: Beta Mon](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030867)\n\nThe reward is not just seeing three stars where you expected one. It is experiencing how observation changes the story: a faint constellation becomes a route, a point becomes a system, and the night sky reveals structure at the limit of your instrument and the steadiness of the air. Beta Mon asks for no elaborate equipment\u2014only a clear evening, a chart, and a little patience.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2030867",
+            "overlap_terms": [
+              "ascension",
+              "catalog",
+              "coordinates",
+              "current",
+              "declination",
+              "double",
+              "field",
+              "ident",
+              "limit",
+              "listed",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
