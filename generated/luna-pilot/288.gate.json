@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204621"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M59: The Soft Light of an Ellipse\n\n*In Virgo, a galaxy\u2019s faint glow offers a lesson in looking carefully: the telescope gathers the light, but patience helps reveal its shape.*\n\nSpring skies bring Virgo into view\u2014and with it, M59, a galaxy whose understated appearance rewards a steady eye. It is not a bright, sprawling spiral with arms to trace. Instead, look for a small, softly luminous oval: a distant island of stars that can seem modest beside the stars in the foreground.\n\n## Scientific context\n\nM59\u2019s catalogue identity is NGC 4621. SIMBAD classifies it as E\u2013E/S0, spanning the boundary between elliptical and lenticular galaxy types. That classification suggests a smooth, rounded-to-oval appearance rather than prominent spiral arms. Its listed optical dimensions are about 5.6 by 3.8 arcminutes\u2014roughly a sixth of the Moon\u2019s apparent width along its longer axis. SIMBAD gives a B-band magnitude of 11.0, a measure in blue light rather than a promise of how bright it will look through every eyepiece or under every sky. [SIMBAD: NGC 4621 / M59](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204621)\n\nThe same database lists a heliocentric radial velocity of about 431 kilometres per second. That figure describes motion along our line of sight, measured relative to the Sun; it is not the galaxy\u2019s complete motion through space. A galaxy\u2019s catalogue entries can make it feel like a point on a chart, but M59 is a vast system of stars. What reaches the eyepiece is only a tiny, faint impression of it.\n\n## Observing guidance\n\nFor northern observers, Virgo is well placed on spring evenings. M59\u2019s listed J2000 coordinates are right ascension 12h 42m and declination +11\u00b0 39\u2032. Use a current chart or a telescope\u2019s coordinate system to locate the field; the coordinates are more dependable than trying to identify a dim galaxy from memory. A finder chart can help you distinguish the starry foreground from the much fainter target.\n\nChoose a transparent, moonless night if possible, and give your eyes time to adjust to the dark. M59 is a challenging binocular target for many observers; a telescope makes the search more practical. Begin at low power to identify the field, then increase magnification if the sky is steady and the galaxy\u2019s glow remains apparent. Look slightly away from the centre of the eyepiece rather than staring straight at the suspected patch\u2014averted vision can help reveal faint light. Under less-than-ideal skies, the galaxy may appear only as a dim haze. That is not a failure: a small, diffuse object can take time to separate from the background.\n\nOnce you find it, pause before moving on. Notice whether the glow looks round or elongated, and how gradually it fades into the surrounding darkness. The view will not resemble a long-exposure photograph, with detail and contrast amplified. Instead, it is a quiet oval whose edges are subtle. That restraint is part of the encounter. M59 asks for attention rather than spectacle\u2014and, on a clear spring night, gives the attentive observer a glimpse of a galaxy beyond the stars that first caught the eye.\n\n**Source:** [SIMBAD Astronomical Database, NGC 4621 (M59)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204621)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204621",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "ellipse",
+              "elliptical",
+              "galaxy",
+              "heliocentric",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
