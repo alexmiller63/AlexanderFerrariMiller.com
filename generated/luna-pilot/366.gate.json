@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206715"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M54: A Lantern in Sagittarius\n\n*An ancient star cluster waits low in the southern sky, where patient eyes\u2014and a clear horizon\u2014can find it.*\n\nThe first time you look for M54, the sky may seem to be telling you no. Sagittarius sinks toward the southern horizon, and its bright star patterns can be lost in city glow or behind a line of trees. But give the constellation room. M54 is there: a distant gathering of stars, catalogued also as NGC 6715, quietly holding its place among the crowded lights of the Milky Way.\n\nA globular cluster is a dense, roughly spherical group of stars bound together by gravity. From Earth, its far-flung suns overlap into a small patch of light. M54\u2019s catalogued angular size is about 9.1 arcminutes\u2014roughly a third of the Moon\u2019s apparent width\u2014though the view you get depends on your sky and instrument. SIMBAD lists its J2000 coordinates as right ascension 18h 55m 03.33s and declination \u221230\u00b0 28\u2032 47.5\u2033. Those numbers are useful not as a test, but as a way to let a chart or astronomy app lead you to the right field. [SIMBAD: NGC 6715 / M54](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206715)\n\nWhen Sagittarius is up after dusk\u2014typically on summer evenings in the Northern Hemisphere\u2014choose a site with a clear southern view. The cluster sits low for many northern observers, where haze and rooftops can dim the view. Let your eyes adjust to the dark, and avoid white lights; a red flashlight will preserve more of your night vision. Use binoculars or a telescope at low power first, and consult a sky chart to guide you from Sagittarius\u2019s familiar star patterns to the coordinates. The cluster may appear as a faint, soft spot rather than a sharply defined swarm. If you have a telescope, try a little more magnification once you have it centered, then pause and look steadily. The impression can grow with time.\n\nThere is a small pleasure in finding an object that doesn\u2019t announce itself. M54 won\u2019t blaze like a planet or sketch a bright constellation figure. It asks for a different kind of attention: the slow sweep, the adjustment of focus, the second glance that confirms the pale blur was not a stray reflection. A wide-field view helps you understand where you are; a patient, steady look brings the cluster into focus as an object in its own right.\n\nAnd the light has traveled a long way to meet you. The stars that blend into M54\u2019s glow are not one star but many, gathered into a single sightline. The cluster\u2019s catalogue entry gives its location and scale in the sky; your own observing conditions decide how much of that gathering becomes visible. On a clear night, with Sagittarius above the horizon, let the search itself be part of the appointment. M54 is a modest-looking destination\u2014and a reminder that the sky\u2019s smallest smudges can hold whole stellar assemblies.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206715",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "declination",
+              "defined",
+              "depends",
+              "field",
+              "globular",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
