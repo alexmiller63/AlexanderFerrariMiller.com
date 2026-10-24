@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203532"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 3532: A Wide Window on the Southern Sky\n\n*Dek: A sprawling open cluster in Carina invites patient, wide-field observing\u2014and offers a small lesson in how astronomers measure the motions of stars.*\n\nSome star clusters ask for close attention. NGC 3532 asks you to step back. In the southern constellation Carina, this open cluster spans about 64 arcminutes in the sky\u2014slightly more than the apparent width of the full moon. Its breadth is part of the experience: instead of treating it as a tight knot, give it room in your eyepiece and let its many points of light share the view.\n\nThe coordinates listed by SIMBAD place NGC 3532 at right ascension 11h 05m 40.1s and declination \u221258\u00b0 42\u2032 25\u2033 (J2000). That far-southern declination makes it best placed for observers in the Southern Hemisphere, though it rises above the horizon for some observers at northern latitudes too. A planetarium app or star chart can help you identify the field and check when the cluster is highest in your local sky.\n\nThere is more to this gathering than its generous apparent size. SIMBAD identifies NGC 3532 as an open cluster and lists a parallax of 2.0659 milliarcseconds. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth moves around the Sun. Taking the inverse of that value gives a distance of about 484 parsecs, or roughly 1,580 light-years. The conversion is approximate, but it turns an abstract measurement into a useful scale: the light reaching your eyes began its journey long before the present night.\n\nAstronomers also track how the cluster moves. SIMBAD lists a proper motion of about 10.4 milliarcseconds per year westward in right ascension and 5.2 milliarcseconds per year northward in declination, as well as a radial velocity of 5.67 kilometers per second. Proper motion measures a star\u2019s motion across the sky; radial velocity measures motion toward or away from us. Together, these quantities help astronomers describe an object\u2019s motion in three dimensions. They are not changes you can watch over an observing session. The sky is a snapshot; the measurements reveal the slow drift behind it.\n\nFor your own snapshot, start with binoculars or a telescope at its lowest practical magnification. A wide field suits an object nearly a degree across; a high-power view may show individual stars while excluding much of the cluster\u2019s spread. Let your eyes adjust to the dark, steady the binoculars or mount, and linger. Try viewing directly, then with averted vision\u2014looking slightly to one side of the target\u2014to notice fainter points. If the cluster does not fit comfortably in the view, reduce magnification or switch to an instrument with a wider field.\n\nA simple observing note can preserve more than a sketch: record the time, instrument, magnification, and whether the cluster fit in one field. Those details make it easier to compare views on another night. They also echo the astronomers\u2019 work in miniature: careful observations, repeated over time, turn a field of stars into a measured object.\n\nNGC 3532 rewards that patience. Its size is visible at a glance; its distance and motion emerge through measurements that ask us to look again, and differently.\n\n**Source:** SIMBAD, NGC 3532: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203532",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%203532",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "cluster",
+              "coordinates",
+              "declination",
+              "degree",
+              "field",
+              "ident",
+              "listed",
+              "measure",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
