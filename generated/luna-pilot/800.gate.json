@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2031681"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alhena: A Steady Light with a Hidden Companion\n\n*At the foot of Gemini, this bright winter star looks like a single point. Its spectrum tells a more complicated story.*\n\nOn a clear winter evening, Gemini rises with two bright stars marking the twins\u2019 heads and a chain of fainter stars trailing below. Near one end of that chain, Alhena shines with a clean, white light. It is easy to take it for a solitary beacon. But SIMBAD identifies Alhena as Gamma Geminorum\u2014and classifies it as a spectroscopic binary: a system whose components reveal themselves through changes in the star\u2019s spectrum, even when they appear as one point of light. [SIMBAD: Alhena](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2031681)\n\nThat hidden motion gives Alhena a quiet kind of drama. A telescope may sharpen the surrounding star field, but it won\u2019t necessarily split the pair. The evidence comes instead from starlight dispersed into its component colors. As the stars move in their orbit, their spectral features shift, betraying motion toward and away from us. The SIMBAD entry establishes the spectroscopic-binary classification; it does not, in the information cited here, specify the stars\u2019 orbital details.\n\nAlhena\u2019s listed spectral type is A1.5IV. The \u201cA\u201d indicates a hot, blue-white kind of star; \u201cIV\u201d is the luminosity class for a subgiant. Its listed visual magnitude is 1.92, making it readily visible to the unaided eye under ordinary dark-sky conditions. SIMBAD gives a parallax of 29.84 milliarcseconds. Inverting that measurement suggests a distance of roughly 110 light-years\u2014a useful estimate, though the listed parallax has an uncertainty of 2.23 milliarcseconds. [SIMBAD: Alhena](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2031681)\n\nFor a small observing exercise, first find Gemini without equipment. In the Northern Hemisphere, look east after dusk on winter evenings; later in the night the constellation climbs higher. The two conspicuous \u201chead\u201d stars make a helpful starting point. Follow the pattern of the twins downward toward their feet, where Alhena marks one of the brighter stars. Exact directions depend on your location and the time, so a planisphere or sky-map app can help orient the constellation.\n\nOnce you\u2019ve found it, pause before reaching for binoculars. Can you see Alhena directly? Does it look white to you, or does it pick up a warmer tint from haze or from its low position near the horizon? Let it rise higher before judging its color: Earth\u2019s atmosphere can distort the appearance of stars near the horizon. Binoculars are useful for exploring the surrounding field, but they are not required to enjoy Alhena itself.\n\nThen consider the contrast between what your eyes see and what astronomy measures. To us, Alhena is a bright point in a familiar outline. To spectroscopists, it is a source of shifting lines, its apparent simplicity concealing orbital motion. The star\u2019s light has crossed about a century of space before reaching your eyes; in that light, careful measurement can reveal what unaided vision cannot.\n\nThat is the pleasure of observing Alhena: not merely spotting a winter marker, but knowing that the steady-looking star is a system in motion. **Source:** [SIMBAD astronomical database entry for HIP 31681 (Gamma Geminorum)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2031681).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2031681",
+            "overlap_terms": [
+              "before",
+              "binary",
+              "class",
+              "database",
+              "depend",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "measurement",
+              "motion",
+              "orient"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
