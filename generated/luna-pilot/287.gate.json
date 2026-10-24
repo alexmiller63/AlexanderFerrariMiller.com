@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204609"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 4609: A Small Gathering in the Southern Milky Way\n\n*An open cluster tucked into the star-rich southern sky rewards a careful search\u2014and a little patience at the eyepiece.*\n\nIn the southern autumn, the Milky Way offers no shortage of bright landmarks. But some of its quieter sights are best approached by coordinates. NGC 4609 is one of them: an open cluster cataloged in the dense plane of our galaxy, where many stars crowd the view.\n\nSIMBAD classifies NGC 4609 as an open cluster and places its center at right ascension 12h 42m 19.7s, declination \u221262\u00b0 59\u2032 42\u2033 (J2000). Its galactic latitude is just \u22120.14\u00b0, putting it almost exactly in the Milky Way\u2019s central band as seen from Earth. A cataloged angular size of 13 arcminutes gives a useful sense of its apparent span, though the database marks that measurement as low quality. Think of it as a guide, not a crisp border around the cluster. [SIMBAD\u2019s NGC 4609 entry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204609) lists these measurements and their quality flags.\n\nAn open cluster is a family of stars associated by their shared origin, rather than a distant island galaxy. Such groups form from clouds of gas and dust in the Milky Way\u2019s disk; over time, their stars can drift apart. NGC 4609\u2019s cataloged parallax is 0.660 milliarcseconds. Simply taking the inverse gives a rough distance of about 1,500 parsecs, or 4,900 light-years. That estimate is a useful scale, not a complete distance analysis: parallax measurements and their uncertainties deserve care, especially when turning a small angle into a distance.\n\nThe cluster\u2019s cataloged V-band magnitude is 6.9, but SIMBAD flags that value as low quality. It should not be treated as a promise of naked-eye visibility. In a rich Milky Way field, faint stars can be lost against the background glow, and the view depends on sky darkness, transparency, equipment and the observer\u2019s experience.\n\n## Observing NGC 4609\n\nNGC 4609 lies far south, so it is best placed for observers in the Southern Hemisphere. From a mid-southern latitude it climbs high enough for a comfortable view; from far northern latitudes it sits very low or never rises at all. In southern autumn, it becomes a practical evening target as the night progresses.\n\nFor a first search, enter the J2000 coordinates\u201412h 42m 19.7s, \u221262\u00b0 59\u2032 42\u2033\u2014into a planetarium app or Go-To mount. A chart is especially helpful in the crowded Milky Way, where a small hop between similar-looking star patterns can lead astray. Begin with binoculars or a low-power telescope, which can frame a field about the cluster\u2019s cataloged angular size. If the stars appear subtle, increase magnification only after finding the field; a darker sky and steady, patient viewing may reveal more than a quick change of eyepiece.\n\nLet the scene settle. NGC 4609 is not a spectacle measured by a single brilliant star, but a chance to pick out a stellar gathering against the Milky Way\u2019s crowded backdrop\u2014and to remember that a small patch of sky can hold a whole family of suns.\n\n**Sources and tools:** [SIMBAD: NGC 4609](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204609) \u00b7 [Stellarium Web](https://stellarium-web.org/)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204609",
+            "overlap_terms": [
+              "angle",
+              "angular",
+              "around",
+              "ascension",
+              "cluster",
+              "coordinates",
+              "crowd",
+              "crowded",
+              "database",
+              "declination",
+              "depends",
+              "field"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
