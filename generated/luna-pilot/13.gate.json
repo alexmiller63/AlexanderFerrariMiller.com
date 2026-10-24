@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014135"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Menkar: A Quiet Beacon in the Whale\n\n*An observing guide to Alpha Ceti, a red giant whose catalogue record carries a note of uncertainty.*\n\nCetus, the whale, is a broad constellation, and its stars can be hard to pick out when the sky is bright or unfamiliar. Menkar offers a useful point of reference. Listed by the SIMBAD astronomical database as Alpha Ceti, or HIP 14135, it lies at right ascension 3 hours 2 minutes and declination 4 degrees 5 minutes north. Those coordinates can help locate it on a sky chart or in a planetarium app. [SIMBAD: HIP 14135](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014135)\n\nSIMBAD gives Menkar a parallax of 13.09 milliarcseconds, with an uncertainty of 0.44 milliarcseconds. Converting that measurement gives a distance of roughly 250 light-years. The database lists its spectral type as M1.5IIIa. In that classification, M indicates a relatively cool stellar atmosphere, while III identifies a giant star. Its catalogue entry also records a V-band magnitude of 2.53.\n\nThe spectral classification offers a clue to Menkar\u2019s appearance. M-type stars are associated with reddish light, so Menkar may look warmer in color than a nearby star that appears white. The effect can be subtle, especially when observing without a comparison star. Rather than expecting a vivid change in hue, take time to look carefully and compare what you see with the surrounding points of light.\n\nA chart is the simplest way to turn the coordinates into a practical search. Find Cetus, then use the chart\u2019s position display or search function to mark Alpha Ceti. If entering coordinates manually, use **03h 02m, +04\u00b0 05\u2032**. The database\u2019s position is given for the J2000 coordinate system; a modern chart or app should handle the conversion to its own display.\n\nMenkar\u2019s catalogue classification comes with a qualification: SIMBAD identifies it as a *long-period variable candidate*. That wording matters. It indicates a candidate classification, not a guarantee that the star\u2019s brightness will change noticeably over a few nights, or that an observer can determine a cycle by eye. The listed magnitude is a catalogue value, not a promise of constant brightness.\n\nIf you want to follow the star, note the date and observing conditions each time you look. Compare it with nearby stars, and use the same chart or equipment when possible. Human vision is not a precise measuring instrument, and memory alone is a poor guide to small changes. Still, repeated observations give the catalogue\u2019s cautious label a personal dimension: you can watch and see whether Menkar seems to hold its brightness or vary.\n\nThat combination makes Alpha Ceti an inviting target for unhurried observation. Its coordinates provide a clear way to find it; its spectral class identifies it as a cool giant; and its variable-candidate status leaves a question open without overstating what is known. Look for the star, record what you see, and let the evidence accumulate one night at a time.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2014135",
+            "overlap_terms": [
+              "ascension",
+              "candidate",
+              "catalogue",
+              "class",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "display",
+              "given",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
