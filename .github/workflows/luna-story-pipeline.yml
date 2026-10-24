@@ -1,7 +1,12 @@
-name: Luna Story Pilot - $1 Writing Only
+name: Luna Story Batch - $1 Writing Only
 on:
   workflow_dispatch:
     inputs:
+      count:
+        description: "Number of stories to generate (1-1000)"
+        required: true
+        default: "200"
+        type: string
       model:
         description: "Verified OpenAI API model ID"
         required: true
@@ -40,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Select new candidates and preflight identities (free)
-        run: python3 tools/select_missing_story_candidates.py --limit 10
+        run: python3 tools/select_missing_story_candidates.py --limit "${{ inputs.count }}"
       - name: Preflight selected catalogue identities (free)
         run: |
           python3 - <<'PY'
@@ -48,7 +53,7 @@ jobs:
           from tools.luna_story_pipeline import ROOT, resolve_objects
           tasks = json.loads((ROOT / "generated/luna-pilot-selected.json").read_text())
           resolved = resolve_objects(tasks)
-          assert len(resolved) == 10 and len(set(resolved.values())) == 10
+          assert len(resolved) > 0 and len(set(resolved.values())) == len(resolved)
           for task in tasks:
               print(f"Task {task['id']}: {task['title']} -> permanent object {resolved[str(task['id'])]}")
           PY
@@ -170,7 +175,7 @@ jobs:
           import json
           from pathlib import Path
           manifest = json.loads(Path('research/luna-pilot-candidates.json').read_text())
-          assert len(manifest) == 10
+          assert len(manifest) > 0
           assert len({str(t['id']) for t in manifest}) == 10
           output = Path('generated/luna-pilot')
           if output.exists():
