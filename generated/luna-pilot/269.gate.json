@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204486"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M87: A Quiet Oval With a Restless Heart\n\n*In Virgo, a faint patch of light marks an active galaxy nucleus\u2014and offers a reminder that the sky\u2019s softest smudges can conceal powerful engines.*\n\nM87 does not announce itself. In a dark sky, it is a pale, rounded glow among the stars of Virgo: easy to overlook, yet remarkable for what it is. Catalogued as NGC 4486, this elliptical galaxy is classified as an active galaxy nucleus, or AGN\u2014a galaxy whose central region emits energy beyond the ordinary light of its stars. Its measured redshift is 0.0042, a small shift that reflects the galaxy\u2019s motion in the expanding universe, though nearby galaxies also feel the pull of their neighbors.\n\nThere is a pleasing contrast between the view and the name. \u201cActive\u201d sounds like a flare, a spectacle; in an eyepiece, M87 is a subdued oval. The activity belongs to its core, not to a display that the eye can readily pick out. At the telescope, the galaxy\u2019s glow blends gradually into the darkness, with no sharp edge to announce where it ends. The quiet appearance is part of the lesson: the universe\u2019s most consequential places are not always its brightest sights.\n\nM87\u2019s coordinates place it at right ascension 12 hours 30 minutes and declination +12 degrees 23 minutes (J2000). Its listed optical span is about 6.3 by 5.7 arcminutes\u2014roughly one-fifth the apparent width of the full Moon. That measurement describes the galaxy\u2019s extended light, not a crisp outline. A catalogue also gives its V-band magnitude as 8.63, a useful guide to its modest visual brightness, though the diffuse light makes it harder to see than a star of the same magnitude.\n\n**Finding M87**\n\nLook for M87 on spring evenings, when Virgo climbs high in the sky. Start with a chart or planetarium app set for your location and time; use M87\u2019s coordinates to confirm the target rather than relying on memory alone. A clear, moonless night away from bright lights will help. Give your eyes time to adapt to the dark, and scan slowly: averted vision\u2014looking slightly to one side of the target\u2014often makes a faint galaxy easier to detect.\n\nUnder a dark sky, binoculars may show a small, hazy patch, but a telescope gives a more reliable view. Begin at low power, which offers a wider field and makes the search easier. Once found, increase the magnification gradually if the image remains steady. Expect a soft central brightening surrounded by a dimmer haze, not a photograph-like swirl. The galaxy\u2019s broad listed dimensions are a reminder that its light is spread thinly across the sky.\n\nTake a moment before moving on. The patch in the eyepiece is not a nearby cloud or a star cluster, but a distant galaxy whose light has travelled across space to meet your eye. You may not see its central activity directly, but you can still observe the serene glow of the galaxy that contains it: a faint oval, found by careful looking, carrying a much larger story.\n\n**Source:** SIMBAD, M87 / NGC 4486 basic data, coordinates, classification, angular size and photometry: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204486",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204486",
+            "overlap_terms": [
+              "active",
+              "angular",
+              "ascension",
+              "basic",
+              "before",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "degrees",
+              "display",
+              "elliptical",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
