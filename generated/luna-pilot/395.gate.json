@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207006"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 7006: A Small Light in Delphinus\n\n*An unassuming globular cluster rewards patient observers with a glimpse of a tightly bound stellar city.*\n\nThe first thing to know about NGC 7006 is that it will not announce itself. In a telescope\u2019s eyepiece, it may begin as a faint, softly rounded patch against the dark. But that modest glow is a cluster of stars held together by gravity\u2014a compact community whose members travel through space as part of the Milky Way.\n\nGlobular clusters are dense, roughly spherical collections of stars. Their crowded centers and shared motion make them different from the loose groupings of young stars scattered through the galaxy. NGC 7006 is cataloged as a globular cluster by SIMBAD, which also places it at right ascension 21h 01m 29.465s and declination +16\u00b0 11\u2032 16.49\u2033 (J2000). Its listed visual magnitude is 10.46, and its near-infrared angular size is about 1.1 by 1.0 arcminutes\u2014small enough that it can be easy to mistake for a dim, out-of-focus star. ([SIMBAD: NGC 7006](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207006))\n\nThat small appearance invites a useful change of perspective. The eyepiece shows the cluster as a smudge, but the smudge is not a single object in the ordinary sense: it is the blended light of many stars. Telescopes gather that light into an image we can study, while their resolving power determines whether individual stars separate from the glow. NGC 7006\u2019s listed size gives a sense of its compactness on the sky; what you see will also depend on aperture, magnification, sky darkness and the steadiness of the atmosphere.\n\n## Finding it\n\nLook for Delphinus during the Northern Hemisphere\u2019s late-summer and early-autumn evenings, when the small constellation is well placed after dusk. Use a current star chart or planetarium app to guide a careful star-hop to the SIMBAD coordinates above. The cluster is faint, so begin with a low-power view to establish the surrounding star field, then increase magnification if the image remains sharp. A dark, transparent sky helps: let your eyes adapt, avoid nearby lights and use averted vision\u2014looking slightly to one side of the target can make faint details easier to detect.\n\nDo not expect a bright, dramatic ball. At low power, NGC 7006 may look like a small haze; a larger telescope and patient viewing may reveal a more textured appearance. If it remains unresolved, that is no failure. The soft glow is itself the view: many distant points of light blended into one quiet, compact object.\n\nGive the field time. Averted vision, averted expectations, too: the reward is not necessarily a sudden burst of detail but the recognition that the faint patch holds a whole stellar system. NGC 7006 asks for a slower kind of looking\u2014one in which the telescope\u2019s gentle blur becomes a doorway rather than a disappointment.\n\nThe best observing note may be simple: found, faint, and worth returning to. On a clear night, that small patch in Delphinus connects a backyard observer to the larger architecture of the galaxy, one globular cluster at a time.\n\n**Source:** [SIMBAD database entry for NGC 7006](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207006).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207006",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "cluster",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "depend",
+              "globular",
+              "ident",
+              "infrared",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
