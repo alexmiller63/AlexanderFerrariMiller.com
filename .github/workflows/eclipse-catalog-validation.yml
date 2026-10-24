@@ -1,0 +1,41 @@
+name: Eclipse Catalog Validation (2025–2036)
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - tools/generate_decade_eclipses.py
+      - .github/workflows/eclipse-catalog-validation.yml
+
+permissions:
+  contents: read
+
+jobs:
+  catalog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate provisional eclipse catalog
+        run: python tools/generate_decade_eclipses.py --start-year 2025 --end-year 2036
+      - name: Validate registry and catalog
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base = Path("generated/eclipse-catalog")
+          rows = json.loads((base / "eclipses-2025-2036.json").read_text())["eclipses"]
+          registry = json.loads((base / "eclipse-registry.json").read_text())["events"]
+          assert rows, "No eclipses generated"
+          ids = [r["id"] for r in rows]
+          assert len(ids) == len(set(ids)), "Duplicate permanent IDs"
+          assert len(registry) == len(rows), "Registry/catalog mismatch"
+          assert all(2025 <= int(r["date_utc"][:4]) <= 2036 for r in rows)
+          assert all(r["detail_path"] == "eclipses/" + r["id"] + ".html" for r in rows)
+          print(f"Validated {len(rows)} provisional eclipse records")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: eclipse-catalog-2025-2036
+          path: generated/eclipse-catalog/
+          retention-days: 30
