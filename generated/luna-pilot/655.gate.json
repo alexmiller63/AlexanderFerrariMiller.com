@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209640"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Almach: A Bright Pin in Andromeda\n\n*Look northward for a golden-hued giant whose precise position and measured distance turn a familiar point of light into a place in space.*\n\nAlmach is the name to seek in Andromeda: a bright star catalogued as Gamma\u00b9 Andromedae, also listed by the astronomical database SIMBAD as HIP 9640. To the unaided eye it is a small, steady point. Its catalogue coordinates\u2014right ascension 2 hours, 3 minutes, 54 seconds; declination +42 degrees, 19 arcminutes\u2014give that point a precise address on the celestial sphere. The coordinates are for the J2000 reference epoch, a standard frame used to map the sky. [SIMBAD: HIP 9640](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209640)\n\nTry finding Almach on a clear night with a star chart or a sky-map app set to Andromeda. Its listed visual magnitude is 2.10, bright enough to stand out under a reasonably dark sky, though nearby lights and haze can make it harder to pick out. First locate the constellation, then compare the stars around it with the chart. Once you have Almach, look away briefly and back: averted vision can help the eye notice faint stars. Binoculars are useful for exploring the surrounding star field, but the star itself is an easy naked-eye target.\n\nIts catalogue entry describes Almach\u2019s spectrum as K2+IIb. The \u201cK2\u201d part places it among relatively cool stars, whose light is associated with an orange hue; \u201cIIb\u201d is a luminosity classification for a bright giant. That description connects a point of light to physical conditions: a star\u2019s spectrum\u2014its light separated into wavelengths\u2014carries clues about temperature and other properties. Colour can be subtle to the eye, especially in low light, so do not worry if Almach looks white or only faintly warm.\n\nSIMBAD lists a parallax of 8.30 milliarcseconds, with a reported uncertainty of 1.04 milliarcseconds. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth moves around the Sun. Using the listed value gives a rough distance of about 120 parsecs, or roughly 390 light-years. That is an estimate, not a ruler-straight certainty: the measurement\u2019s uncertainty matters, and the conversion should be read as approximate.\n\nA star\u2019s apparent brightness also depends on distance. Almach\u2019s magnitude of 2.10 tells us how bright it appears from Earth, not by itself how much light it emits intrinsically. Astronomers combine brightness measurements with distance and other evidence to build a fuller picture.\n\nThe reward of observing Almach is partly this change of scale. Begin with a point you can identify in the sky; then imagine the measured parallax, the spectrum, and the many light-years between the star and your eye. You need no telescope to make that journey. A chart, a dark patch of sky, and a few minutes of looking are enough to turn a name in Andromeda into a specific star with a measurable place in the cosmos.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%209640",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "celestial",
+              "certainty",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "epoch",
+              "frame",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
