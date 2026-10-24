@@ -1,6 +1,12 @@
 name: Validate Missing Story Candidates
 on:
   workflow_dispatch:
+    inputs:
+      count:
+        description: "Number of unwritten objects to select"
+        required: true
+        default: "200"
+        type: string
   push:
     paths:
       - 'tools/select_missing_story_candidates.py'
@@ -12,19 +18,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Select ten unwritten objects without API calls
+      - name: Select unwritten objects without API calls
         run: |
-          python3 tools/select_missing_story_candidates.py --limit 10
+          python3 tools/select_missing_story_candidates.py --limit "${{ inputs.count || '200' }}"
           python3 - <<'PY'
           import json
           from pathlib import Path
           from tools.luna_story_pipeline import resolve_objects
           p=Path('generated/luna-pilot-selected.json')
           tasks=json.loads(p.read_text())
-          assert len(tasks)==10, f'Expected 10, got {len(tasks)}'
+          assert len(tasks)>0, 'No candidates selected'
           ids=resolve_objects(tasks)
-          assert len(set(ids.values()))==10
-          print('PASS: ten unique previously unselected permanent objects')
+          assert len(set(ids.values()))==len(tasks)
+          print(f'PASS: {len(tasks)} unique previously unselected permanent objects')
           PY
       - uses: actions/upload-artifact@v4
         with:
