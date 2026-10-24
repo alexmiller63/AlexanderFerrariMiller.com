@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202602"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Theta Carinae Cluster: A Wide-Field Gathering in the Southern Sky\n\n*IC 2602 spreads across nearly three degrees of sky. Its measured distance and motion offer a way to read this loose stellar assembly as more than a pattern of points.*\n\nThe Theta Carinae Cluster is a gathering best approached with room to breathe. Catalogued as IC 2602 and classified by SIMBAD as an open cluster, it has a listed angular size of 173.9 arcminutes\u2014almost 2.9 degrees across. That is far wider than the Moon\u2019s apparent diameter, so high magnification can make the whole scene harder to take in rather than easier. [SIMBAD: IC 2602](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202602)\n\nIts recorded position is right ascension 10 hours 42 minutes 27.1 seconds, declination 64 degrees 25 minutes 34 seconds south, in the constellation Carina. For southern observers, those coordinates are a practical starting point for a chart or planetarium app; northern observers will find the cluster low or out of reach, depending on latitude. Look for a clear, dark stretch of sky, then begin with the unaided eye or binoculars. A low-power telescope can help explore the brighter stars, but use a wide field and resist the urge to zoom in too far.\n\nThere is useful science behind this broad-spread view. Open clusters are groups of stars associated by their shared origin, rather than merely neighbors that happen to line up from Earth. Astronomers test those relationships by measuring stars\u2019 distances and motions. SIMBAD lists a parallax of 6.571 milliarcseconds for IC 2602; using the inverse-parallax relationship gives a distance of roughly 150 parsecs, or about 500 light-years. The same database lists a proper motion of \u221217.783 milliarcseconds per year in right ascension and +10.655 in declination, and a radial velocity of 17.60 kilometers per second. Those are measurements of motion across our line of sight and along it, respectively. [SIMBAD: IC 2602](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202602)\n\nThe numbers do not turn the cluster into a static diagram. Stars move, and their apparent positions are only a snapshot from our viewpoint. But shared motion and distance help astronomers distinguish a genuine stellar grouping from a chance alignment. SIMBAD also records thousands of linked objects beneath the cluster entry; that count is a catalogue relationship, not a claim that every linked star is a confirmed member. Membership requires care: a star in the same patch of sky is not automatically part of the same family.\n\nFor an observing session, start wide. Give your eyes time to adapt to the dark, and scan gently rather than fixing on one bright point. Binoculars are especially suited to a field nearly three degrees across; if you switch to a telescope, choose the lowest magnification that still gives a comfortable view. A chart centered near the listed coordinates will help you identify the field, while a red-light setting on your device can preserve night vision. If the cluster seems too diffuse at first, pause and let the fainter stars emerge.\n\nIn the eyepiece, the appeal is not a single isolated sun but the arrangement: stars scattered across a generous window of Carina, each one a point of light and, in the larger story, a moving part of a stellar association. The Theta Carinae Cluster rewards the observer who looks broadly\u2014and then takes a little time to notice the detail.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=IC%202602",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "count",
+              "database",
+              "declination",
+              "degrees",
+              "field",
+              "ident",
+              "larger"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
