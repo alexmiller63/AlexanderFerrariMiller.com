@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206637"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M69: A Compact Ember in Sagittarius\n\n*In the low southern reaches of the summer sky, this globular cluster rewards patient looking\u2014and a clear view of the horizon.*\n\nSome celestial objects announce themselves. M69 asks you to look twice.\n\nAt first glance, it may be only a faint, soft knot among the stars of Sagittarius, the Archer. But that small patch is a globular cluster: a dense, roughly spherical gathering of stars held together by gravity. Through a telescope, its light seems to gather toward a bright centre, while the stars around it slowly separate into points. The first impression is of a single glow; the longer one lingers, the more intricate it becomes.\n\nThe catalogue name M69 is also listed as NGC 6637. SIMBAD classifies it as a globular cluster and gives its position as right ascension 18h 31m 23s, declination \u221232\u00b0 20\u2032 53\u2033 (J2000). Its listed optical angular size is about 7.1 arcminutes\u2014small enough to seem modest beside the broad sweep of the Milky Way, yet wide enough to reward a steady view. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206637))\n\nGlobular clusters are among the Milky Way\u2019s great stellar gatherings. Their stars orbit together in a crowded, compact system, unlike the looser patterns of young stars scattered through a spiral arm. M69 turns that grand structure into a quiet observing experience: no dramatic shape, no bright individual star to catch the eye, just a concentrated glow built from many suns.\n\nTo find it, begin with Sagittarius, whose familiar Teapot pattern sits low in the southern sky during Northern Hemisphere summer evenings. M69 lies well south on the celestial sphere. From mid-northern latitudes, it will remain low above the southern horizon; from farther south, it climbs higher. Choose a night when Sagittarius is well placed, and find an observing spot with an unobstructed southern view. Haze, buildings and trees can easily swallow a low target.\n\nA star chart or planetarium app can guide you to the listed coordinates. In binoculars, look for a small, faint patch under a dark sky; it may appear more like a soft smudge than a distinct cluster. A telescope at low power helps keep the whole object in view. Then try a little more magnification and give your eyes time to settle. Under good conditions, a larger telescope may pick out stars around the cluster\u2019s edges, while the central light stays close-packed.\n\nM69 is not an object to hurry past. Its modest appearance is part of the pleasure: a little concentration on your part, and a diffuse spot becomes a stellar system. When the view is unsteady or the horizon glows with city light, try again on another night. The cluster will still be there, waiting in Sagittarius\u2014not loud, but full of stars.\n\n**Source:** [SIMBAD: M69 / NGC 6637](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206637)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206637",
+            "overlap_terms": [
+              "angular",
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "declination",
+              "globular",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
