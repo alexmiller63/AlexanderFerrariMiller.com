@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205694"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 5694: A Faraway Ball of Stars\n\n*An old globular cluster sits low in the southern sky, where patience and a steady telescope turn a faint smudge into a gathering of suns.*\n\nSomewhere in the southern sky, beyond the familiar patterns of brighter stars, NGC 5694 holds together as a compact congregation. SIMBAD classifies it as a globular cluster and places its center at right ascension 14h 39m 36.52s, declination \u221226\u00b0 32\u2032 18\u2033. That southerly position makes it a more comfortable target for observers in the Southern Hemisphere; from much of the north, it climbs only a modest distance above the southern horizon. [SIMBAD: NGC 5694](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205694)\n\nA globular cluster is a dense, roughly spherical community of stars held together by gravity. Its stars are not a single sunlit object but many points of light packed into a small patch of sky. SIMBAD lists NGC 5694\u2019s apparent diameter as 3.6 arcminutes\u2014about one-eighth the Moon\u2019s apparent width. That measurement gives a sense of its compactness, though the cluster\u2019s faint outer stars may not all show clearly through a small telescope or under a bright sky. The catalog identifies the angular-size measurement as optical and dates its reference to 1989. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205694)\n\nThere is motion in this still-looking scene. SIMBAD lists a heliocentric radial velocity of \u2212139.4 kilometers per second. \u201cRadial\u201d describes motion along the line of sight: the negative sign indicates that, by this measurement, the cluster is approaching the Sun. It is a reminder that a star cluster can seem fixed against the constellations while traveling through the galaxy. The measurement does not tell the whole story of its path, but it gives this distant gathering a measurable direction. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205694)\n\nFor an observing session, start with the coordinates rather than a guessed star-hop. Enter **14h 39m 36.52s, \u221226\u00b0 32\u2032 18\u2033** into a planetarium app or computerized telescope, using the J2000 position listed by SIMBAD. Check that NGC 5694 is above your local horizon at the time you plan to observe. A clear, dark southern horizon matters: haze, trees, buildings, and urban skyglow can all erase a faint target before it reaches the eyepiece.\n\nA telescope is the practical choice. Begin at low magnification to locate the field, then increase the power if the view remains steady and the cluster is centered. Give your eyes time to adapt to the dark, and use averted vision\u2014looking slightly to one side of the object\u2014to notice faint detail. Under modest equipment or bright skies, expect a subdued patch rather than a showpiece. The experience may be less about resolving every star than about recognizing the small, concentrated glow as a system of stars gathered by gravity.\n\nNGC 5694 does not need to dazzle to reward a visit. Its measured size and motion offer two different kinds of scale: a tiny footprint in the eyepiece, and a swift journey through space. Find the right patch of southern sky, let the view settle, and that quiet smudge becomes a destination.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205694",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "catalog",
+              "cluster",
+              "coordinates",
+              "declination",
+              "field",
+              "globular",
+              "heliocentric",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
