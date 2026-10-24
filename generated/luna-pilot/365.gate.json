@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206712"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6712: A Quiet Ember in Scutum\n\n*In the Milky Way\u2019s crowded summer fields, this globular cluster asks for patience\u2014and rewards a careful look.*\n\nNGC 6712 doesn\u2019t announce itself. It waits in Scutum, amid the star-rich sweep of the Milky Way, a small, subdued glow against a sky full of brighter distractions. Find it, though, and you have found a gathering of stars bound together by gravity: a globular cluster, one of those dense stellar communities that makes the Galaxy feel less like a scattering of suns and more like a place with neighborhoods.\n\nThe SIMBAD astronomical database identifies NGC 6712 as a globular cluster and lists its J2000 position as right ascension 18h 53m 04.32s, declination \u221208\u00b0 42\u2032 21.5\u2033. Its recorded angular size is 7.2 arcminutes\u2014about a quarter of the full Moon\u2019s apparent width. That doesn\u2019t mean it will look large or bright in the eyepiece: a catalog\u2019s measured extent and the visible impression through a telescope are not the same thing. ([SIMBAD: NGC 6712](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206712))\n\nFor an observing plan, start with Scutum on a summer sky chart or planetarium app. Use the coordinates to confirm the field rather than relying on a casual glance; in a dense Milky Way region, plenty of stars can compete for attention. From mid-northern latitudes, NGC 6712 is best placed on late-summer evenings, when Scutum rides relatively high in the southern sky. If you observe from farther north, it will culminate lower, so a clear southern horizon matters.\n\nGive your eyes time to adjust to the dark, and choose a night when moonlight is not washing out the background. Sweep slowly with a low-power eyepiece first, then increase magnification if the view remains steady. Under a dark sky, a telescope may show the cluster as a soft, concentrated haze; with more aperture and good conditions, some of that glow may break into individual points. Keep expectations flexible: sky brightness, optics and experience all shape what reaches the eye.\n\nThere is a quiet pleasure in looking for an object that does not dominate the view. NGC 6712 sits at a reported radial velocity of \u2212107.5 kilometres per second in SIMBAD\u2019s listing\u2014a measurement of its motion along our line of sight, not something an eyepiece can reveal. The telescope gives you its light; the catalogue supplies another dimension of the encounter. In that pairing, the faint patch becomes more than a smudge: it is a remote system moving through the Galaxy, while you stand beneath the same starry river that frames it.\n\nOn a clear evening, take a moment before moving on. Let the field settle. The cluster\u2019s glow may seem modest, but it is made by many stars gathered into one small address. That is NGC 6712\u2019s almanac lesson: some celestial landmarks are not found by brightness, but by learning where\u2014and how\u2014to look.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206712",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "catalog",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinates",
+              "crowded",
+              "database",
+              "declination",
+              "extent"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
