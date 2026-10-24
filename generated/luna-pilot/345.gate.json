@@ -1,0 +1,69 @@
+{
+  "screen_passed": false,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": false,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206475"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 6475: Reading a Cluster Through Its Coordinates\n\n*SIMBAD\u2019s measurements give observers a way to locate this southern-sky open cluster\u2014and offer a glimpse of how astronomers describe its position and motion.*\n\nA star cluster can be approached as both a sight in the sky and a set of measurements. NGC 6475 is classified by the SIMBAD astronomical database as an open cluster. Its listed position is right ascension 17 hours, 53 minutes, 47.3 seconds and declination \u221234 degrees, 50 minutes, 28 seconds, in the J2000 coordinate system. Right ascension and declination work like longitude and latitude on the celestial sphere: together, they specify where to point a chart or telescope. [SIMBAD: NGC 6475](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206475)\n\nThe negative declination places NGC 6475 south of the celestial equator. That has a practical consequence for observers: the cluster\u2019s maximum height depends strongly on latitude. Using the listed declination, an observer at 35 degrees south would see it pass almost overhead\u2014about 90 degrees above the horizon. At 40 degrees north, it would reach only about 15 degrees above the southern horizon. These are approximate transit heights, calculated from the coordinates and observer latitudes. A clear southern horizon matters especially at more northerly locations.\n\nThe coordinates are also a useful starting point for finding the cluster. A current star chart or planetarium app can display the position directly. Once the target is located, observing it when it crosses the local meridian\u2014the imaginary north\u2013south line through the sky\u2014puts it at its highest point for the night. The lower an object sits, the more likely the view is to be obstructed by buildings or the horizon; at low elevations, atmospheric effects can also make observing less comfortable.\n\nSIMBAD lists NGC 6475\u2019s parallax as 3.5704 milliarcseconds, with a listed uncertainty of 0.0016 milliarcseconds. Parallax is the apparent shift in an object\u2019s position as seen from different points in Earth\u2019s orbit. Taking the reciprocal of the listed parallax gives a rough distance of about 280 parsecs, or roughly 910 light-years. This is a calculation from the catalogue value, not a claim that every star appearing in the field lies at exactly the same distance.\n\nThe database also records motion. Its proper-motion values are 3.0722 milliarcseconds per year in right ascension, adjusted by the cosine of declination, and \u22125.3157 milliarcseconds per year in declination. These describe apparent motion across the sky, not the cluster\u2019s full three-dimensional travel. SIMBAD separately lists a heliocentric radial velocity of \u221214.7 kilometres per second, with an uncertainty of 0.2 kilometres per second. That measurement concerns motion along the line of sight. [SIMBAD: NGC 6475](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206475)\n\nFor an observer, those numbers are tools rather than requirements. Begin with the listed coordinates in a chart or app, check when NGC 6475 will be highest from your location, and choose equipment according to the view you want. A lower-power eyepiece can keep more of the surrounding field in view; binoculars or a telescope offer different ways to examine the stars. The database establishes the object\u2019s classification and measured position, distance indicator and motion. Looking for it turns those catalogue entries into a place in the night sky.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%206475",
+            "overlap_terms": [
+              "according",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "cluster",
+              "coordinate",
+              "coordinates",
+              "current",
+              "database",
+              "declination",
+              "degrees",
+              "depends"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
