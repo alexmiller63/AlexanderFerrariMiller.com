@@ -9,8 +9,9 @@ START_WEEK=int(os.environ.get('STORY_START_WEEK', '43'))
 END_WEEK=int(os.environ.get('STORY_END_WEEK', '53'))
 assert 1 <= START_WEEK <= END_WEEK <= 53
 # Deliberately conservative reservation rates, not an OpenAI account billing cap.
-INPUT_RATE=2.0
-OUTPUT_RATE=8.0
+MODEL=os.environ.get("STORY_MODEL") or os.environ.get("MODEL")
+INPUT_RATE=float(os.environ.get("INPUT_PRICE", "2.0"))
+OUTPUT_RATE=float(os.environ.get("OUTPUT_PRICE", "8.0"))
 MAX_INPUT=3000
 MAX_OUTPUT=900
 RESERVE=(MAX_INPUT*INPUT_RATE+MAX_OUTPUT*OUTPUT_RATE)/1e6
@@ -31,6 +32,8 @@ def save(path):
             time.sleep(2*(attempt+1))
     raise RuntimeError("Cannot persist draft; stopping further API spending")
 def main():
+    if not MODEL:
+        raise SystemExit("Set STORY_MODEL or MODEL to a verified API model ID")
     key=os.environ.get("OPENAI_API_KEY")
     if not key:
         raise SystemExit("OPENAI_API_KEY secret unavailable: no paid calls made")
@@ -74,7 +77,7 @@ def main():
             if ledger["estimated_usd"]+RESERVE>BUDGET:
                 print("BUDGET STOP",ledger["estimated_usd"],flush=True)
                 break
-            payload=json.dumps({"model":"gpt-4.1-nano","input":prompt,"max_output_tokens":MAX_OUTPUT,
+            payload=json.dumps({"model":MODEL,"input":prompt,"max_output_tokens":MAX_OUTPUT,
                 "text":{"format":{"type":"json_schema","name":"story","strict":True,
                 "schema":{"type":"object","properties":{"hed":{"type":"string"},"dek":{"type":"string"},"body":{"type":"string"}},"required":["hed","dek","body"],"additionalProperties":False}}}}).encode()
             req=urllib.request.Request("https://api.openai.com/v1/responses",data=payload,
