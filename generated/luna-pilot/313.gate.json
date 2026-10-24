@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205457"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Pinwheel Galaxy: A Vast Spiral Hiding in Plain Sight\n\n*In the handle of the Big Dipper, M101 spreads its light across nearly three-quarters the apparent width of the Moon. Finding it is easier than seeing its delicate structure.*\n\nOn a clear spring evening, the Big Dipper seems to point the way to everything: follow its handle\u2019s curve to Arcturus, or trace the bowl toward the North Star. But just off the handle, beyond the bright stars, lies a less obvious destination: the Pinwheel Galaxy.\n\nAlso cataloged as Messier 101 and NGC 5457, this spiral galaxy sits at coordinates near right ascension 14h 03m and declination +54\u00b0 21\u2032. SIMBAD classifies it as an intermediate barred spiral and lists its optical dimensions as about 21.9 by 20.9 arcminutes\u2014roughly two-thirds the full Moon\u2019s apparent width, though far fainter. Its near-round outline on the sky gives a hint of a broad, face-on view. [SIMBAD: NGC 5457](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205457)\n\nThat apparent size is part of the observing puzzle. M101\u2019s light is spread over a large patch, so it can be difficult to spot even when the sky looks dark. A bright galaxy can be easy to find; a wide, faint one may dissolve into the background glow. The spiral arms that give the Pinwheel its name are not guaranteed rewards for a small telescope. In many backyard views, the first impression is simply a soft, uneven haze.\n\nTo locate it, begin with Alkaid, the star at the end of the Big Dipper\u2019s handle. From there, sweep about five degrees north-northeast\u2014roughly the width of three fingers held at arm\u2019s length. Binoculars can help you search, but use a wide field and move slowly. A small telescope at low magnification is often a better starting point than a high-power view: it gathers more light while keeping the galaxy\u2019s broad glow in frame.\n\nGive your eyes time. Shield yourself from nearby lamps, let your vision adapt to darkness, and try looking slightly to one side of the suspected spot. This \u201caverted vision\u201d can make a faint object easier to notice. A moonless night away from city lights will improve the odds; under brighter skies, the galaxy may remain elusive even when you are looking in exactly the right place.\n\nThe best season for a high evening view is spring in the Northern Hemisphere, when the Big Dipper climbs high. If you do find M101, pause before increasing magnification. The view may not resemble a detailed photograph, but that is no failure: photographs accumulate light over time, while your eye takes in a live, fleeting impression. The galaxy\u2019s cataloged angular span tells you that the target is extensive. The challenge is perceiving its faint light against the night.\n\nThat contrast\u2014large on the sky, subtle to the eye\u2014is what makes the Pinwheel a rewarding observing goal. First comes the star-hop. Then the patient search. And, sometimes, a small ghostly glow appears where the map promised a galaxy.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205457",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "coordinates",
+              "declination",
+              "degrees",
+              "field",
+              "frame",
+              "galaxy",
+              "ident",
+              "increasing",
+              "length"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "averted vision",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
