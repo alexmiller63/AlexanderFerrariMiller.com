@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201023"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Arp 135: A Lenticular Galaxy with a Question at Its Core\n\n*An old-looking galaxy in Perseus carries a subtle puzzle: its catalog classification includes a possible active nucleus.*\n\nSome galaxies announce themselves with sweeping spiral arms. Arp 135 is quieter: a lenticular system, its structure between the familiar disk of a spiral and the rounded form of an elliptical. It is also known as NGC 1023, and its cataloged position places it in Perseus, at right ascension 2h 40m 24s and declination +39\u00b0 03\u2032 48\u2033. Those coordinates are the galaxy\u2019s celestial address; the challenge is finding its dim, extended light against the sky.\n\nThe \u201c0\u201d in its listed morphological type, SB(rs)0-, marks it as a lenticular galaxy, while \u201cSB\u201d indicates a barred structure in the classification. The notation is a compact description, not a complete portrait. A galaxy\u2019s appearance depends on how it is oriented to us, and the classification alone cannot tell an observer what detail will stand out through a particular telescope.\n\nThere is another intriguing catalog note. SIMBAD lists NGC 1023 as an \u201cActive Galaxy Nucleus Candidate\u201d\u2014a possibility, not a declaration that the galaxy\u2019s central engine has been conclusively identified as active. The word *candidate* matters. At a distance of millions of light-years, the core is far beyond the reach of a backyard telescope as a distinct physical region. Still, the label adds a scientific question to the observing: what processes are at work in the crowded central regions of this galaxy?\n\nSIMBAD gives the galaxy a heliocentric redshift of 0.002127, corresponding to a cataloged velocity of about 638 kilometers per second. That number describes motion along our line of sight, not a simple speedometer reading for the galaxy\u2019s journey through space. For nearby galaxies, local gravitational motions complicate the conversion from redshift to distance. Its listed visual magnitude is 9.35\u2014bright enough to make it a rewarding telescopic target under favorable conditions, but not a naked-eye spectacle.\n\n**How to observe:** Look for Arp 135 in Perseus on a clear autumn or winter evening from northern latitudes, when the constellation is well placed. Use the coordinates above with a planetarium app or telescope mount, and give your eyes time to adapt to darkness. A modest telescope at low power is a good starting point: the broad view helps reveal the galaxy\u2019s faint, extended glow. Under a dark sky, look for a soft oval haze rather than sharp edges or spiral detail. Increase magnification only if the image remains steady and contrast holds; a brighter-looking view is not always a more informative one.\n\nThe galaxy\u2019s listed magnitude is its integrated brightness, gathered across the whole object. That light is spread over an area of sky, so a number that sounds promising does not guarantee an easy view. Moonlight, haze, light pollution, and high magnification can all make the galaxy harder to see. If it eludes you at first, lower the power and sweep slowly around the plotted position.\n\nA small patch of diffuse light may seem modest beside a planet or a star cluster. But Arp 135 rewards a different kind of attention: the patient recognition that an apparently quiet smudge is a vast galaxy, classified by its shape and still carrying questions about its nucleus.\n\n**Source:** [SIMBAD entry for NGC 1023](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201023) \u2014 coordinates, morphological type, redshift, visual magnitude, and active-nucleus-candidate listing.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201023",
+            "overlap_terms": [
+              "active",
+              "around",
+              "ascension",
+              "candidate",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "corresponding",
+              "declination",
+              "depends",
+              "elliptical",
+              "galaxy"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Active Galaxy Nucleus Candidate",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201023"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
