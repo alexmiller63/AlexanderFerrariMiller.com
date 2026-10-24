@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204088"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Arp 18: A Spiral in the Bear\u2019s High Country\n\n*NGC 4088\u2019s broad, tilted disk makes a quiet target for a spring night\u2014and a reminder that a galaxy\u2019s catalogue numbers can open a much larger story.*\n\nThe Big Dipper had climbed clear of the rooftops when I found Arp 18. It did not leap out at me. At the eyepiece, the distant galaxy first appeared as a pale, elongated haze: a small smudge against the dark. I held the view steady, let my eyes adjust, and waited for the shape to settle. The smudge was NGC 4088, a spiral galaxy in Ursa Major.\n\nA telescope cannot show the galaxy as it is now. Its light has travelled across space to reach us, carrying a record of a system far beyond the Milky Way. SIMBAD lists NGC 4088\u2019s coordinates as right ascension 12h 05m 34s and declination +50\u00b0 32\u2032 21\u2033, with a listed optical size of about 5.9 by 2.2 arcminutes. It classifies the galaxy as type Sc, a spiral classification, and records a spectroscopic redshift of 0.002502. That small redshift corresponds to a listed recession velocity of about 750 kilometres per second. These measurements give the observer a useful sense of scale and motion, even when the eyepiece offers only a subtle glow. [SIMBAD: NGC 4088](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204088)\n\nThere is a useful tension between the numbers and the view. The catalogue gives the galaxy a measurable extent, a position precise enough to point a telescope, and a spectrum that reveals its motion. To the eye, though, it may remain a soft oval, its light spread thinly over several arcminutes. The challenge is not to force detail from it, but to notice what is there: an extended disk, a brighter middle, perhaps a hint of unevenness when the sky is dark and the instrument steady.\n\n**Scientific context:** SIMBAD lists NGC 4088 as an Sc galaxy and also includes an active-galaxy-nucleus classification among its object types. Those catalogue labels describe different aspects of the object; neither guarantees that a visual observer will see a bright, star-like core. The quoted redshift is small, but it is a measurable shift in the galaxy\u2019s light\u2014one way astronomers study how objects move relative to us. Its apparent size, meanwhile, tells observers how much sky the galaxy covers, not how large it would look up close.\n\n**Observing guidance:** Look for Arp 18 in Ursa Major, using its coordinates and a detailed star chart to guide your search. Choose a moonless, transparent night away from bright lights. A low-power eyepiece can help locate and frame the galaxy; once found, try moderate magnification and use averted vision, looking slightly to one side of the faint glow. Give your eyes time to adapt, and don\u2019t be discouraged if the spiral structure stays elusive. SIMBAD lists a B-band magnitude of 11.2, but the ease of seeing a galaxy depends on more than a number: sky conditions, telescope aperture and the observer\u2019s experience all matter.\n\nWhen I looked again, the oval seemed less like a blur and more like a destination. The faintness was part of the encounter. Somewhere beyond the eyepiece, NGC 4088\u2019s light had crossed the darkness with its message intact. My task was simply to meet it halfway.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%204088",
+            "overlap_terms": [
+              "active",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "depends",
+              "extent",
+              "frame",
+              "galaxy",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
