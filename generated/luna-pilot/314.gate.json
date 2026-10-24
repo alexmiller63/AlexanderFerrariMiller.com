@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205466"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 5466: A Quiet Island in Bo\u00f6tes\n\n*An old globular cluster asks for patience, a dark sky and a little help from a finder chart.*\n\nThe night\u2019s first stars come out one by one, but NGC 5466 is not one of the showy ones. This globular cluster in Bo\u00f6tes waits beyond the easy landmarks: a faint, compact gathering whose light has travelled a long way to reach an eyepiece. Finding it is a small act of attention, and that is part of the pleasure.\n\nA globular cluster is a dense, roughly spherical association of stars held together by gravity. NGC 5466\u2019s catalogue listing gives it an apparent visual magnitude of 9.70 and an angular size of about 11 arcminutes\u2014roughly a third of the Moon\u2019s apparent diameter. Those figures describe the cluster\u2019s combined light and listed extent, not a promise that it will look large or bright through every instrument. The view depends on aperture, magnification, sky darkness and the observer\u2019s eyes. [SIMBAD: NGC 5466](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205466)\n\nIts position is a useful starting point for the search: right ascension 14 hours 05 minutes 27 seconds, declination +28 degrees 32 minutes (J2000). SIMBAD also lists a heliocentric radial velocity of about 107 kilometres per second. That number describes motion along our line of sight; it is not a measure of how quickly the cluster crosses the sky. In the eyepiece, of course, none of this motion is visible. The cluster is a still-looking destination, even as its stars and the Sun travel through the Galaxy. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205466)\n\nFor northern observers, late spring and summer evenings are a good time to look for Bo\u00f6tes. Begin with a sky chart or planetarium app set to the coordinates above; NGC 5466 is a better target for a deliberate chart-assisted search than for a casual sweep of the sky. A finder scope or binoculars can help orient you, but a telescope under a dark sky gives the best chance of seeing the cluster clearly. Start at low power to locate the field, then increase magnification gradually if the image remains steady and the cluster is not lost in the dim background.\n\nGive your eyes time to adapt to darkness, and shield a chart or screen so its light does not undo that work. On a bright, hazy or moonlit night, the faint glow may be difficult to separate from the sky. If the first view seems unremarkable, try looking slightly to one side of the target: peripheral vision can be more sensitive to faint light. Be patient, and avoid expecting a sharply resolved swarm of stars\u2014the impression may instead be a soft, concentrated haze.\n\nThere is a particular charm in that modest first glimpse. The catalogue gives coordinates, brightness and apparent size; the telescope turns them into a place in the sky. NGC 5466 does not announce itself. It rewards the observer who checks the chart, lets the night grow dark and looks again.\n\n**Sources:** [SIMBAD object entry for NGC 5466](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205466).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%205466",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "catalogue",
+              "cluster",
+              "coordinates",
+              "declination",
+              "degrees",
+              "depends",
+              "extent",
+              "field",
+              "globular",
+              "heliocentric"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
