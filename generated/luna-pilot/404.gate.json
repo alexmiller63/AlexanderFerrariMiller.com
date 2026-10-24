@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207243"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# NGC 7243: A Loose Family in Lacerta\n\n*An open cluster spreads its light across half a degree of sky. Find it on an autumn evening, then give your eyes time to pick out its stellar company.*\n\nAutumn\u2019s sky offers a small constellation with a long, winding shape: Lacerta, the Lizard. There is no blazing beacon to announce it. Instead, look for the quieter riches of its star fields\u2014and, at the position catalogued as **NGC 7243**, a gathering of stars spread over a patch of sky about as wide as the full Moon.\n\nThe SIMBAD astronomical database classifies NGC 7243 as an open cluster and gives its J2000 coordinates as right ascension 22h 15m 09s, declination +49\u00b0 49\u2032 48\u2033. Its listed angular size is 30.6 arcminutes. SIMBAD also records a parallax of 1.116 milliarcseconds; taken at face value, that corresponds to a distance of roughly 900 parsecs, or about 2,900 light-years. These figures offer a sense of scale: the cluster is a distant stellar neighborhood, but one that occupies a generous span of our view. [SIMBAD: NGC 7243](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207243)\n\n\u201cOpen cluster\u201d is a description of both appearance and history. Such clusters are groups of stars associated with one another, unlike the dense, ancient globular clusters that pack many thousands of stars into a compact ball. Open clusters are generally less tightly bound and can gradually disperse as their stars travel through the galaxy. The database identification tells us what kind of object NGC 7243 is; it does not, by itself, settle every detail of the cluster\u2019s age or membership. For this visit, the essential fact is simpler: look for a loose gathering, not a single bright object.\n\nThat distinction matters at the eyepiece. SIMBAD lists a visual magnitude of 6.4, but the database marks that photometry with a low-quality flag. And a cluster\u2019s total brightness is not the brightness of each member star: its light is divided among many points. Don\u2019t expect a dazzling, naked-eye patch from a town or suburb. Under a dark sky, binoculars may reveal a faint sprinkling; a small telescope at low power can help separate more of the stars while keeping the cluster\u2019s broad shape in view.\n\n**Observing guidance:** On autumn evenings in the Northern Hemisphere, start with a finder chart or sky app and search Lacerta for NGC 7243 by name. The coordinates\u201422h 15m, +49\u00b0 50\u2032, rounded\u2014are useful for a telescope\u2019s setting circles or a digital mount. Begin with binoculars or your finder scope, then use a wide-field eyepiece. Let your eyes adapt to the dark, and avoid staring directly at the cluster: averted vision can make faint stars easier to notice. If the field looks sparse at first, pause before moving on. A loose cluster rewards patient looking; its pattern often emerges a few stars at a time.\n\nThere is a pleasing modesty to NGC 7243. It does not demand attention with a brilliant glow. Instead, it invites the observer to slow down and assemble the view: faint points, a wide field, and the recognition that stars scattered across a small patch of sky can still belong to a larger family. Under Lacerta\u2019s quiet autumn stars, that is more than enough.\n\n**Source:** [SIMBAD astronomical database, NGC 7243](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207243)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207243",
+            "overlap_terms": [
+              "angular",
+              "ascension",
+              "before",
+              "cluster",
+              "coordinates",
+              "database",
+              "declination",
+              "degree",
+              "field",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Open cluster",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%207243"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
