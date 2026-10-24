@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201068"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# M77: A Quiet Patch With an Active Heart\n\n*In Cetus, this spiral galaxy offers a modest visual target and a reminder that the universe\u2019s brightest engines can hide inside faint smudges.*\n\nM77 won\u2019t announce itself. Through a telescope, it may look like a small, soft glow, its center brighter than its surrounding haze. Yet this unassuming patch in the constellation Cetus is cataloged as a Seyfert 2 galaxy: a spiral system whose nucleus is unusually energetic. The astronomical database SIMBAD identifies it as both M77 and NGC 1068, and classifies it as a Seyfert 2 galaxy with a spiral morphology. ([SIMBAD: NGC 1068](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201068))\n\nThat contrast is the appeal. A galaxy is not a single light but a vast arrangement of stars, gas and dust. In an active galaxy, the central region releases far more energy than ordinary starlight alone would suggest. Astronomers attribute that activity to material falling toward a supermassive black hole at the galaxy\u2019s core. The black hole itself does not shine; the infalling matter heats up and radiates as it spirals inward. \u201cSeyfert 2\u201d is a classification of the galaxy\u2019s active nucleus, not a label for something a backyard observer can resolve into detail.\n\nM77\u2019s cataloged position is right ascension 2 hours, 42 minutes, 40.7 seconds, declination 0 degrees, 00 minutes, 48 seconds south, for the J2000 coordinate system. SIMBAD lists its optical extent at about 5.5 by 5.1 arcminutes\u2014roughly a sixth of a degree across. ([SIMBAD: NGC 1068](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201068)) That is enough to make it a satisfying object to seek, but not a showpiece that leaps out in every sky. The database gives a visual magnitude of 8.87, a useful indication that binoculars are unlikely to reveal it easily and that sky conditions matter.\n\nFor a practical search, use a current star chart or planetarium app and enter M77\u2019s coordinates. Look for it in Cetus when the constellation is well placed in the evening sky; autumn is a convenient season for observers at mid-northern latitudes. A Go-To mount or setting circles can take you close, but a chart helps confirm the field. Start with low magnification, which gives a wider view and makes a faint target easier to catch. Once you find the galaxy, try a little more magnification, then look slightly to the side of the eyepiece\u2019s center: faint haze can be easier to notice with averted vision.\n\nChoose a dark, transparent night, and give your eyes time to adapt. From a bright location, M77\u2019s central glow may be all you see; under darker skies, the surrounding light may appear broader. Don\u2019t expect spiral arms to spring into view in a small telescope. The reward is subtler: recognizing a galaxy by its glow while knowing that its compact-looking center marks an active cosmic neighborhood.\n\nM77 asks for patience, not spectacle. Find the faint oval, hold your gaze, and let the idea catch up with the image: light from a distant galaxy has traveled across space to meet your eye, carrying news of a nucleus that is anything but quiet.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=NGC%201068",
+            "overlap_terms": [
+              "ascension",
+              "coordinate",
+              "coordinates",
+              "database",
+              "declination",
+              "degree",
+              "degrees",
+              "galaxy",
+              "ident",
+              "inside",
+              "magnitude",
+              "minutes"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
