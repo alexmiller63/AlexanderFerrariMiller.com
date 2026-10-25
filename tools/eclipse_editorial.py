@@ -81,15 +81,9 @@ EXPLANATIONS = {
 
 
 def load_events(root):
-    """Keep numerical catalog data authoritative; add existing Calendar publication notes."""
+    """Keep calculated catalog values authoritative; retain earlier calculation records."""
     path = root / "generated/eclipse-catalog/eclipses-2025-2036.json"
     events = {e["id"]: dict(e) for e in json.loads(path.read_text())["eclipses"]}
-    visibility_path = root / "data/eclipse-visibility.json"
-    if visibility_path.exists():
-        references = json.loads(visibility_path.read_text())["events"]
-        for eid, event in events.items():
-            if eid in references:
-                event["visibility_reference"] = references[eid]
     source = root / "eclipse.yaml"
     if source.exists():
         # This repository's Calendar source uses flat, quoted publication fields.
@@ -102,12 +96,10 @@ def load_events(root):
             eid = f"ECL-{day[1]}-{kind[1][0].upper()}"
             if eid not in events:
                 continue
-            events[eid]["earlier_calculation"] = "  - id: " + block.rstrip()
+            # Keep the earlier numerical calculation, excluding borrowed publication fields.
+            calculation = re.sub(r'(?m)^    (?:magnitude|visibility|observing_note):.*\n?', '', block)
+            events[eid]["earlier_calculation"] = "  - id: " + calculation.rstrip()
             events[eid]["earlier_method"] = source.read_text().split("\neclipses:", 1)[0]
-            for field in ("magnitude", "visibility", "observing_note"):
-                value = re.search(rf'(?m)^    {field}: "([^"\n]*)"$', block)
-                if value:
-                    events[eid][field] = value[1]
     return events
 
 
@@ -204,9 +196,6 @@ def facts(event):
 
 def sources(event):
     links = []
-    if event.get("visibility_reference") and not event.get("central_path", {}).get("points"):
-        links.append((event["visibility_reference"]["source_url"],
-                      "Visibility regions and maps: Eclipse Predictions by Fred Espenak, NASA/GSFC"))
     if event["kind"] == "solar":
         links.append(("https://science.nasa.gov/eclipses/safety/", "NASA: solar viewing safety"))
     if history(event):
@@ -236,38 +225,9 @@ def render_visibility(event):
     if event.get("central_path", {}).get("points"):
         from eclipse_path_display import render_central_path
         return render_central_path(event)
-    reference = event.get("visibility_reference")
-    if not reference:
-        return '<h2>Where to watch</h2>' + paragraphs([event.get("visibility", "Geographic visibility has not been added for this event.")])
-    def region_words(text):
-        for short, full in (("N.", "North"), ("S.", "South"), ("C.", "Central"), ("Mid East", "Middle East")):
-            text = text.replace(short, full)
-        for short, full in (("n", "northern"), ("s", "southern"), ("e", "eastern"), ("w", "western"), ("c", "central"),
-                            ("nw", "northwestern"), ("ne", "northeastern"), ("sw", "southwestern"), ("se", "southeastern")):
-            text = re.sub(rf'\b{short}\b', full, text)
-        return text
-    result = '<section id="eclipse-visibility"><h2>Where to watch</h2>'
-    result += paragraphs([region_words(reference["regions"])])
-    if reference.get("central_path"):
-        heading = {"total": "Path of totality", "annular": "Path of annularity", "hybrid": "Hybrid eclipse path"}[reference["path_type"]]
-        result += f'<h3>{heading}</h3>' + paragraphs([region_words(reference["central_path"])])
-        result += paragraphs(["Only the narrow central path receives this phase. The wider visibility region sees a partial solar eclipse. A country’s inclusion does not mean the path covers the whole country."])
-    if reference.get("type") != event["type"]:
-        result += paragraphs([f"The published map classifies this event as {reference['type']}; the stored Star Almanack geometry currently classifies it as {event['type']}."])
-    if event["kind"] == "lunar":
-        result += paragraphs(["Visibility depends on the Moon being above your horizon during each phase. Some places see the whole event; others see only the beginning or end near moonset or moonrise."])
-    url = html.escape(reference["map_url"], quote=True)
-    if event["kind"] == "solar":
-        result += f'<a href="{url}"><img class="eclipse-map" src="{url}" loading="lazy" alt="Published geographic visibility map for the {html.escape(event["date_utc"], quote=True)} solar eclipse"></a>'
-        result += f'<p><a href="{url}">Open full-size visibility map</a></p>'
-    else:
-        result += f'<p><a href="{url}">Open visibility map and eclipse diagram (PDF)</a></p>'
-    for key, label in (("interactive_path_url", "Explore the central path on a map"), ("path_table_url", "Path coordinates and limits")):
-        if reference.get(key):
-            result += f'<p><a href="{html.escape(reference[key], quote=True)}">{label}</a></p>'
-    result += paragraphs(["The map and regional descriptions are published reference predictions. Star Almanack’s calculated event times and geometry are shown separately below."])
-    result += f'<p class="eclipse-sources">{html.escape(reference["credit"])}</p></section>'
-    return result
+    return '<section id="eclipse-visibility"><h2>Where to watch</h2>' + paragraphs([
+        "Star Almanack has not yet calculated geographic visibility for this event."
+    ]) + '</section>'
 
 
 def render_geometry(event):
@@ -384,6 +344,5 @@ def render_page(event):
             '<h2>Watching the eclipse</h2>' + paragraphs([observing(event)]) +
             render_records(event) +
             '<h2>Sources</h2>' + sources(event) +
-            '<p>Explanatory text and eclipse calculations are original work by Star Almanack. The calculations use Sun, Earth, and Moon positions from <a href="https://ssd.jpl.nasa.gov/planets/eph_export.html">JPL’s DE440s ephemeris kernel</a>. Event times, shadow geometry, and the supplied central-path coordinates are calculated by Star Almanack from those positions.</p><p>'
-            'Other visibility and magnitude, where supplied: the Calendar’s publication metadata.</p>'
+            '<p>Explanatory text and eclipse calculations are original work by Star Almanack. The calculations use Sun, Earth, and Moon positions from <a href="https://ssd.jpl.nasa.gov/planets/eph_export.html">JPL’s DE440s ephemeris kernel</a>. Event times, shadow geometry, and the supplied central-path coordinates are calculated by Star Almanack from those positions.</p>'
             '</main></body></html>')
