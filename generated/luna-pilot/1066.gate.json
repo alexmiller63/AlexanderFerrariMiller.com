@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2082273"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Atria: A Southern Giant with a Quiet Spectral Clue\n\n*Brilliant enough for the unaided eye, this amber-hued star marks the southern triangle\u2014and its catalogue classification hints at a more intricate story than its steady light suggests.*\n\nOn a clear southern evening, Atria is easy to mistake for a small, steady ember pinned above the horizon. It is the brightest star in Triangulum Australe, the Southern Triangle, and a rewarding destination for anyone exploring the constellations below Centaurus. Its light has crossed a considerable stretch of space before reaching us: measurements in the SIMBAD astronomical database put its parallax at 8.35 milliarcseconds, corresponding to a distance of roughly 120 parsecs, or about 390 light-years. [SIMBAD: Atria](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2082273)\n\nAtria is not a blue-white, rapidly burning newcomer. SIMBAD lists its spectral type as K2III_Ba1: a K-type star with luminosity class III, the designation for a giant. The \u201cBa1\u201d suffix is a spectral peculiarity recorded in the classification; it is a reminder that stellar spectra can carry details not obvious to the eye. The catalogue\u2019s entry also lists a visual magnitude of 1.88, making Atria one of the sky\u2019s conspicuously bright stars. Its familiar warm appearance is consistent with a cooler surface than that of blue-white stars, though the exact shade perceived depends on the observer, the atmosphere and nearby comparison stars.\n\nA giant star\u2019s present state reflects change. After using much of the hydrogen in its core, a star can expand and cool at its surface, becoming larger and brighter than it was earlier in its life. Atria\u2019s classification places it among such giants. Its brightness is not a measure of distance alone: the star is far enough away that its apparent brilliance is a sign of substantial intrinsic light as well.\n\n**How to find it:** Start with the Southern Cross (Crux) and the bright stars of Centaurus, then look for the compact three-star pattern of Triangulum Australe. Atria is the triangle\u2019s brightest point. SIMBAD gives its J2000 position as right ascension 16h 48m 40s and declination \u221269\u00b0 01\u2032. [SIMBAD: coordinates and identifiers](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2082273) From southern latitudes, the constellation climbs high enough to stand out; it is best placed in the evening sky during the southern autumn and winter. Far north of the tropics, Atria never rises, and even from tropical northern locations it stays low.\n\nNo telescope is needed: under a reasonably dark sky, Atria is a naked-eye star. Binoculars can help pick out the triangle against a bright or hazy background, but the star itself may be easiest to appreciate without magnification. Give your eyes time to adjust, and let Atria\u2019s steady glow anchor the pattern. If you compare its color with a nearby blue-white star, do so at a glance rather than staring directly: the eye\u2019s color sensitivity changes in dim light.\n\nAtria offers no dramatic burst or elaborate telescope show. Its appeal is quieter: a bright marker in a southern constellation, and a distant giant whose catalogued spectrum preserves clues that a point of light cannot reveal on its own. Find the triangle, pause on its brightest corner, and remember that the calm-looking ember is a star in a later chapter of stellar life.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2082273",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "catalogue",
+              "class",
+              "coordinates",
+              "corresponding",
+              "database",
+              "declination",
+              "depends",
+              "ident",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
