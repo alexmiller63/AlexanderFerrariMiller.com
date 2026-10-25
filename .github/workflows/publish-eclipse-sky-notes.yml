@@ -60,13 +60,32 @@ jobs:
                   raise SystemExit(f"Missing week page: {page}")
               content = page.read_text()
               event_id = e["id"]
-              for cls in ('sky-note-wordy', 'sky-note-highlights'):
-                  start = content.find(f'class="{cls}"')
-                  if start < 0:
-                      raise SystemExit(f"{page}: missing {cls}")
-                  end = content.find('class="sky-note-', start + 10)
-                  segment = content[start:end if end > start else None]
-                  if event_id not in segment:
+              from html.parser import HTMLParser
+              class ModeParser(HTMLParser):
+                  def __init__(self):
+                      super().__init__()
+                      self.active = None
+                      self.depth = 0
+                      self.found = set()
+                  def handle_starttag(self, tag, attrs):
+                      attrs = dict(attrs)
+                      classes = attrs.get("class", "").split()
+                      if self.active is not None:
+                          self.depth += 1
+                          if attrs.get("data-eclipse-id") == event_id:
+                              self.found.add(self.active)
+                      elif "sky-note-wordy" in classes or "sky-note-highlights" in classes:
+                          self.active = "sky-note-wordy" if "sky-note-wordy" in classes else "sky-note-highlights"
+                          self.depth = 1
+                  def handle_endtag(self, tag):
+                      if self.active is not None:
+                          self.depth -= 1
+                          if self.depth == 0:
+                              self.active = None
+              parser = ModeParser()
+              parser.feed(content)
+              for cls in ("sky-note-wordy", "sky-note-highlights"):
+                  if cls not in parser.found:
                       raise SystemExit(f"{page}: {event_id} missing from {cls}")
               print(f"Verified {event_id} in both modes")
           PY
