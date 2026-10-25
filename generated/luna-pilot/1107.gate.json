@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2090422"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Tel: A Southern Star With a Measurable Journey\n\n*In the faint constellation Telescopium, a blue-white star offers a simple naked-eye target\u2014and a reminder that even apparently fixed stars are moving.*\n\nThe first thing to know about Alpha Tel is where to look: far south. The star sits in Telescopium, a small, inconspicuous constellation, at a declination of almost 46 degrees south. For observers below the equator, it climbs into the evening sky during the southern winter. From northern latitudes it stays low, or out of sight altogether, so choose a clear southern horizon if you\u2019re trying from the subtropics.\n\nOnce you\u2019ve found it, Alpha Tel is an uncomplicated point of light. Its catalogued visual magnitude is 3.46, bright enough for the unaided eye under a reasonably dark sky. Binoculars will make the field easier to examine, but they aren\u2019t needed to see the star itself. Start with a sky map or planetarium app, then sweep the region with binoculars: Telescopium lies among the southern constellations near Sagittarius and Corona Australis. Give your eyes time to adjust, and look for a steady blue-white spark rather than a showy pattern of bright stars.\n\nThat color is a clue to the star\u2019s nature. SIMBAD lists Alpha Tel\u2019s spectral type as B3 IV: a hot B-type star, with luminosity class IV, commonly described as a subgiant. Its apparent brightness is not the same as its true luminosity; how bright a star looks depends both on how much light it emits and how far away it is. Alpha Tel\u2019s measured parallax is about 11.67 milliarcseconds. Inverting that angle gives a distance of roughly 86 parsecs, or about 280 light-years. At that distance, its modest-looking point of light belongs to a much more energetic kind of star than our Sun.\n\nThe numbers also tell a quieter story: Alpha Tel is moving across the sky. SIMBAD reports its proper motion as about 17 milliarcseconds per year east-west and 54 milliarcseconds per year north-south, with the catalogued signs indicating its direction in the sky\u2019s coordinate system. That is far too small a shift to watch during an evening\u2014or even across a human lifetime with the naked eye. Over centuries, though, careful measurements can reveal that the star has changed position against the more distant background.\n\nFor a practical observing session, try to pick a night when the southern sky is clear and the Moon is not washing out the fainter stars. Let your eyes adapt for 15 to 20 minutes; avoid looking at bright phone screens, or turn the screen\u2019s brightness down. First identify the surrounding constellation using a chart, then compare the field with what you see through binoculars. Alpha Tel will not fill the view or change color dramatically. Its appeal is subtler: a bright, accessible marker in an overlooked patch of sky, carrying measurable information about its temperature, distance and motion.\n\nIf you\u2019re observing from far north, don\u2019t mistake a low, hazy view for a failed search. The star\u2019s southern position makes it a horizon-hugger there, where atmospheric haze can dim and distort it. For observers farther south, it\u2019s a more comfortable target\u2014and a small invitation to linger in a part of the sky that often gets less attention.\n\n**Source:** [SIMBAD entry for Alpha Tel (HIP 90422)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2090422)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2090422",
+            "overlap_terms": [
+              "angle",
+              "class",
+              "coordinate",
+              "declination",
+              "degrees",
+              "depends",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "motion",
+              "north",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
