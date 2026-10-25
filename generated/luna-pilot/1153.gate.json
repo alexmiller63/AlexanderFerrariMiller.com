@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100751"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Peacock: A Blue Beacon in the Southern Sky\n\n*This bright star in Pavo looks like a single point of light. Its spectrum tells a more complicated story.*\n\nPeacock, the name commonly used for Alpha Pavonis, is a fine example of how a steady-looking star can conceal a close companion. To the unaided eye it is a single bright point in the southern constellation Pavo. Astronomers classify it as a spectroscopic binary: its two stars are too close to distinguish as separate points in ordinary viewing, but their motion can be detected from changes in the star\u2019s spectrum.\n\nThat motion is the key. As the stars orbit one another, their changing motion toward and away from Earth shifts the wavelengths of spectral lines. Repeated observations can reveal the pair even when a telescope cannot split their images. SIMBAD lists Alpha Pavonis as a spectroscopic binary and gives its spectral type as B2IV. The \u201cB2\u201d identifies a hot, blue-white star; \u201cIV\u201d denotes a subgiant luminosity class. The database entry does not, by itself, specify the companion\u2019s properties or the orbit. [SIMBAD: HIP 100751](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100751)\n\nPeacock is bright enough to find without optical aid: SIMBAD reports a visual magnitude of about 1.9. Its listed parallax, 18.24 milliarcseconds, puts it roughly 55 parsecs away\u2014about 179 light-years, using the inverse-parallax distance estimate. That is far beyond the neighborhood of the naked-eye stars, yet its brightness makes it an easy marker in a dark southern sky.\n\nThe star\u2019s coordinates also explain who gets the best view. Its declination is about 56.7 degrees south, so it rises high for observers in the Southern Hemisphere and stays low above the southern horizon for many northern observers. From locations north of roughly 33 degrees north latitude, it never rises above the horizon. If you are farther north than the tropics, choose a clear, unobstructed southern horizon and observe when Pavo is highest in the sky.\n\nFor many Southern Hemisphere observers, Peacock is well placed during the cooler months and into spring. A star chart or planetarium app can help you identify Pavo, especially if you are new to the southern constellations. Once you have located the constellation, Peacock\u2019s brightness makes it a useful anchor. Binoculars will show it more easily in a bright or hazy sky, but they will not resolve the binary: the companion is a spectroscopic discovery, not a visible close double.\n\nTry looking on a moonless night, then return to the star with a small telescope. The view may not change much; that is part of the appeal. A point of light can be both an observing guide and a reminder that the sky\u2019s apparent simplicity is often an illusion. Peacock looks singular, but its spectrum reveals a dance beneath the surface.\n\n**Source:** [SIMBAD entry for HIP 100751 / Alpha Pavonis](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100751)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20100751",
+            "overlap_terms": [
+              "binary",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "images",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
