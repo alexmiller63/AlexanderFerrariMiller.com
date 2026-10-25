@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20111169"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Lac: The Quiet Blue Lantern of Lacerta\n\n*An autumn guide to a naked-eye star whose measured motion is easier to find in a catalogue than in the sky.*\n\nSome stars announce themselves with brilliance; Alpha Lac prefers a subtler introduction. In the northern constellation Lacerta, the Lizard, it shines at about magnitude 3.77\u2014bright enough to see without optical aid under a reasonably dark sky, yet modest beside the showier stars nearby. Its light has travelled roughly a century to reach us: SIMBAD lists a parallax of 31.4943 milliarcseconds, corresponding to a distance of about 32 parsecs, or 104 light-years. [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20111169)\n\nThe star\u2019s catalogue name is Alpha Lacertae, often shortened to Alpha Lac. SIMBAD gives its spectral type as A1V. The \u201cA\u201d identifies a hot, blue-white class of star; \u201c1\u201d places it near the hotter end of that class, while \u201cV\u201d marks it as a main-sequence star, one still shining through the fusion of hydrogen in its core. The classification is a compact scientific portrait\u2014not a colour swatch, but a clue to the star\u2019s temperature and stage of life.\n\nIts address is precise: right ascension 22 hours 31 minutes and declination +50 degrees 17 minutes (J2000). Those coordinates place Alpha Lac high in the northern sky for observers at northern latitudes. But the star also has a quiet second story. SIMBAD reports proper motion of about 137 milliarcseconds per year eastward in right ascension and 18 milliarcseconds per year northward in declination. That movement is far too small to notice from one night to the next. Across many decades, however, careful measurements reveal that Alpha Lac is not fixed against the distant background. The sky is a map in motion.\n\n**How to observe it:** Choose a clear autumn evening and find Lacerta on a star chart between the more familiar constellations Cygnus and Cassiopeia. Lacerta is a faint, irregular chain of stars, so begin with those brighter neighbours rather than searching the whole sky at once. Alpha Lac\u2019s position\u2014near 22h 31m, +50\u00b0\u2014can help confirm the identification in a planetarium app or printed atlas. Under a dark sky, try first with unaided eyes; binoculars can make the surrounding star pattern easier to trace. A small telescope will show a sharper point of light, but Alpha Lac does not need magnification to be enjoyed.\n\nIf the star seems understated, that is part of its charm. It is not a flare, a planet, or a dramatic double-star spectacle in this view; it is a steady point whose importance lies in what measurement can disclose. Parallax turns a tiny apparent shift into a distance. Spectral lines let astronomers classify the light. Repeated position measurements uncover motion that a human observer would never see unaided.\n\nLook up, find the faint lizard between its brighter neighbours, and let your eyes rest on Alpha Lac. The view is simple. The numbers behind it are a reminder that even a quiet star has a history\u2014and a journey of its own.\n\n**Source:** [SIMBAD object record for HIP 111169 / Alpha Lac](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20111169)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20111169",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "class",
+              "coordinates",
+              "corresponding",
+              "declination",
+              "degrees",
+              "ident",
+              "magnitude",
+              "measurement",
+              "motion",
+              "object"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
