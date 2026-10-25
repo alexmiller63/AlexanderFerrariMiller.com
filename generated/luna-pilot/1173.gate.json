@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20105199"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alderamin, a steady beacon with a subtle drift\n\n*The brightest star in Cepheus is easy to spot\u2014but precise measurements reveal that it is moving through the sky.*\n\nOn an autumn evening, look north for the familiar zigzag of Cassiopeia. Nearby, Cepheus forms a house-shaped pattern, and its brightest star, Alderamin, marks a corner of the roof. It shines at about magnitude 2.46: bright enough to see without binoculars under a reasonably dark sky, though city lights can make the fainter stars around it harder to pick out.\n\nAlderamin is not a star fixed in place. Like the Sun, it travels through the Milky Way, and its motion has a small effect on its position against the distant background. SIMBAD lists its proper motion as about 151 milliarcseconds per year eastward and 49 milliarcseconds per year northward\u2014together, roughly 0.16 arcsecond annually. That change is far too slight to notice from one night to the next. Over many generations, however, the pattern of stars shifts.\n\nThe star\u2019s distance can be estimated from its parallax, the apparent wobble in its position as Earth circles the Sun. SIMBAD gives a parallax of 66.50 milliarcseconds. Taking the reciprocal of that value in arcseconds gives a distance of about 15 parsecs, or 49 light-years. In stellar terms, Alderamin is a near neighbor.\n\nIts catalogue classification, A8Vn, offers another clue to its nature. The \u201cA\u201d identifies a hot, blue-white spectral type; \u201cV\u201d indicates a main-sequence star, in the long-lived stage of fusing hydrogen in its core. The \u201cn\u201d denotes broadened spectral lines. Alderamin\u2019s catalogue entry also records a radial velocity of about 16 kilometers per second toward us. That motion is along our line of sight, distinct from the sideways motion measured across the sky.\n\nFor a useful observing session, start with Cassiopeia and consult a sky chart or astronomy app to locate Cepheus beside it. Once you have the house shape, Alderamin is the bright star that anchors the pattern. Its coordinates\u2014right ascension 21 hours 18 minutes, declination +62 degrees 35 minutes\u2014place it high in the northern sky. From locations north of roughly 27 degrees latitude, it never sets; farther south, it still rises, though it spends part of each day below the horizon. Autumn evenings are especially convenient for many observers in the Northern Hemisphere.\n\nNo telescope is needed to enjoy Alderamin. Binoculars can help separate its pattern from a bright background, but the star itself is best appreciated with the naked eye: a clean point of light whose measured drift reminds us that the sky\u2019s familiar figures are not frozen. The constellations are signposts, not cages. Alderamin keeps its place in Cepheus for now, while slowly writing a new position into the future.\n\n**Sources:** SIMBAD entry for HIP 105199 (Alderamin): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20105199  \nDistance and circumpolar threshold are calculated from the listed parallax and declination.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20105199",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "magnitude",
+              "motion",
+              "north",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
