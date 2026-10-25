@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101958"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sualocin: A Dolphin\u2019s Brightest Point\n\n*An easy-to-miss star in a small constellation offers a useful lesson in stellar distance\u2014and a rewarding late-summer stop.*\n\nSualocin is the brightest star in Delphinus, the Dolphin, but \u201cbrightest\u201d is a relative distinction. At magnitude 3.8, it is a modest point of light, outshone by nearby Altair. Yet on a clear night, away from glaring streetlights, it is visible to the unaided eye\u2014and its blue-white light marks one corner of a compact constellation that can feel like a discovery.\n\nDelphinus lies east of Altair in the summer Milky Way\u2019s neighborhood. The constellation\u2019s small diamond is its calling card: find Altair, then scan eastward for the close-knit pattern. Sualocin is catalogued as Alpha Delphini; its coordinates are right ascension 20h 39m and declination +15\u00b0 55\u2032, a celestial address that helps a planetarium app or star chart place it precisely. SIMBAD also classifies it as a double or multiple star, a reminder that a point of light to the eye can represent a more complicated system. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101958))\n\nThe star\u2019s measured parallax\u2014about 13.7 milliarcseconds\u2014provides a way to estimate its distance. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Inverting that measurement gives a distance of roughly 73 parsecs, or about 238 light-years. That is far enough for Sualocin\u2019s light to have begun its journey before the American Civil War, though the exact look-back time depends on rounding the distance.\n\nIts spectrum adds another layer to the view. SIMBAD lists Sualocin as B9IV: the B-type designation points to a hot, blue-white star, while luminosity class IV identifies it as a subgiant. The simple impression\u2014one bright pinprick\u2014thus conceals both a stellar classification and a system that catalogs describe as multiple. ([SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101958))\n\nFor a practical look, choose a late-summer evening in the Northern Hemisphere, when Delphinus is well placed after dusk. Let your eyes adjust for several minutes, then use the diamond pattern to pick out its brighter stars. Binoculars can make the surrounding star field more vivid, even if you are simply using them to tour the region rather than to resolve Sualocin\u2019s components. A small telescope is welcome, but not necessary: the pleasure is in finding the constellation and recognizing that the brightest point is not a solitary, ordinary-looking sun.\n\nIf you observe from a bright urban location, start with binoculars or a star-chart app; the fainter outline may be difficult to trace by eye. Once you have found the pattern, look back at Sualocin without optical aid. Its modest brightness is part of the charm. The star does not dominate the sky; it rewards a little attention.\n\nAn almanac entry can begin with a coordinate, a magnitude, or a spectral code. At the eyepiece, those facts become a route: from Altair, to a small diamond, to a blue-white point hundreds of light-years away. Sualocin is easy to overlook\u2014and easy to remember once you have found it.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101958",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalogs",
+              "celestial",
+              "class",
+              "coordinate",
+              "coordinates",
+              "declination",
+              "depends",
+              "double",
+              "ident"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
