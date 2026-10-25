@@ -91,7 +91,8 @@ jobs:
           PY
       - name: Commit only affected generated files
         run: |
-          git add almanack/ generated/sky-notes-2025/ generated/sky-notes-2026/ generated/sky-notes-2027/ generated/sky-notes/ 2>/dev/null || true
+          git add -- almanack/ generated-sky-notes/
           git diff --cached --quiet && exit 0
+          git diff --cached --stat
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish eclipse weeks in Sky Notes"
           git push
