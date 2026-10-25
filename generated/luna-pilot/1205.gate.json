@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20110538"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Lac: A Golden Point in the Lizard\n\n*This autumn, look toward Lacerta for a modest naked-eye star with a giant\u2019s story\u2014and a multiple-star identity that invites a closer look.*\n\nSome stars announce themselves with brilliance. Beta Lac does something quieter: it waits among the faint patterns of Lacerta, the Lizard, a small constellation in the northern sky. Under a dark, transparent sky, its visual magnitude of 4.44 puts it within naked-eye reach. It is not a beacon, but a steady point of light\u2014just the sort of star that rewards a patient sweep of the sky.\n\nThe catalogue name is Beta Lacertae, often shortened to Beta Lac. In SIMBAD, the astronomical database maintained by the Centre de Donn\u00e9es astronomiques de Strasbourg, it is classified as a \u201cDouble or Multiple Star.\u201d That description is a useful invitation, not a promise of an easy split in a small telescope: the listing alone doesn\u2019t establish what a particular observer will resolve. To the unaided eye, the star presents as a single point.\n\nWhat lies behind that point? SIMBAD lists Beta Lac\u2019s spectral type as G9IIIbCa1. The G9 designation places it near the cooler end of the G stars; the Roman numeral III identifies it as a giant, a star that has evolved beyond the main sequence. Its catalogue entry also gives a parallax of 19.3014 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth circles the Sun. Taking the reciprocal of that measurement gives a distance of about 52 parsecs, or roughly 169 light-years.\n\nThe database records a radial velocity of about \u221211 kilometres per second. The minus sign indicates motion toward us along our line of sight. It\u2019s a small measured component of the star\u2019s motion, not a forecast of a close encounter: Beta Lac remains far beyond any human sense of distance.\n\nFor a practical search, start with the constellation\u2019s coordinates rather than expecting Lacerta\u2019s faint outline to leap out. SIMBAD lists Beta Lac at right ascension 22 hours 23 minutes and declination +52 degrees 14 minutes (rounded). In the Northern Hemisphere, that high declination makes it a favorable target for many observers. Around the time local sidereal time approaches 22 hours 24 minutes, Beta Lac is crossing the meridian\u2014the imaginary north\u2013south line through the sky\u2014and is generally well placed for viewing.\n\nFind a dark site, give your eyes time to adapt, and use a current star chart or planetarium app to trace the area between the brighter constellations. Binoculars can help reveal the surrounding star field, but begin with your eyes alone: at magnitude 4.44, Beta Lac can be a naked-eye target under good conditions. If you bring a telescope, increase magnification gradually and see whether the view changes; don\u2019t assume the catalogue\u2019s multiple-star label guarantees a visible companion.\n\nA quiet star, a faint constellation, a measurement made from Earth\u2019s changing viewpoint: Beta Lac asks for no grand spectacle. Its reward is the pleasure of locating one modest light and recognizing how much astronomy can learn from it.\n\n**Source:** [SIMBAD: HIP 110538 / Beta Lac](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20110538)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20110538",
+            "overlap_terms": [
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "double",
+              "ident",
+              "iiibca",
+              "magnitude",
+              "measurement",
+              "minutes"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Double or Multiple Star.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
