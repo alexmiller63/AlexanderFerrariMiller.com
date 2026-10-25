@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092420"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sheliak: The Lyre\u2019s Unresolved Duet\n\n*One point of light, two stars in motion\u2014and a lesson in how astronomers see what eyes cannot.*\n\nOn a clear summer evening, Vega usually gets the first look. It is the brilliant beacon in Lyra, and easy to find. But follow the smaller pattern of stars nearby and you\u2019ll meet Sheliak, a fainter point with a more complicated identity: astronomers catalogue it as Beta Lyrae and classify it as a **spectroscopic binary**. The name means that its double nature is revealed through its spectrum, not by separating two visible stars. [SIMBAD: HIP 92420](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092420)\n\nThat distinction turns a small patch of sky into a detective story. A spectrograph spreads starlight into a band of colors crossed by dark lines. Those lines act like fingerprints. As stars move toward and away from Earth, their light shifts slightly in wavelength\u2014the Doppler effect familiar from the changing pitch of a passing siren. In a spectroscopic binary, the shifting spectral features betray orbital motion even when the pair appears as a single point.\n\nSheliak\u2019s catalogue entry gives it a parallax of 3.5982 milliarcseconds. Parallax is the apparent shift in a star\u2019s position as Earth moves around the Sun; the smaller the shift, the farther away the star. That measurement places Sheliak roughly 900 light-years from us. The same entry lists a visual magnitude of 3.42, bright enough to see without binoculars under a reasonably dark sky. It also gives a spectral classification of B8.5Ib-II\u2014a technical description of the star\u2019s type and luminosity class. These are catalogue measurements, not details the unaided eye can pick out. [SIMBAD: HIP 92420](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092420)\n\nFor a simple observing session, start with Vega, Lyra\u2019s brightest star. On a summer night, look for the compact pattern around it: a little parallelogram of stars, with Sheliak among its brighter points. From a dark location, try first with your eyes alone, then use binoculars to bring the smaller pattern into clearer view. Binoculars won\u2019t show the two stars as separate suns; the point is to find the stage on which their hidden motion takes place. A small telescope can sharpen the star field, but the binary\u2019s spectroscopic identity comes from analyzing its light.\n\nIf you want to make the observation more than a quick glance, sketch Lyra\u2019s pattern or note the date, time and sky conditions. Revisit it on another clear evening. You will not see the components swing around each other, but you can practice the same patient habit that astronomy depends on: returning to a target, recording what you find and distinguishing what the eye shows from what evidence can reveal.\n\nSheliak is therefore both a destination and a reminder. The sky offers bright points; instruments and careful measurement disclose the systems behind them. A single star-like speck can be a duet, its partners hidden in plain sight\u2014not because they are invisible, but because seeing them requires a different kind of sight.\n\n**Source:** [SIMBAD astronomical database entry for HIP 92420 / Beta Lyrae](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092420).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2092420",
+            "overlap_terms": [
+              "around",
+              "binary",
+              "catalogue",
+              "class",
+              "database",
+              "depends",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "measurement",
+              "motion",
+              "other"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
