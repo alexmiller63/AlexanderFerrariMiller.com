@@ -1,0 +1,33 @@
+name: Publish provisional eclipses
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+jobs:
+  integrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Find latest successful eclipse catalog
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          RUN_ID=$(gh run list --repo "${{ github.repository }}" --workflow eclipse-catalog-validation.yml --status success --limit 20 --json databaseId --jq '.[0].databaseId')
+          test -n "$RUN_ID" || { echo "No successful eclipse catalog workflow found"; exit 1; }
+          mkdir -p /tmp/eclipse-catalog
+          gh run download "$RUN_ID" --repo "${{ github.repository }}" --name eclipse-catalog-2025-2036 --dir /tmp/eclipse-catalog
+          test -f /tmp/eclipse-catalog/eclipses-2025-2036.json
+      - name: Generate eclipse pages and weekly references
+        run: python tools/integrate_eclipses.py --catalog /tmp/eclipse-catalog/eclipses-2025-2036.json
+      - name: Commit generated pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack/
+          if git diff --cached --quiet; then
+            echo "No changes"
+          else
+            git commit -m "Publish provisional eclipse pages and weekly references"
+            git push
+          fi
