@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20109074"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sadalmelik: A Golden Beacon in Aquarius\n\n*This bright star is easy to spot with the naked eye\u2014and its measured distance hints at a far grander scale.*\n\nOn a clear autumn evening, look low in the southern sky for Aquarius, a sprawling constellation whose stars are often faint against the city glow. One stands out: Sadalmelik, also cataloged as Alpha Aquarii. Its apparent brightness, about magnitude 2.94, makes it visible without optical aid under reasonably dark skies. It may look like a steady point of light, but its cataloged identity tells a more dramatic story: Sadalmelik is classified as a G2 Ib star, a luminous supergiant. [SIMBAD\u2019s record](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20109074) lists both its classification and measured brightness.\n\nThe \u201cG2\u201d part of that classification places the star in a temperature category similar to the Sun\u2019s; the \u201cIb\u201d denotes a luminous supergiant. That does not mean Sadalmelik is a twin of our star. Rather, it is a reminder that stars sharing a broad temperature category can be in very different stages of their lives and have very different sizes and luminosities. The catalog\u2019s designation helps reveal what unaided eyes cannot: a bright point can be a giant star, not merely a nearby one.\n\nDistance measurements add another layer. SIMBAD lists Sadalmelik\u2019s parallax as about 4.95 milliarcseconds. Parallax is the tiny apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Taking the inverse of that measurement gives a rough distance of 202 parsecs\u2014about 660 light-years. The catalog reports an uncertainty, so that conversion is an estimate, not a precise cosmic yardstick. At that distance, Sadalmelik\u2019s apparent brightness reflects a much more luminous star than it would if it were merely a modest star close to Earth.\n\nFor a first look, give your eyes time to adapt to darkness and find a site with an unobstructed southern horizon. Aquarius is not a compact constellation with a single unmistakable outline, and its stars can be challenging under light pollution. Sadalmelik is a useful starting point: its position is listed at right ascension 22 hours 05 minutes and declination just south of the celestial equator, at about 0 degrees 19 minutes south. [SIMBAD provides those coordinates](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20109074), which can help you locate it in a planetarium app or star chart.\n\nFrom mid-northern latitudes, Aquarius is best placed for evening viewing in autumn, though the constellation\u2019s low southerly position means buildings, trees, or haze can hide it. Binoculars are optional: Sadalmelik is bright enough to see unaided, but binoculars can help pick out the surrounding star field. A telescope is not necessary to appreciate the star; at ordinary backyard magnifications, it remains a point of light.\n\nTry comparing its warm-looking glimmer with nearby stars, but remember that color judgments can be subtle and affected by the atmosphere\u2014especially when a star sits low above the horizon. The simplest observation is also the most rewarding: find the bright point, note its place among Aquarius\u2019s fainter stars, and consider that the light reaching you began its journey centuries ago. Sadalmelik\u2019s coordinates, brightness and stellar classification turn that small point into a destination with both a position in the sky and a place in the lives of stars.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20109074",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "optical"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
