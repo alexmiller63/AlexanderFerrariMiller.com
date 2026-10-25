@@ -3,6 +3,7 @@
 import argparse, html, json, re
 from datetime import date
 from pathlib import Path
+from eclipse_editorial import load_events, render_page
 ROOT=Path(__file__).resolve().parents[1]
 START='<!-- ECLIPSE-OVERLAY START -->'
 END='<!-- ECLIPSE-OVERLAY END -->'
@@ -17,6 +18,7 @@ def main():
     data=json.loads(a.catalog.read_text(encoding='utf-8'))
     rows=data['eclipses']
     if not rows: raise ValueError('Empty eclipse catalog')
+    publication_events = load_events(ROOT)
     weeks={}
     for e in rows:
         day=date.fromisoformat(e['date_utc'])
@@ -24,7 +26,7 @@ def main():
         if not re.fullmatch(r'ECL-\d{4}-\d{2}-\d{2}-[SL]',eid): raise ValueError('Unsafe eclipse ID: '+eid)
         title=f"{e['type'].title()} {e['kind'].title()} Eclipse"
         url=f"/almanack/eclipses/{eid}.html"
-        detail=f"""<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(title)} — Star Almanack</title><main><p><a href="/star-almanack/">Star Almanack</a> / Eclipses</p><h1>{html.escape(title)}</h1><p>{day.isoformat()}</p><p>Greatest eclipse (UTC): {html.escape(str(e.get('greatest_utc','not available')))}</p><p><strong>Provisional:</strong> eclipse geometry and times have not been independently validated.</p><p>Observer visibility is location-dependent; these are not local contact times.</p></main></html>"""
+        detail=render_page({**e, **{key: value for key, value in publication_events.get(eid, {}).items() if key in ("magnitude", "visibility", "observing_note")}})
         write(ROOT/'almanack'/f'eclipses/{eid}.html',detail)
         if 2025<=day.year<=2027:
             y,w,_=day.isocalendar()
@@ -50,3 +52,4 @@ def main():
     write(ROOT/'almanack/eclipses/index.html',index)
     print('Published',len(rows),'provisional eclipse pages; updated',len(weeks),'candidate weeks')
 if __name__=='__main__':main()
+

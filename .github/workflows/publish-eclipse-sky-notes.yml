@@ -29,6 +29,8 @@ jobs:
         run: python tools/ensure_ephemeris_kernels.py --ceres
       - name: Compile generator
         run: python -m py_compile tools/populate_sky_notes_descriptor_by_date.py
+      - name: Refresh eclipse explanation pages
+        run: python tools/integrate_eclipses.py --catalog generated/eclipse-catalog/eclipses-2025-2036.json
       - name: Identify and generate eclipse weeks
         env:
           YEAR: ${{ inputs.year }}
@@ -96,3 +98,4 @@ jobs:
           git diff --cached --stat
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish eclipse weeks in Sky Notes"
           git push
+

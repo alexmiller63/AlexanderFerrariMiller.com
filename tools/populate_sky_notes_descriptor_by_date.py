@@ -453,11 +453,8 @@ def eclipse_treatments(page_path, *, highlights: bool = False) -> str:
     """Render canonical registry eclipses for the ISO week, in both Sky Notes modes."""
     from datetime import date, timedelta
 
-    registry_path = base.ROOT / "generated" / "eclipse-catalog" / "eclipse-registry.json"
-    if not registry_path.exists():
-        return ""
-    registry = json.loads(registry_path.read_text(encoding="utf-8"))
-    parts = page_path.parts
+    from eclipse_editorial import load_events, render_note, title
+
     week = re.search(r"^W(\d{2})$", page_path.parent.name)
     if not week or not page_path.parent.parent.name.isdigit():
         raise RuntimeError(f"Cannot determine ISO week from {page_path}")
@@ -465,22 +462,19 @@ def eclipse_treatments(page_path, *, highlights: bool = False) -> str:
     monday = date.fromisocalendar(year, int(week.group(1)), 1)
     sunday = monday + timedelta(days=6)
     blocks = []
-    for event in registry.get("events", []):
+    for event in load_events(base.ROOT).values():
         day = date.fromisoformat(event["date_utc"])
         if not monday <= day <= sunday:
             continue
         event_id = str(event["id"])
-        kind = str(event["kind"]).capitalize()
-        title = f"{kind} eclipse"
+        heading = title(event)
         href = f"/almanack/{event['detail_path'].lstrip('/')}"
-        description = (f"{day.strftime('%B')} {day.day}, {day.year}: {title}. "
-                       "See the eclipse page for timing, visibility, and observing circumstances.")
         blocks.append(
             f'<section class="sky-note-eclipse" data-eclipse-id="{html.escape(event_id, quote=True)}">'
-            f'<h4><a href="{html.escape(href, quote=True)}">{html.escape(title)}</a></h4>'
-            f'<p>{html.escape(description)}</p></section>'
+            f'<h4><a href="{html.escape(href, quote=True)}">{html.escape(heading)}</a></h4>'
+            f'{render_note(event, highlights=highlights)}</section>'
         )
-    return "\\n".join(blocks)
+    return "\n".join(blocks)
 
 
 def render_planet_treatments(payload: dict, *, highlights: bool = False) -> str:
@@ -682,3 +676,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
