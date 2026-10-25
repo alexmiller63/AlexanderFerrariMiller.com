@@ -49,8 +49,8 @@ def render_index(rows):
             '<a href="https://science.nasa.gov/eclipses/types/">NASA: eclipse types</a> · '
             '<a href="https://science.nasa.gov/moon/lunar-eclipses/">NASA: lunar eclipses</a> · '
             '<a href="https://science.nasa.gov/eclipses/safety/">NASA: solar viewing safety</a>'
-            '</p><p>Event times, geometry, and calculated central tracks: Star Almanack. '
-            'See individual cards for calculation methods, limitations, and other sources.</p></footer>'
+            '</p><p>Explanatory text and eclipse calculations are original work by Star Almanack. The calculations use Sun, Earth, and Moon positions from <a href="https://ssd.jpl.nasa.gov/planets/eph_export.html">JPL’s DE440s ephemeris kernel</a>. Event times, shadow geometry, and the supplied central-path coordinates are calculated by Star Almanack from those positions.</p>'
+            '<p>See individual cards for calculation methods, limitations, and other sources.</p></footer>'
             '</main></body></html>')
 
 def main():
