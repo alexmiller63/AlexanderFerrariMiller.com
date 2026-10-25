@@ -274,6 +274,8 @@ def render_geometry(event):
         "penumbra_margin_km": ("Penumbral margin", "Axis distance minus the sum of penumbral and lunar radii; a negative value indicates overlap." if lunar else "Axis distance minus the sum of Earth’s radius and the penumbral radius; negative indicates overlap in the engine’s geometry."),
         "central_margin_km": ("Umbral overlap margin" if lunar else "Shadow-axis margin", "Axis distance minus the sum of umbral and lunar radii; negative indicates umbral overlap, not necessarily totality." if lunar else "Axis distance minus Earth’s radius; negative means the shadow axis passes inside Earth’s radius."),
         "core_radius_km": ("Earth’s umbral radius" if lunar else "Signed central-shadow radius", "Radius of Earth’s umbra at the Moon’s projected distance behind Earth." if lunar else "Shadow-core radius at the plane of closest axis approach to Earth’s center. Positive denotes umbra; negative denotes antumbra."),
+        "surface_core_radius_min_km": ("Minimum surface shadow-core radius", "Smallest sampled signed core radius where the shadow axis meets the near-side spherical Earth surface. Negative indicates annularity."),
+        "surface_core_radius_max_km": ("Maximum surface shadow-core radius", "Largest sampled signed core radius along that surface path. Positive indicates totality. Opposite signs between the extrema indicate a hybrid eclipse."),
     }
     rows = []
     for key, (label, meaning) in fields.items():
@@ -311,6 +313,8 @@ def render_contacts(event):
     if isinstance(contacts, str):
         contacts = json.loads(contacts)
     labels = {"P1": "Penumbral phase begins", "U1": "Partial phase begins",
+              "axis_entry": "Shadow axis enters Earth’s spherical surface",
+              "axis_exit": "Shadow axis leaves Earth’s spherical surface",
               "U2": "Totality begins", "U3": "Totality ends", "U4": "Partial phase ends",
               "P4": "Penumbral phase ends", "global_begin": "Eclipse begins somewhere on Earth",
               "global_end": "Eclipse ends everywhere on Earth"}

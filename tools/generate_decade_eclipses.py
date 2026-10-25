@@ -7,17 +7,18 @@ A synodic-month grid proposes candidate dates; the engine searches geometry.
 import argparse
 import csv
 import json
+import math
 import sys
 from datetime import date, timedelta
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from eclipse_engine import EclipseEngine, gregorian_to_jd, jd_to_iso_utc
+from eclipse_engine import EclipseEngine, gregorian_to_jd, jd_to_iso_utc, EARTH_RADIUS_KM, SUN_RADIUS_KM, MOON_RADIUS_KM
 from lunar_eclipse_engine import find_lunar_eclipse, SHADOW_EARTH_RADIUS_FACTOR
 
 SEED = date(2026, 8, 12)  # lunation search anchor, not a reference prediction
 SYNODIC_DAYS = 29.530588853
-FIELDS = ["id", "detail_path", "kind", "position_source", "shadow_earth_radius_factor", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
+FIELDS = ["id", "detail_path", "kind", "position_source", "classification_basis", "surface_core_radius_min_km", "surface_core_radius_max_km", "shadow_earth_radius_factor", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
           "penumbra_margin_km", "central_margin_km", "core_radius_km",
           "status"]
 
@@ -61,6 +62,50 @@ def global_solar_boundaries(engine, greatest_jd, *, hours=12.0):
             raise RuntimeError(f"Unable to bracket {label} within {hours} hours")
     return out
 
+def solar_surface_classification(engine, greatest_jd):
+    """Classify the entire central event using its near-side Earth surface.
+
+    A positive signed core radius denotes umbra (total); a negative one
+    denotes antumbra (annular). Opposite signs along the central path mean
+    hybrid. This is a spherical-Earth model, not a detailed path solution.
+    """
+    greatest = engine.geometry_at_utc_jd(greatest_jd)
+    if greatest.axis_distance_km >= EARTH_RADIUS_KM:
+        return {"type": greatest.eclipse_type, "contacts": {},
+                "classification_basis": "No central-axis crossing of spherical Earth"}
+
+    def boundary(direction):
+        inside = greatest_jd
+        for i in range(1, 73):
+            outside = greatest_jd + direction * i * (10.0 / 1440.0)
+            if engine.geometry_at_utc_jd(outside).axis_distance_km >= EARTH_RADIUS_KM:
+                for _ in range(50):
+                    mid = (inside + outside) / 2.0
+                    if engine.geometry_at_utc_jd(mid).axis_distance_km < EARTH_RADIUS_KM:
+                        inside = mid
+                    else:
+                        outside = mid
+                    if abs(inside - outside) * 86400.0 < 0.01:
+                        break
+                return (inside + outside) / 2.0
+        raise RuntimeError("Could not bracket central shadow-axis crossing")
+
+    begin, end = boundary(-1), boundary(1)
+    values = []
+    for jd in [begin + (end - begin) * i / 120 for i in range(121)] + [greatest_jd]:
+        g = engine.geometry_at_utc_jd(jd)
+        near_surface_distance = math.sqrt(max(0.0, EARTH_RADIUS_KM**2 - g.axis_distance_km**2))
+        cone_slope = (SUN_RADIUS_KM - MOON_RADIUS_KM) / g.sun_moon_distance_km
+        values.append(g.core_radius_km + near_surface_distance * cone_slope)
+    low, high = min(values), max(values)
+    kind = "hybrid" if low < 0 < high else "total" if high > 0 else "annular"
+    return {"type": kind,
+            "classification_basis": "Near-side surface along the central-axis path; spherical Earth",
+            "surface_core_radius_min_km": round(low, 3),
+            "surface_core_radius_max_km": round(high, 3),
+            "contacts": {"axis_entry": jd_to_iso_utc(begin), "axis_exit": jd_to_iso_utc(end)}}
+
+
 def generate(start_year, end_year, kernel=None):
     if kernel is not None:
         from kernel_eclipse_engine import KernelEclipseEngine
@@ -85,8 +130,10 @@ def generate(start_year, end_year, kernel=None):
             continue
         g = event.geometry
         solar_contacts = global_solar_boundaries(engine, event.greatest_jd_utc)
+        surface = solar_surface_classification(engine, event.greatest_jd_utc)
+        solar_contacts.update(surface["contacts"])
         print(
-            f"FOUND SOLAR {event.greatest_utc} {event.eclipse_type} "
+            f"FOUND SOLAR {event.greatest_utc} {surface['type']} "
             f"global_begin={solar_contacts['global_begin']} "
             f"global_end={solar_contacts['global_end']}",
             flush=True,
@@ -96,7 +143,8 @@ def generate(start_year, end_year, kernel=None):
             "position_source": position_source,
             "date_utc": event_day.isoformat(),
             "greatest_utc": event.greatest_utc,
-            "type": event.eclipse_type,
+            "type": surface["type"],
+            **{key: value for key, value in surface.items() if key not in ("type", "contacts")},
             "axis_distance_km": round(g.axis_distance_km, 3),
             "penumbra_margin_km": round(g.eclipse_margin_km, 3),
             "central_margin_km": round(g.central_margin_km, 3),
