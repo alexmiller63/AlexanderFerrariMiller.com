@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101772"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Ind: The Quiet Traveler of Indus\n\n*At magnitude 3.1, this southern star is easy to spot under a dark sky\u2014and its measured motion gives it a longer story to tell.*\n\nAlpha Ind doesn\u2019t announce itself with a dramatic color or a famous constellation shape. It is simply a steady point of light in Indus, the southern constellation of the Indian. But look its way on a clear night and you are seeing a nearby star whose position is slowly changing against the distant background.\n\nThe name is also a useful invitation to explore. \u201cAlpha\u201d marks the star as the constellation\u2019s alpha-designated star; \u201cInd\u201d is the standard abbreviation for Indus. Alpha Ind shines at visual magnitude 3.11, bright enough to see with the unaided eye from a dark site. Its light began its journey roughly a century ago: the star\u2019s measured parallax places it about 30 parsecs away, or approximately 99 light-years from Earth.\n\nThat distance comes from a small shift in apparent position as Earth circles the Sun. Astronomers measure the shift\u2014parallax\u2014and use geometry to work out how far away the star is. Alpha Ind\u2019s parallax is about 32.9 milliarcseconds, a tiny angle, but one that pins down its neighborhood in the solar vicinity.\n\nThe star\u2019s classification, K0III-IV, offers another clue to its character. \u201cK0\u201d identifies its spectral type, while \u201cIII-IV\u201d places it between the giant and subgiant luminosity classes. In other words, Alpha Ind is not classified as a main-sequence star like the Sun; its spectrum indicates a star in a more evolved stage. The catalogue evidence is precise about the classification, but it does not, by itself, tell us the details of the star\u2019s interior or future.\n\nIts movement across the sky is subtle but measurable. SIMBAD lists a proper motion of about 51 milliarcseconds per year eastward and 66 milliarcseconds per year northward. Combined, that is roughly 83 milliarcseconds annually\u2014less than a tenth of an arcsecond, far too little to notice from one night to the next. Over a century, however, the shift adds up to about eight arcseconds. The star is not fixed in the celestial pattern; it only appears so because the sky is vast and our observing lifetimes are brief.\n\n**How to find it:** Alpha Ind is at right ascension 20h 37m and declination \u221247\u00b0 17\u2032 (J2000 coordinates). Use those coordinates in a planetarium app or star chart to locate Indus, then look for a naked-eye star of about third magnitude. It is best placed for observers with a clear view toward the southern sky; from far northern locations it may sit very low or remain below the horizon. A pair of binoculars can help pick it out when the sky is bright or hazy, though they are not required under dark conditions. Give your eyes time to adapt, and avoid judging the star\u2019s color through turbulent air near the horizon.\n\nAlpha Ind rewards a patient kind of attention. First find the point of light; then imagine the slow, steady displacement hidden in catalogue measurements. The star\u2019s motion is almost imperceptible to us, yet it is part of the same grand movement that carries every star through the Milky Way.\n\n**Sources:** [SIMBAD entry for HIP 101772 / Alpha Ind](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101772)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101772",
+            "overlap_terms": [
+              "angle",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "declination",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "measure",
+              "motion",
+              "other"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
