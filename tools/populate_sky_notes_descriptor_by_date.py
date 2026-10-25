@@ -455,16 +455,16 @@ def eclipse_treatments(page_path, *, highlights: bool = False) -> str:
     seen = set()
     for day, events in base.calendar_events_from_page(page_path):
         for event in events:
-            if not re.search(r"\\b(?:solar|lunar) eclipse\\b", event, re.I):
+            if not re.search(r"\b(?:solar|lunar) eclipse\b", event, re.I):
                 continue
-            kind_match = re.search(r"\\b(solar|lunar) eclipse\\b", event, re.I)
+            kind_match = re.search(r"\b(solar|lunar) eclipse\b", event, re.I)
             kind = kind_match.group(1).lower()
             event_id = f"ECL-{day.isoformat()}-{'S' if kind == 'solar' else 'L'}"
             if event_id in seen:
                 continue
             seen.add(event_id)
             title = event.split(" · ", 1)[0].strip()
-            href = f"/eclipses/{event_id}.html"
+            href = f"/almanack/eclipses/{event_id}.html"
             details = event.split(" · ", 1)[1].strip() if " · " in event else ""
             prose = (
                 f"{day.strftime('%B')} {day.day}, {day.year}: {title}. "
