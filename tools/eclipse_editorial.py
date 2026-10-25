@@ -4,6 +4,8 @@ import json
 import re
 from datetime import datetime, timezone
 
+ARISTOTLE_QUOTE = "As it is, the shapes which the moon itself each month shows are of every kind—straight, gibbous, and concave—but in eclipses the outline is always curved: and, since it is the interposition of the earth that makes the eclipse, the form of this line will be caused by the form of the earth’s surface, which is therefore spherical."
+
 ARISTOTLE = "https://classics.mit.edu/Aristotle/heavens.2.ii.html"
 
 # Explain both the geometry and the experience, rather than merely naming a type.
@@ -133,12 +135,20 @@ def observing(event):
 def history(event):
     if event["kind"] != "lunar" or event["type"] == "penumbral":
         return ""
-    return ("More than 2,300 years ago, Aristotle argued in On the Heavens (Book II, "
-            "chapter 14) that the consistently curved edge of Earth’s shadow on the "
-            "eclipsed Moon was evidence that Earth is spherical. Watch that curved bite "
-            "during the partial phases: you are seeing Earth reveal its own shape on "
-            "the Moon, the same evidence he described. This is a reason to linger over "
-            "the changing shadow, as well as to note the time of greatest eclipse.")
+    return ("More than 2,300 years ago, Aristotle used the curved shadow seen in lunar "
+            "eclipses to argue that Earth is spherical. Watch that curved bite during "
+            "the partial phases: you can see the same evidence he described.")
+
+
+def render_history(event):
+    context = history(event)
+    if not context:
+        return ""
+    return (paragraphs([context]) +
+            f'<blockquote><p>{html.escape(ARISTOTLE_QUOTE)}</p></blockquote>'
+            '<p class="eclipse-quotation-credit">—Aristotle, <cite>On the Heavens</cite>, '
+            'Book II, chapter 14; translated by J. L. Stocks.</p>')
+
 
 
 
@@ -203,7 +213,8 @@ def render_note(event, *, highlights=False):
         brief = meaning.split(". ")[0] + "."
         return paragraphs([circumstances, brief, "Safe to view directly." if event["kind"] == "lunar"
                            else "Proper solar protection is required; see the eclipse page for observing guidance."])
-    return paragraphs([circumstances, meaning, watching, history(event), observing(event)]) + sources(event)
+    return (paragraphs([circumstances, meaning, watching]) + render_history(event) +
+            paragraphs([observing(event)]) + sources(event))
 
 
 def render_contacts(event):
@@ -235,7 +246,7 @@ def render_page(event):
     meaning, watching = explanation(event)
     heading = html.escape(title(event))
     details = "".join(f"<dt>{html.escape(label)}</dt><dd>{html.escape(value)}</dd>" for label, value in facts(event))
-    past = ('<h2>Earth’s shape, written in shadow</h2>' + paragraphs([history(event)])) if history(event) else ""
+    past = ('<h2>Earth’s shape, written in shadow</h2>' + render_history(event)) if history(event) else ""
     return ('<!doctype html><html lang="en"><head><meta charset="utf-8">'
             '<meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{heading} — Star Almanack</title>'
@@ -245,7 +256,8 @@ def render_page(event):
             'th,td{padding:.6rem;text-align:left;vertical-align:top;border-bottom:1px solid #ccc}'
             '.utc-date,.utc-clock{display:block}.utc-date{font-size:.88em}'
             '.utc-clock{white-space:nowrap;font-variant-numeric:tabular-nums}'
-            '.eclipse-sources{font-size:.9em}</style>'
+            'blockquote{margin:1.25rem 0;padding:.2rem 1rem;border-left:3px solid #c5a45c}'
+            '.eclipse-quotation-credit,.eclipse-sources{font-size:.9em}</style>'
             '</head><body><main><nav><a href="/star-almanack/">Star Almanack</a> / '
             '<a href="/almanack/eclipses/">Eclipses</a></nav>'
             f'<h1>{heading}</h1><p>{html.escape(event["date_utc"])}</p>'
