@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086742"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Cebalrai, the Orange Wayfinder of Ophiuchus\n\n*An easy-to-spot summer star is a nearby giant in slow motion across the sky.*\n\nOn a clear summer evening, look south for the long, winding figure of Ophiuchus, the serpent-bearer. Among its stars, Cebalrai offers a quiet point of orientation: a modestly bright star close to the celestial equator, shining from a part of the sky shared by Hercules, Scorpius and Sagittarius. Its catalog designation is Beta Ophiuchi, or \u03b2 Ophiuchi. The name is less familiar than those of its brilliant neighbors, but the star rewards a second look.\n\nCebalrai appears as a single point to the unaided eye. Its visual magnitude is about 2.75\u2014bright enough for most observers to find under reasonably dark skies, though city lights can make the fainter stars around it disappear. Its measured position, roughly 17 hours 43 minutes in right ascension and +4.6 degrees in declination, puts it just north of the celestial equator. In practical terms, that means it can be seen from much of the world, although its height above the horizon depends on where you live.\n\nThe point of light is a giant star, not a sun-like star caught in the act of becoming one. SIMBAD lists its spectral type as K2 III: the \u201cK\u201d indicates a relatively cool, orange-hued star, while \u201cIII\u201d marks it as a giant. Its measured parallax, about 39.2 milliarcseconds, places it roughly 83 light-years away. That is close by stellar standards, though far beyond the reach of any journey a person could make. Its light has been traveling toward us since long before the first modern observatories.\n\nCebalrai also moves. SIMBAD reports a substantial proper motion\u2014the slow change in its position against the more distant background stars\u2014and a radial velocity of about 12 kilometers per second toward us. Proper motion is easiest to understand across decades or centuries, not during a night at the eyepiece. The star will not visibly drift as you watch. But astrometric measurements, comparing its position precisely over time, reveal that the sky is not a fixed backdrop: every star has its own motion through space.\n\n**Finding it:** In the Northern Hemisphere, try on a June, July or August evening, when Ophiuchus is well placed in the south. First find Rasalhague, the constellation\u2019s brightest star; Cebalrai lies east and south of it. A printed or digital sky chart will help distinguish Ophiuchus\u2019s pattern from the surrounding rich Milky Way fields. Let your eyes adapt to darkness for 15 to 20 minutes, and avoid looking at a bright phone screen. Cebalrai is visible without optical aid under decent conditions, but binoculars can help pick it out if the sky is washed with light. A telescope is not required: the pleasure here is recognizing a nearby orange giant among the patterns overhead.\n\nThe star\u2019s name may be unfamiliar, but its role is wonderfully practical. It marks a place in the sky where constellations meet and where a seemingly still point carries measurable motion. Find it once, and you have a small landmark for returning to Ophiuchus\u2014and a reminder that the stars\u2019 apparent stillness is only a matter of scale.\n\n**Source:** SIMBAD, Beta Ophiuchi (HIP 86742): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086742",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086742",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "declination",
+              "degrees",
+              "depends",
+              "ident",
+              "magnitude",
+              "motion",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
