@@ -3,7 +3,7 @@
 import argparse, csv, html, io, json, re
 from datetime import date
 from pathlib import Path
-from eclipse_editorial import load_events, render_page
+from eclipse_editorial import load_events, render_page, record_downloads
 from eclipse_calendar import populate_eclipse_calendar
 from eclipse_path import path_geojson
 ROOT=Path(__file__).resolve().parents[1]
@@ -28,7 +28,10 @@ def main():
         if not re.fullmatch(r'ECL-\d{4}-\d{2}-\d{2}-[SL]',eid): raise ValueError('Unsafe eclipse ID: '+eid)
         title=f"{e['type'].title()} {e['kind'].title()} Eclipse"
         url=f"/almanack/eclipses/{eid}.html"
-        detail=render_page({**e, **{key: value for key, value in publication_events.get(eid, {}).items() if key in ("magnitude", "visibility", "observing_note", "earlier_calculation", "earlier_method", "visibility_reference")}})
+        publication_event = {**e, **{key: value for key, value in publication_events.get(eid, {}).items() if key in ("magnitude", "visibility", "observing_note", "earlier_calculation", "earlier_method", "visibility_reference")}}
+        detail=render_page(publication_event)
+        for filename, content in record_downloads(publication_event).items():
+            write(ROOT/'almanack/eclipses'/filename, content)
         write(ROOT/'almanack'/f'eclipses/{eid}.html',detail)
         if e.get('central_path', {}).get('points'):
             track = e['central_path']['points']
