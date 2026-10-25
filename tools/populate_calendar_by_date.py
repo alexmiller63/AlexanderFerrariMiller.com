@@ -9,6 +9,7 @@ import populate_fixed_sky as fixed_sky
 from almanack_sections import require_section
 from almanack_calendar import get_event_records
 from almanack_paths import week_index
+from eclipse_calendar import populate_eclipse_calendar
 from calendar_fixed_object_ids import patch_file as patch_fixed_object_ids
 from calendar_mobile_layout import patch_file as patch_mobile_layout
 from iso_date_range import group_by_year, parse_range_args
@@ -86,6 +87,7 @@ def populate_selected_year(year: int, selected_weeks: list[int]) -> int:
             text, found = fixed_sky.set_events(text, day, records if records else "—")
             if not found:
                 raise RuntimeError(f"Could not update Calendar row {day} in {path}")
+        text = populate_eclipse_calendar(text, path)
         path.write_text(text, encoding="utf-8")
 
         def trace_gamma(stage: str) -> None:
@@ -123,3 +125,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+

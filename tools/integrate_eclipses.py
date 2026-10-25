@@ -4,6 +4,7 @@ import argparse, html, json, re
 from datetime import date
 from pathlib import Path
 from eclipse_editorial import load_events, render_page
+from eclipse_calendar import populate_eclipse_calendar
 ROOT=Path(__file__).resolve().parents[1]
 START='<!-- ECLIPSE-OVERLAY START -->'
 END='<!-- ECLIPSE-OVERLAY END -->'
@@ -37,6 +38,7 @@ def main():
             print('SKIP missing weekly page',page)
             continue
         content=page.read_text(encoding='utf-8')
+        content=populate_eclipse_calendar(content, page, publication_events)
         links=''.join(f'<li><time datetime="{d}">{d}</time>: <a href="{u}">{html.escape(t)}</a> (provisional)</li>' for d,t,u in events)
         block=f'{START}<section id="eclipse-events" aria-label="Eclipses this week"><h2>Eclipses this week</h2><ul>{links}</ul></section>{END}'
         if START in content and END in content:
@@ -52,4 +54,5 @@ def main():
     write(ROOT/'almanack/eclipses/index.html',index)
     print('Published',len(rows),'provisional eclipse pages; updated',len(weeks),'candidate weeks')
 if __name__=='__main__':main()
+
 

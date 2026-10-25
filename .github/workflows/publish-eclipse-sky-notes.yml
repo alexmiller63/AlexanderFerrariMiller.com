@@ -62,6 +62,13 @@ jobs:
                   raise SystemExit(f"Missing week page: {page}")
               content = page.read_text()
               event_id = e["id"]
+              sys.path.insert(0, "tools")
+              from almanack_calendar import get_event_records
+              calendar_events = get_event_records(content, day)
+              if calendar_events is None or not any(
+                  f'data-eclipse-id="{event_id}"' in item.html for item in calendar_events
+              ):
+                  raise SystemExit(f"{page}: {event_id} missing from Calendar row {day}")
               from html.parser import HTMLParser
               class ModeParser(HTMLParser):
                   def __init__(self):
@@ -89,7 +96,7 @@ jobs:
               for cls in ("sky-note-wordy", "sky-note-highlights"):
                   if cls not in parser.found:
                       raise SystemExit(f"{page}: {event_id} missing from {cls}")
-              print(f"Verified {event_id} in both modes")
+              print(f"Verified {event_id} in Calendar and both Sky Notes modes")
           PY
       - name: Commit only affected generated files
         run: |
