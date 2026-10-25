@@ -458,7 +458,7 @@ def eclipse_treatments(page_path, *, highlights: bool = False) -> str:
         return ""
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
     parts = page_path.parts
-    week = re.search(r"^W(\\d{2})$", page_path.parent.name)
+    week = re.search(r"^W(\d{2})$", page_path.parent.name)
     if not week or not page_path.parent.parent.name.isdigit():
         raise RuntimeError(f"Cannot determine ISO week from {page_path}")
     year = int(page_path.parent.parent.name)
