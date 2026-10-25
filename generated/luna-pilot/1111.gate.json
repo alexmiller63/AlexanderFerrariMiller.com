@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2091117"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Sct: A Small Beacon with a Long Galactic Journey\n\n*An orange giant in Scutum is bright enough to find without a telescope\u2014and its measured motion gives it a story beyond the light we see.*\n\nLook south on a clear summer evening and Alpha Sct offers a quiet point of reference: a third-magnitude star in the small constellation Scutum. It does not blaze like the brightest stars, but under a reasonably dark sky it can be seen with the unaided eye. A pair of binoculars will make the search easier, especially where city lights thin the starry background.\n\nThe catalogue name is concise; the star\u2019s measurements open a longer view. SIMBAD identifies Alpha Sct as a K3III star. The K3 classification places it among the cooler, orange-hued stars, while III denotes a giant luminosity class. Its apparent visual magnitude is listed as 3.83: a measure of how bright it looks from Earth, not a direct measure of its size or power. The giant classification tells us that it is not a Sun-like star in its ordinary main-sequence phase, though that label alone does not give a complete biography.\n\nDistance is one of the clues. SIMBAD lists a parallax of 17.6952 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant stars as Earth travels around the Sun. Inverting that value gives a distance of about 56.5 parsecs, or roughly 184 light-years. That is close enough for astronomers to measure the star\u2019s position and motion with precision, even as its light takes generations to reach us.\n\nAnd Alpha Sct is moving. Its listed proper motion\u2014the change in its position across the sky\u2014is about 18 milliarcseconds per year in right ascension and 314 milliarcseconds per year in declination, mostly southward. That adds up to a little over three-tenths of an arcsecond each year. The shift is imperceptible in a single observing session, but it accumulates: across a century, the star\u2019s position changes by roughly 31 arcseconds, comparable to the apparent width of Jupiter at a favorable opposition. SIMBAD also lists a radial velocity of 36.50 kilometres per second, the star\u2019s motion along our line of sight.\n\n**How to find it:** Scutum lies in the Milky Way\u2019s rich summer star fields, between the more prominent patterns of Aquila and Sagittarius. Start with a star chart or planetarium app and search for Alpha Sct by name; the catalogue coordinates are right ascension 18h 35m and declination \u22128\u00b0 14\u2032 (J2000). From mid-northern latitudes, it appears in the southern half of the sky and climbs to a useful height on summer evenings. Binoculars can help distinguish it from the crowded background, but the star itself does not require optical aid. Give your eyes time to adjust to the dark, and avoid judging its color through haze or when it is close to the horizon.\n\nA telescope is not necessary to appreciate Alpha Sct. In fact, a naked-eye view suits the scale of the experience: one small orange point, set among the Milky Way\u2019s crowded stars, carrying evidence of motion that only careful measurement reveals. The sky seems still; the catalogues remind us that it is not.\n\n**Source:** [SIMBAD entry for HIP 91117 (Alpha Sct)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2091117)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2091117",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "catalogues",
+              "class",
+              "coordinates",
+              "declination",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "measure"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
