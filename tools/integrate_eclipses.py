@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Idempotent calculated eclipse publication overlay; does not run Build All."""
-import argparse, html, json, re
+import argparse, csv, html, io, json, re
 from datetime import date
 from pathlib import Path
 from eclipse_editorial import load_events, render_page
 from eclipse_calendar import populate_eclipse_calendar
+from eclipse_path import path_geojson
 ROOT=Path(__file__).resolve().parents[1]
 START='<!-- ECLIPSE-OVERLAY START -->'
 END='<!-- ECLIPSE-OVERLAY END -->'
@@ -29,6 +30,15 @@ def main():
         url=f"/almanack/eclipses/{eid}.html"
         detail=render_page({**e, **{key: value for key, value in publication_events.get(eid, {}).items() if key in ("magnitude", "visibility", "observing_note", "earlier_calculation", "earlier_method", "visibility_reference")}})
         write(ROOT/'almanack'/f'eclipses/{eid}.html',detail)
+        if e.get('central_path', {}).get('points'):
+            track = e['central_path']['points']
+            buffer = io.StringIO(newline='')
+            writer = csv.DictWriter(buffer, fieldnames=list(track[0]), lineterminator='\n')
+            writer.writeheader()
+            writer.writerows(track)
+            write(ROOT/'almanack'/f'eclipses/{eid}-path.csv', buffer.getvalue())
+            write(ROOT/'almanack'/f'eclipses/{eid}-path.geojson',
+                  json.dumps(path_geojson(e), indent=2) + '\n')
         if 2025<=day.year<=2027:
             y,w,_=day.isocalendar()
             weeks.setdefault((y,w),[]).append((day,title,url))

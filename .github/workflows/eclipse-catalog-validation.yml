@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - tools/generate_decade_eclipses.py
+      - tools/eclipse_path.py
+      - tests/test_eclipse_path.py
       - eclipse_engine.py
       - lunar_eclipse_engine.py
       - kernel_eclipse_engine.py
@@ -32,6 +34,8 @@ jobs:
           key: star-almanack-de440s-v1
       - name: Ensure cached production ephemeris
         run: python tools/ensure_ephemeris_kernels.py
+      - name: Verify calculated central paths
+        run: python -m unittest discover -s tests -p test_eclipse_path.py
       - name: Generate calculated eclipse catalog
         run: python -u tools/generate_decade_eclipses.py --start-year 2025 --end-year 2036 --kernel .cache/skyfield/de440s.bsp
       - name: Validate registry and catalog

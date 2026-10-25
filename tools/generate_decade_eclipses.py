@@ -15,12 +15,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from eclipse_engine import EclipseEngine, gregorian_to_jd, jd_to_iso_utc, EARTH_RADIUS_KM, SUN_RADIUS_KM, MOON_RADIUS_KM
 from lunar_eclipse_engine import find_lunar_eclipse, SHADOW_EARTH_RADIUS_FACTOR
+from eclipse_path import central_path
 
 SEED = date(2026, 8, 12)  # lunation search anchor, not a reference prediction
 SYNODIC_DAYS = 29.530588853
 FIELDS = ["id", "detail_path", "kind", "position_source", "classification_basis", "surface_core_radius_min_km", "surface_core_radius_max_km", "shadow_earth_radius_factor", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
           "penumbra_margin_km", "central_margin_km", "core_radius_km",
-          "status"]
+          "status", "central_path"]
 
 
 def global_solar_boundaries(engine, greatest_jd, *, hours=12.0):
@@ -138,7 +139,7 @@ def generate(start_year, end_year, kernel=None):
             f"global_end={solar_contacts['global_end']}",
             flush=True,
         )
-        results[event.greatest_utc[:16]] = {
+        record = {
             "kind": "solar", "contacts_utc": json.dumps(solar_contacts),
             "position_source": position_source,
             "date_utc": event_day.isoformat(),
@@ -151,6 +152,8 @@ def generate(start_year, end_year, kernel=None):
             "core_radius_km": round(g.core_radius_km, 3),
             "status": "PROVISIONAL — geometry and times not independently validated",
         }
+        record["central_path"] = central_path(engine, record)
+        results[event.greatest_utc[:16]] = record
     # Full moons lie approximately half a synodic month from each new moon.
     # Search each independent candidate against Earth's actual shadow.
     for k in range(-180, 180):
@@ -225,9 +228,10 @@ def main():
     csv_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.csv"
     json_path = args.output_dir / f"eclipses-{args.start_year}-{args.end_year}.json"
     with csv_path.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=FIELDS)
+        writer = csv.DictWriter(f, fieldnames=FIELDS, lineterminator="\n")
         writer.writeheader()
-        writer.writerows(rows)
+        writer.writerows({key: json.dumps(value) if isinstance(value, dict) else value
+                         for key, value in row.items()} for row in rows)
     json_path.write_text(json.dumps({"status": "provisional", "start_year": args.start_year,
         "end_year": args.end_year, "eclipses": rows}, indent=2) + "\n")
     print(f"Wrote {len(rows)} provisional solar and lunar eclipses: {csv_path}, {json_path}")

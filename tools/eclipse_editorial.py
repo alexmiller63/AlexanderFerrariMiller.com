@@ -197,14 +197,14 @@ def facts(event):
                       "fraction of its area covered." if event["kind"] == "lunar" else
                       "Solar magnitude, measured along the Sun’s diameter; not the fraction of its area covered.")
         items.append(("Magnitude", f"{event['magnitude']}. {definition}"))
-    if event.get("visibility"):
+    if event.get("visibility") and not event.get("central_path", {}).get("points"):
         items.append(("Visibility", event["visibility"]))
     return items
 
 
 def sources(event):
     links = []
-    if event.get("visibility_reference"):
+    if event.get("visibility_reference") and not event.get("central_path", {}).get("points"):
         links.append((event["visibility_reference"]["source_url"],
                       "Visibility regions and maps: Eclipse Predictions by Fred Espenak, NASA/GSFC"))
     if event["kind"] == "solar":
@@ -233,6 +233,9 @@ def render_note(event, *, highlights=False):
 
 
 def render_visibility(event):
+    if event.get("central_path", {}).get("points"):
+        from eclipse_path_display import render_central_path
+        return render_central_path(event)
     reference = event.get("visibility_reference")
     if not reference:
         return '<h2>Where to watch</h2>' + paragraphs([event.get("visibility", "Geographic visibility has not been added for this event.")])
@@ -377,5 +380,6 @@ def render_page(event):
             render_records(event) +
             '<h2>Sources</h2>' + sources(event) +
             '<p>Event times and geometry: Star Almanack’s calculated eclipse catalog. '
-            'Visibility and magnitude, where supplied: the Calendar’s publication metadata.</p>'
+            'Central-path coordinates, where supplied: Star Almanack’s calculated spherical-Earth track. '
+            'Other visibility and magnitude, where supplied: the Calendar’s publication metadata.</p>'
             '</main></body></html>')
