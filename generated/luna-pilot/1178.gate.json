@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20106278"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sadalsuud: A Steady Light in the Water-Bearer\n\n*In a faint constellation, one bright star offers a simple naked-eye sighting\u2014and a chance to measure the vastness between stars.*\n\nOn an autumn evening, the sky does not always announce its landmarks. Aquarius, the Water-Bearer, spreads across a dim patch of stars beneath the Great Square of Pegasus. But one point stands out: Sadalsuud, bright enough to find without a telescope, even when its constellation is hard to trace.\n\nThat contrast makes it a useful star to meet. Sadalsuud is also known by its catalogue designation, Beta Aquarii. SIMBAD lists its apparent visual magnitude as 2.89, its spectral type as G0 Ib, and its position at right ascension 21h 31m and declination \u22125\u00b0 34\u2032. Those coordinates place it just south of the celestial equator. The spectral classification identifies it as a yellow supergiant; the light reaching your eye is coming from a star in a very different stage of life from the Sun. [SIMBAD: Sadalsuud / HIP 106278](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20106278)\n\nThe distance is written into a tiny shift. As Earth travels around the Sun, a nearby star appears to move slightly against the more distant background. Astronomers call that apparent shift parallax. SIMBAD gives Sadalsuud\u2019s parallax as about 5.97 milliarcseconds. Turning that measurement into distance puts the star roughly 167 parsecs away\u2014or about 550 light-years. The light you see tonight began its journey when the first telescopes were still new instruments.\n\nThat is the quiet trick of stargazing: a point of light can be both an immediate sight and a message from the past. Sadalsuud looks steady, but it is not close. Its brightness in our sky reflects not just its distance but its intrinsic output. A star at that range would be far too faint to spot with the naked eye if it shone like the Sun.\n\nTo find it, start with the Great Square of Pegasus, a large, easy-to-recognize outline in the autumn sky. Look below it for the broad, inconspicuous pattern of Aquarius. Sadalsuud is a useful bright marker in that region; don\u2019t expect the surrounding stars to form a crisp picture. From mid-northern latitudes, it climbs to a moderate height rather than passing overhead, so choose a place with a clear southern view. Late summer and autumn evenings are a good time to look.\n\nTry first with unaided eyes. Give them several minutes to adapt to the dark, and avoid staring at a bright phone screen. If you have binoculars, sweep the area around Sadalsuud: they will reveal more of the surrounding star field, though the star itself will remain a point of light. A telescope is not necessary for this visit. The aim is not to magnify the star into a disk, but to recognize it as a bright, distant sun in its own right.\n\nIf Aquarius seems elusive, return to the Great Square and try again. Finding Sadalsuud is a small act of orientation: one bright point, a stretch of sky, and the understanding that its light has crossed hundreds of light-years to meet you.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20106278",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "declination",
+              "ident",
+              "known",
+              "magnitude",
+              "measure",
+              "measurement",
+              "orientation"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
