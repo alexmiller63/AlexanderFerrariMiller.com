@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095771"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Anser, the Quiet Goose in the Fox\n\n*In Vulpecula, a modest point of light offers a close encounter with a faraway red giant\u2014and a useful lesson in how much a star can tell us.*\n\nOn a clear evening, Anser does not announce itself. It is a fourth-magnitude star: visible to the unaided eye under a dark sky, but easily lost among brighter neighbors or city lights. Still, pause over that small glimmer in Vulpecula, and the view begins to stretch. Anser is not a single point in any ordinary sense, but a vast star whose light has crossed roughly 290 light-years to reach us.\n\nThe name is attached to Alpha Vulpeculae, catalogued in SIMBAD under the identifier HIP 95771. Its listed visual magnitude is 4.45, bright enough for naked-eye viewing when conditions cooperate. SIMBAD gives its position as right ascension 19h 28m 42.3s and declination +24\u00b0 39\u2032 54\u2033 (J2000)\u2014coordinates that can guide you to it on a current star chart or astronomy app. [1]\n\nAnser is classified M0.5 IIIb. The \u201cM\u201d marks a relatively cool star compared with the Sun; \u201cIII\u201d identifies it as a giant. In this phase of stellar life, a star has expanded and changed from its earlier, more compact state. Its surface is cooler, though the star\u2019s great size helps make it visible across the interstellar gulf. The classification is a compact scientific label for a very different kind of sun.\n\nIts distance comes from parallax: the apparent shift in a star\u2019s position as Earth moves around the Sun. SIMBAD lists a parallax of 11.2238 milliarcseconds. Taking the reciprocal gives a distance of about 89 parsecs, or approximately 290 light-years. That number is an estimate, not a travel itinerary; the parallax measurement itself has a small uncertainty.\n\nThere is motion, too. Anser\u2019s listed radial velocity is about \u221285 kilometres per second. The minus sign means it is moving toward the Solar System along our line of sight. It also shifts across the sky, though that sideways motion is far too slight to notice during a single observing session. The star\u2019s quiet appearance is a snapshot, not stillness.\n\n**How to find it:** Choose a transparent, moonless night if possible, and give your eyes time to adapt to the dark. Vulpecula is a faint constellation, so use a star chart or app rather than expecting its outline to leap out. Once your chart places Alpha Vulpeculae, try looking first without equipment. If it is difficult to pick out, binoculars can help distinguish the surrounding field; a small telescope will show more stars nearby, though Anser itself remains a point of light. The coordinates above are especially useful when working from a digital chart. Avoid staring at a bright phone screen: dim it and use a red-light setting if available.\n\nThe reward is not spectacle but scale. Light from Anser began its journey before many of the stories we tell about the night sky were written. Here, in a faint constellation, a cool giant crosses the darkness toward us, carrying its measurable motions and its ancient light. You do not need to see its surface to meet it. You only need to find the point where that light arrives.\n\n**Scientific source**\n\n[1] SIMBAD, HIP 95771 (Alpha Vulpeculae): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095771",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2095771",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "coordinates",
+              "current",
+              "declination",
+              "ident",
+              "identifier",
+              "listed",
+              "magnitude",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
