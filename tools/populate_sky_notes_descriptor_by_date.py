@@ -450,31 +450,36 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
 
 
 def eclipse_treatments(page_path, *, highlights: bool = False) -> str:
-    """Use canonical Calendar eclipse events as the weekly Sky Notes source."""
+    """Render canonical registry eclipses for the ISO week, in both Sky Notes modes."""
+    from datetime import date, timedelta
+
+    registry_path = base.ROOT / "generated" / "eclipse-catalog" / "eclipse-registry.json"
+    if not registry_path.exists():
+        return ""
+    registry = json.loads(registry_path.read_text(encoding="utf-8"))
+    parts = page_path.parts
+    week = re.search(r"^W(\\d{2})$", page_path.parent.name)
+    if not week or not page_path.parent.parent.name.isdigit():
+        raise RuntimeError(f"Cannot determine ISO week from {page_path}")
+    year = int(page_path.parent.parent.name)
+    monday = date.fromisocalendar(year, int(week.group(1)), 1)
+    sunday = monday + timedelta(days=6)
     blocks = []
-    seen = set()
-    for day, events in base.calendar_events_from_page(page_path):
-        for event in events:
-            if not re.search(r"\b(?:solar|lunar) eclipse\b", event, re.I):
-                continue
-            kind_match = re.search(r"\b(solar|lunar) eclipse\b", event, re.I)
-            kind = kind_match.group(1).lower()
-            event_id = f"ECL-{day.isoformat()}-{'S' if kind == 'solar' else 'L'}"
-            if event_id in seen:
-                continue
-            seen.add(event_id)
-            title = event.split(" · ", 1)[0].strip()
-            href = f"/almanack/eclipses/{event_id}.html"
-            details = event.split(" · ", 1)[1].strip() if " · " in event else ""
-            prose = (
-                f"{day.strftime('%B')} {day.day}, {day.year}: {title}. "
-                + (details if not highlights else "See the eclipse page for timing, visibility, and observing circumstances.")
-            )
-            blocks.append(
-                f'<section class="sky-note-eclipse" data-eclipse-id="{html.escape(event_id, quote=True)}">'
-                f'<h4><a href="{html.escape(href, quote=True)}">{html.escape(title)}</a></h4>'
-                f'<p>{html.escape(prose)}</p></section>'
-            )
+    for event in registry.get("events", []):
+        day = date.fromisoformat(event["date_utc"])
+        if not monday <= day <= sunday:
+            continue
+        event_id = str(event["id"])
+        kind = str(event["kind"]).capitalize()
+        title = f"{kind} eclipse"
+        href = f"/almanack/{event['detail_path'].lstrip('/')}"
+        description = (f"{day.strftime('%B')} {day.day}, {day.year}: {title}. "
+                       "See the eclipse page for timing, visibility, and observing circumstances.")
+        blocks.append(
+            f'<section class="sky-note-eclipse" data-eclipse-id="{html.escape(event_id, quote=True)}">'
+            f'<h4><a href="{html.escape(href, quote=True)}">{html.escape(title)}</a></h4>'
+            f'<p>{html.escape(description)}</p></section>'
+        )
     return "\\n".join(blocks)
 
 
