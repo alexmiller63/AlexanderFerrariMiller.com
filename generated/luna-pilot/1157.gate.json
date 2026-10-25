@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101769"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rotanev: A Quiet Beacon in the Dolphin\n\n*This modest star in Delphinus is bright enough to find without a telescope\u2014and catalogued as part of a multiple-star system.*\n\nOn a clear summer evening, look for the little dolphin leaping through the dark: a compact pattern of stars southeast of Altair. One of its points is Rotanev, a name that sounds like a character from an old sea tale. Its light has crossed roughly 101 light-years to reach us, making this small constellation\u2019s bright point feel, for a moment, like a signal sent across a vast black ocean.\n\nRotanev is also known as Beta Delphini and HIP 101769. The SIMBAD astronomical database lists it as a double or multiple star, with a spectral type of F5IV and a visual magnitude of 3.63. That spectral classification describes an F-type star classed as a subgiant. Its measured parallax\u201432.33 milliarcseconds\u2014provides the distance estimate: the smaller the apparent shift in a star\u2019s position as Earth moves around the Sun, the farther away the star lies. Converting that parallax gives about 31 parsecs, or 101 light-years. These are measurements, not a picture of the system: the database\u2019s multiple-star classification doesn\u2019t mean a companion will be easy to pick out at the eyepiece. ([SIMBAD: HIP 101769](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101769))\n\nRotanev\u2019s brightness makes it a rewarding naked-eye target under a reasonably dark sky, though city glow can wash out the smaller stars around it. Begin by finding the Summer Triangle, the broad pattern of Vega, Deneb and Altair. From Altair, scan southeast for Delphinus\u2019s small, distinctive grouping. Its four-star outline is often likened to a diamond or a tiny kite, with a short tail trailing away. Rotanev marks one of the brighter corners. If the pattern doesn\u2019t emerge immediately, give your eyes time to adapt, shield them from nearby lights and try again without binoculars first.\n\nBinoculars can help separate the dolphin from the surrounding star field, but they are not a promise of a split view of Rotanev\u2019s multiple-star system. For a first observing session, the constellation itself is the prize: a small, unmistakable figure set against a much larger sky. A telescope is optional. If you use one, start at low magnification and take in the surrounding field before centering the star.\n\nFor a more precise search, SIMBAD gives Rotanev\u2019s J2000 coordinates as right ascension 20h 37m 32.94s and declination +14\u00b0 35\u2032 42.3\u2033. These coordinates are useful with a planetarium app or a telescope\u2019s setting circles; they\u2019re not a substitute for checking where Delphinus stands in your sky on the night you observe. The constellation is a northern-sky target, best placed for evening viewing in northern summer and early autumn.\n\nThere is something fitting about Rotanev\u2019s quiet role: a star with a catalogued complexity, set within a constellation small enough to miss if you hurry. Find the dolphin, trace its outline, then pause on the bright point. Its apparent simplicity is only the first impression; careful looking turns a passing glance into a measured encounter with a distant stellar system.\n\n**Source:** [SIMBAD \u2014 HIP 101769](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101769)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20101769",
+            "overlap_terms": [
+              "ascension",
+              "before",
+              "coordinates",
+              "database",
+              "declination",
+              "double",
+              "ident",
+              "known",
+              "magnitude",
+              "multiple",
+              "parallax",
+              "position"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
