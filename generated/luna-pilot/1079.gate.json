@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085670"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rastaban, the Dragon\u2019s Steady Eye\n\n*An easy naked-eye star with the light of an evolved giant, Rastaban rewards a quiet look north on a summer night.*\n\nThe first thing to notice about Rastaban is how little it asks of you. No telescope, no dark-sky expedition, no special trick: find a clear patch of northern sky, let your eyes adjust, and look for the bright point that marks Beta Draconis. It shines at about magnitude 2.8\u2014bright enough to pick out without optical aid under ordinary conditions, though city glare can make the search harder.\n\nThe name and catalogue designation point to the same star: Rastaban is Beta Draconis, listed by SIMBAD as HIP 85670. Its position, for the J2000 epoch, is right ascension 17 hours 30 minutes and declination +52 degrees 18 minutes. Those coordinates place it far north of the celestial equator, in the constellation Draco. From a location north of roughly 38 degrees latitude, Rastaban stays above the horizon all night; farther south, it still rises high enough to be a rewarding target when Draco is well placed. [SIMBAD: HIP 85670](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085670)\n\nTo find it, start with the season and the direction. On northern summer evenings, Draco lies across the northern sky. Give your eyes a few minutes away from bright screens, then use a star chart or astronomy app set to your location to trace the constellation\u2019s winding outline. Rastaban is a useful waypoint: its brightness makes it easier to recognize than many of the fainter stars around it. If you have binoculars, scan the surrounding field slowly; the instrument won\u2019t change the star into a disk, but it can bring more of Draco\u2019s star pattern into view. Avoid looking through a window, where reflections and imperfect glass can soften the scene.\n\nThere is more to this point of light than its unassuming appearance suggests. SIMBAD gives Rastaban the spectral classification G2 Ib\u2013IIa. The \u201cG2\u201d indicates a G-type star, while the luminosity classes Ib\u2013IIa describe a luminous, evolved star\u2014not a modest, Sun-like dwarf. Its apparent brightness is therefore not a simple measure of how nearby it is. SIMBAD lists a parallax of 8.58 milliarcseconds. Turning that angle into a distance gives roughly 117 parsecs, or about 380 light-years. The number is an estimate, but it offers a useful change of scale: the light reaching your eyes tonight began its journey centuries ago.\n\nThat long journey makes a small observing ritual feel unexpectedly deep. Find Rastaban once, then return to it on another clear evening. The star will seem fixed against the familiar pattern, though its measured proper motion shows that it slowly shifts over time. Our eyes register the quiet point; instruments record the motion, distance and stellar classification behind it.\n\nFor the simplest view, go out after twilight, face north, and give yourself time to identify the pattern rather than hunting for a single star in isolation. A printed chart or planetarium app can help, especially if you are new to Draco. Once you have found Rastaban, pause before moving on. Its light is not spectacular in the way of a meteor or a planet, but it carries a record of a distant, evolved star\u2014and a reminder that even a steady point in the sky has a history.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085670",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "before",
+              "catalogue",
+              "celestial",
+              "coordinates",
+              "declination",
+              "degrees",
+              "epoch",
+              "ident",
+              "listed"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
