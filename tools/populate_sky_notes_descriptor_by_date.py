@@ -503,7 +503,7 @@ def render_planet_treatments(payload: dict, *, highlights: bool = False) -> str:
             f"{match.group(2)}/{object_id}.svg"
         )
         blocks.append(
-            f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}{'-highlight' if highlights else ''}" '
+            f'<section class="sky-note-object-treatment" id="sky-note-object-{object_id}{"-highlight" if highlights else ""}" '
             f'data-object-id="{object_id}" data-rendering-id="{html.escape(rendering_id, quote=True)}">'
             f'<h4>{html.escape(planet)}</h4>'
             f'<p>{html.escape(prose)} '
