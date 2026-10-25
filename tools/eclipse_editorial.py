@@ -5,8 +5,6 @@ import re
 from datetime import datetime
 
 ARISTOTLE = "https://classics.mit.edu/Aristotle/heavens.2.ii.html"
-LUNAR_SOURCE = "https://science.nasa.gov/moon/eclipses/"
-SOLAR_SOURCE = "https://science.nasa.gov/eclipses/types/"
 
 # Explain both the geometry and the experience, rather than merely naming a type.
 EXPLANATIONS = {
@@ -156,12 +154,13 @@ def facts(event):
 
 
 def sources(event):
-    links = [(LUNAR_SOURCE if event["kind"] == "lunar" else SOLAR_SOURCE,
-              "NASA: eclipse types and observing")]
+    links = []
     if event["kind"] == "solar":
         links.append(("https://science.nasa.gov/eclipses/safety/", "NASA: solar viewing safety"))
     if history(event):
         links.append((ARISTOTLE, "Aristotle, On the Heavens, II.14"))
+    if not links:
+        return ""
     return '<p class="eclipse-sources"><strong>Sources:</strong> ' + " · ".join(
         f'<a href="{html.escape(url, quote=True)}">{html.escape(label)}</a>' for url, label in links) + '</p>'
 
