@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2084012"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Sabik: A Steady Beacon in Ophiuchus\n\n*An easy naked-eye landmark in the summer sky, this bright star is also catalogued as a multiple system.*\n\nOn a clear summer evening, look south for the long, familiar sweep of Scorpius. Then lift your gaze: above the Scorpion\u2019s bright stars, in the broad constellation of Ophiuchus, shines Sabik. It is not a showy constellation, but Sabik gives the sky a clear point of focus\u2014a bright star that helps turn a sprawling pattern into a place you can find again.\n\nSabik is the traditional name for Eta Ophiuchi, also listed as HIP 84012. In SIMBAD, the star is classified as a double or multiple star. That label hints at a system more complex than the single pinprick we see with the naked eye, though it does not tell us how far apart the components appear or whether a particular telescope will separate them. For now, the unaided view is part of the appeal: one bright point, with unseen company catalogued alongside it.\n\n## Scientific context\n\nSabik\u2019s measured parallax is 36.91 milliarcseconds. Parallax is the tiny apparent shift in a nearby star\u2019s position as Earth travels around the Sun. Turning that measurement around gives a distance of roughly 27 parsecs, or about 88 light-years. That is close enough, in astronomical terms, for the star\u2019s light to arrive from a relatively nearby stellar neighborhood.\n\nIts listed spectral type is A2IV-V. The \u201cA\u201d places it among stars whose spectra are associated with a hotter surface than the Sun\u2019s; \u201cIV-V\u201d indicates a classification near the boundary between subgiant and main-sequence stars. SIMBAD lists its visual magnitude as 2.42, bright enough to stand out under a reasonably dark sky and to remain visible through some urban light pollution. Those catalog numbers make Sabik more than a guidepost: they offer a quick portrait of a star whose apparent simplicity masks a richer system.\n\n## Observing guidance\n\nStart with Scorpius, the recognizable hook-shaped constellation low in the southern sky during Northern Hemisphere summer evenings. Sabik lies north of Scorpius, in Ophiuchus, and is bright enough to pick out without binoculars once you know where to look. If you have trouble, give your eyes a few minutes to adjust and scan from the Scorpion upward rather than searching the whole sky at once.\n\nBinoculars can help you trace the surrounding star patterns and settle on Sabik, but the star itself is already an unaided-eye target. A telescope offers a chance to investigate its multiple-star listing; don\u2019t assume the components will split into a neat pair, since the catalog entry cited here does not give their apparent separation. A current double-star observing reference can help set expectations before you try.\n\nOnce found, pause before moving on. Sabik is a useful reminder that observing is not only about magnification or dramatic objects. Sometimes it begins with recognizing one steady light, learning its place in the sky, and knowing that the point you see belongs to a system whose details lie beyond the naked-eye view.\n\n**Source:** [SIMBAD entry for HIP 84012 (Eta Ophiuchi)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2084012)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2084012",
+            "overlap_terms": [
+              "around",
+              "before",
+              "catalog",
+              "current",
+              "double",
+              "ident",
+              "listed",
+              "magnitude",
+              "measurement",
+              "multiple",
+              "north",
+              "objects"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
