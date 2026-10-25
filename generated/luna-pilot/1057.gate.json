@@ -1,0 +1,77 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2080816"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Kornephoros: Hercules\u2019 Bright Beacon, With a Hidden Companion\n\n*This easy-to-spot star is a giant about 150 light-years away\u2014and a reminder that a steady point of light can conceal a stellar partner.*\n\nKornephoros holds its place in Hercules as a bright, quiet-looking point of light. Catalogued as Beta Herculis, it shines at about magnitude 2.8, bright enough to see with the unaided eye under reasonably dark skies. Yet the star is not alone: astronomers classify it as a spectroscopic binary, a system whose companion is detected through the motion it causes in the visible star\u2019s spectrum.\n\nThat hidden movement gives Kornephoros a story beyond its appearance. As the stars orbit one another, their changing motion toward and away from Earth shifts the wavelengths in the visible star\u2019s light. Astronomers can measure those shifts even when a telescope cannot separate the pair into two distinct points. \u201cSpectroscopic binary\u201d describes how the system is detected; it does not mean the two stars are easily split in a backyard telescope.\n\nThe catalog places Kornephoros at a parallax of about 22 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth travels around the Sun. Inverting that measurement gives a distance of roughly 45 parsecs, or about 150 light-years. Its listed spectral type, G7IIIaFe-0.5, identifies it as a G-type giant star, with additional details in the classification indicating its luminosity and spectrum. SIMBAD also lists its visual magnitude as 2.77. These measurements turn a bright dot into a physical object: a giant star whose light has crossed interstellar space for generations before reaching us. [SIMBAD: Beta Herculis (HIP 80816)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2080816)\n\nFor observers, Kornephoros is a useful destination precisely because it does not demand specialized equipment. Look for Hercules in the evening sky during northern summer, when the constellation is well placed for many observers in the Northern Hemisphere. A star chart or planetarium app can help identify Hercules\u2019 distinctive Keystone\u2014the compact quadrilateral of stars\u2014and then guide you to Kornephoros. The chart is especially helpful if city lights or haze have dimmed the fainter stars.\n\nOnce you have found it, give your eyes a moment to settle. Kornephoros should stand out as a single point, not as an obvious pair. Binoculars can make the surrounding star field easier to explore, but the companion\u2019s presence is a matter for spectroscopy, not a promise of a dramatic split view. For a satisfying observing session, compare its brightness and position with nearby stars on your chart, then return to the idea that the calm appearance is only one layer of the scene.\n\nThe catalog also records the star\u2019s motion across the sky and a radial velocity of about 26 kilometers per second toward us. Those figures describe different motions: proper motion tracks its gradual drift against the background, while radial velocity measures motion along our line of sight. Neither is visible in a moment at the eyepiece. But together with the binary classification, they reveal how much can be learned from starlight that looks, at first glance, almost still.\n\nKornephoros rewards both kinds of looking: the simple pleasure of finding a bright star in Hercules, and the deeper curiosity of asking what that point of light contains. For tonight, locate it with your eyes. The invisible orbit can wait for the instruments.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2080816",
+            "overlap_terms": [
+              "around",
+              "before",
+              "binary",
+              "catalog",
+              "ident",
+              "iiiafe",
+              "listed",
+              "luminosity",
+              "magnitude",
+              "measure",
+              "measurement",
+              "motion"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Spectroscopic binary",
+        "source_matches": [
+          "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2080816"
+        ],
+        "exact_text_confirmed": true
+      }
+    ],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
