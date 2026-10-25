@@ -3,6 +3,7 @@ from datetime import datetime
 import html
 import json
 import math
+from eclipse_path_display import central_path_events
 
 
 def instant(value):
@@ -12,7 +13,7 @@ def instant(value):
 def chart(event, shapes):
     """Render stored geometry and times without introducing new predictions."""
     has_path=bool(event.get('central_path',{}).get('points'))
-    height=1740 if has_path else 1480
+    height=1800 if has_path else 1480
     out=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 {height}" role="img" aria-labelledby="solar-title solar-desc">',
          '<title id="solar-title">'+html.escape(event['date_utc']+' '+event['type']+' solar eclipse study chart')+'</title>',
          '<desc id="solar-desc">Numbered shadow-plane cross-section, global UTC contacts and timeline, geometry ledger, and available calculated central-path coordinates.</desc>',
@@ -113,13 +114,15 @@ def chart(event, shapes):
             x1,y1=geo(a);x2,y2=geo(b)
             color='#195ea8' if b['phase']=='total' else '#b35400'
             line(x1,y1,x2,y2,f'stroke="{color}" stroke-width="3"')
-        for n,i in enumerate(sorted({round(j*(len(points)-1)/4) for j in range(5)})):
-            p=points[i];x,y=geo(p);tx=190+n*245;ty=1280 if n%2==0 else 1636
-            line(x,y,tx,ty+4 if ty<1300 else ty-16,'stroke="#526c7b" stroke-width=".8"')
-            out.append(f'<circle data-utc="{html.escape(p["utc"])}" cx="{x}" cy="{y}" r="3" fill="#203747"/>')
-            text(tx,ty,instant(p['utc']).strftime('%H:%M:%S UTC'),16,'text-anchor="middle" class="mono"')
+        for n,milestone in enumerate(central_path_events(event)):
+            p=milestone['point'];x,y=geo(p);tx=230+n*465;ty=1660
+            line(x,y,tx,ty+4 if ty<1300 else ty-34,'stroke="#526c7b" stroke-width=".8"')
+            out.append(f'<circle data-utc="{html.escape(milestone["utc"])}" cx="{x}" cy="{y}" r="3" fill="#203747"><title>Nearest stored position: {html.escape(p["utc"])}</title></circle>')
+            text(tx,ty-19,milestone['label'],16,'text-anchor="middle"')
+            text(tx,ty,instant(milestone['utc']).strftime('%H:%M:%S UTC'),16,'text-anchor="middle" class="mono"')
         out.append('</g>')
-        text(50,1666,f'{len(points)} stored coordinates. Longitude east +; latitude geocentric. Blue: total. Orange: annular. Center line only; no path width.',16)
+        text(50,1725,'Event times are calculated; markers use nearest stored positions. Path limits are central-axis contacts.',16)
+        text(50,1702,f'{len(points)} stored coordinates. Longitude east +; latitude geocentric. Blue: total. Orange: annular. Center line only; no path width.',16)
     else:
         text(50,1310,'No calculated central-axis surface path for this event.',23)
         text(50,1350,'The diagram above quantifies the offset and shadow overlap; global times appear in the ledger and timeline.',18)
