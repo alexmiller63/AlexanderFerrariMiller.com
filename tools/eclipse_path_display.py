@@ -43,7 +43,8 @@ def render_central_path(event):
     result += (f'<details><summary>All {len(points)} calculated coordinates</summary>'
                '<div class="data-table-scroll"><table><thead><tr><th>UTC</th><th>Latitude</th>'
                '<th>Longitude</th><th>Central phase</th></tr></thead><tbody>')
+    from eclipse_editorial import utc_cell
     for p in points:
-        result += (f'<tr><td>{html.escape(p["utc"])}</td><td>{p["latitude_deg"]:.4f}°</td>'
+        result += (f'<tr><td>{utc_cell(p["utc"])}</td><td>{p["latitude_deg"]:.4f}°</td>'
                    f'<td>{p["longitude_deg"]:.4f}°</td><td>{html.escape(p["phase"])}</td></tr>')
     return result + '</tbody></table></div></details></section>'
