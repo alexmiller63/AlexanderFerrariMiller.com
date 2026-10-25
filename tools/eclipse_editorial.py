@@ -257,7 +257,8 @@ def record_downloads(event):
     """Downloadable records preserve the exact values formerly displayed inline."""
     record = {key: value for key, value in event.items()
               if key not in ("earlier_calculation", "earlier_method")}
-    files = {f'{event["id"]}-record.json':
+    from eclipse_artwork import svg
+    files = {f'{event["id"]}-shadow.svg': svg(event), f'{event["id"]}-record.json':
              json.dumps(record, indent=2, ensure_ascii=False) + "\n"}
     if event.get("earlier_calculation"):
         files[f'{event["id"]}-earlier-calculation.yaml'] = (
@@ -313,6 +314,7 @@ def render_contacts(event):
 
 
 def render_page(event):
+    from eclipse_artwork import render_artwork
     meaning, watching = explanation(event)
     heading = html.escape(title(event))
     details = "".join(f"<dt>{html.escape(label)}</dt><dd>{html.escape(value)}</dd>" for label, value in facts(event))
@@ -336,7 +338,7 @@ def render_page(event):
             '</head><body><main><nav><a href="/star-almanack/">Star Almanack</a> / '
             '<a href="/almanack/eclipses/">Eclipses</a></nav>'
             f'<h1>{heading}</h1><p>{html.escape(event["date_utc"])}</p>' +
-            render_visibility(event) +
+            render_artwork(event) + render_visibility(event) +
             '<h2>What this eclipse means</h2>' + paragraphs([meaning]) +
             '<h2>What to look for</h2>' + paragraphs([watching]) + past +
             '<h2>This event</h2><dl>' + details + '</dl>' +
