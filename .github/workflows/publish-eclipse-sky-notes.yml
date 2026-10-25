@@ -1,0 +1,74 @@
+name: Publish Eclipse Sky Notes
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Year to process (2025, 2026, or 2027)"
+        required: true
+        default: "2026"
+        type: choice
+        options: ["2025", "2026", "2027"]
+permissions:
+  contents: write
+concurrency:
+  group: eclipse-sky-notes
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile generator
+        run: python -m py_compile tools/populate_sky_notes_descriptor_by_date.py
+      - name: Identify and generate eclipse weeks
+        env:
+          YEAR: ${{ inputs.year }}
+        run: |
+          python - <<'PY'
+          import json, os, subprocess, sys
+          from datetime import date, timedelta
+          from pathlib import Path
+          year = int(os.environ["YEAR"])
+          registry = Path("generated/eclipse-catalog/eclipse-registry.json")
+          if not registry.exists():
+              raise SystemExit("Missing eclipse registry; publish the catalog first")
+          events = [e for e in json.loads(registry.read_text())["events"]
+                    if date.fromisoformat(e["date_utc"]).year == year]
+          if not events:
+              raise SystemExit(f"No eclipse events found for {year}")
+          weeks = sorted({date.fromisoformat(e["date_utc"]).isocalendar()[:2] for e in events})
+          for iso_year, week in weeks:
+              monday = date.fromisocalendar(iso_year, week, 1)
+              sunday = monday + timedelta(days=6)
+              print(f"Generating ISO {iso_year}-W{week:02d}", flush=True)
+              subprocess.run([sys.executable, "tools/populate_sky_notes_descriptor_by_date.py",
+                              monday.isoformat(), sunday.isoformat()], check=True)
+          for e in events:
+              day = date.fromisoformat(e["date_utc"])
+              y, w, _ = day.isocalendar()
+              page = Path(f"almanack/{y}/W{w:02d}/index.html")
+              if not page.exists():
+                  raise SystemExit(f"Missing week page: {page}")
+              content = page.read_text()
+              event_id = e["id"]
+              for cls in ('sky-note-wordy', 'sky-note-highlights'):
+                  start = content.find(f'class="{cls}"')
+                  if start < 0:
+                      raise SystemExit(f"{page}: missing {cls}")
+                  end = content.find('class="sky-note-', start + 10)
+                  segment = content[start:end if end > start else None]
+                  if event_id not in segment:
+                      raise SystemExit(f"{page}: {event_id} missing from {cls}")
+              print(f"Verified {event_id} in both modes")
+          PY
+      - name: Commit only affected generated files
+        run: |
+          git add almanack/ generated/sky-notes-2025/ generated/sky-notes-2026/ generated/sky-notes-2027/ generated/sky-notes/ 2>/dev/null || true
+          git diff --cached --quiet && exit 0
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish eclipse weeks in Sky Notes"
+          git push
