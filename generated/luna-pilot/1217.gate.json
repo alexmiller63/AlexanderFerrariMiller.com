@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20112122"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Tiaki: A Red Giant on the Southern Wing\n\n*An easy naked-eye target in Grus, Tiaki offers a glimpse of a cool giant star\u2014and a reminder that some stars change their light over time.*\n\nTiaki, catalogued as \u03b2 Gruis and HIP 112122, is one of the bright stars that helps give the southern constellation Grus, the Crane, its shape. SIMBAD lists it as a cool M4.5 III giant and a candidate long-period variable. That \u201ccandidate\u201d matters: the catalogue flags a possible kind of slow brightness change, not a guaranteed spectacle or a published schedule of variations. Still, Tiaki rewards a look, even if you simply find it and let your eyes rest on its steady-seeming glow.\n\nThe star lies at right ascension 22h 42m and declination \u221246\u00b0 53\u2032. Its listed parallax, 18.43 milliarcseconds, puts it roughly 54 parsecs\u2014about 177 light-years\u2014from Earth. Parallax is the tiny apparent shift a nearby star makes against more distant background stars as Earth moves around the Sun. The \u201cM4.5 III\u201d classification tells another part of the story: Tiaki is a relatively cool, evolved giant. Its outer layers extend far beyond the compact scale of a main-sequence star like the Sun.\n\nLong-period variable stars change brightness over timescales of months or years. Many are cool giants whose outer layers expand and contract, affecting the light they emit. SIMBAD\u2019s entry calls Tiaki a long-period variable candidate; it does not provide a period or range of brightness in the cited record. So treat the variable label as an invitation to observe carefully, not a promise that you will see change in a single night.\n\nFor a first sighting, look in the southern sky during spring in the Southern Hemisphere. Grus is best placed for evening observing around October, when Tiaki\u2019s position brings it high above the horizon for many southern observers. At latitude 35\u00b0 south, for instance, it culminates roughly 78\u00b0 above the northern horizon. From far northern locations it is much harder: its southerly declination means it barely clears the horizon near 43\u00b0 north and remains below it farther north.\n\nTiaki is bright enough to seek with the unaided eye under a reasonably dark sky; SIMBAD lists a visual magnitude of 2.11. Start with a planisphere or star-chart app set to your location and date, and use the constellation outline to pick it out. Binoculars can help when the horizon is hazy or city lights wash out fainter stars, but let your eyes adapt to darkness first. Note the date, time, sky conditions and how bright Tiaki appears compared with nearby stars. If you repeat that simple estimate over many weeks, you can contribute useful observations of a star whose changes are slow.\n\nThe catalogue identifies a target with coordinates and measurements; observing gives it a place in your own sky. Find Tiaki on a clear evening, then return to it. Its light has travelled for generations before reaching you, and the star may be changing on a timescale longer than any single night.\n\n**Source:** [SIMBAD entry for HIP 112122 / \u03b2 Gruis](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20112122).",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20112122",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "candidate",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "flags",
+              "ident",
+              "listed",
+              "magnitude",
+              "north"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
