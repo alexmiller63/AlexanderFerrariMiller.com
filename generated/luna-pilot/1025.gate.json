@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2077233"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta Ser: A Quiet Marker in the Serpent\u2019s Head\n\n*An easy naked-eye star with a subtle motion across the sky\u2014and a useful reminder that even familiar points of light are moving.*\n\nAt first glance, Beta Ser is simply a modest white point in Serpens, the serpent: not a beacon like Vega, but bright enough to see without optical aid under a reasonably dark sky. Its understated glow conceals a star in transition. Catalogued as an A2IV star, Beta Ser belongs to spectral class A and has luminosity class IV, the category used for subgiants. It offers no dramatic spectacle to the eye. Its appeal is quieter: a chance to connect a familiar star pattern with the physics and measured motion of a real star.\n\nSIMBAD lists Beta Ser, also identified as HIP 77233, at visual magnitude 3.67. That is comfortably within naked-eye reach away from bright city lights, though binoculars can help pick it out when the sky is hazy or washed with artificial glow. Its catalogued parallax is 21.5924 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Turning that measurement around gives a distance of about 46 parsecs, or roughly 151 light-years. The star\u2019s light began its journey before the first modern telescopes were built.\n\nThe \u201cIV\u201d in A2IV hints at a stage of stellar evolution, not a sudden event. A subgiant has moved beyond the long, steady phase in which a star fuses hydrogen in its core, but the classification alone does not tell us precisely what is happening inside Beta Ser now. It does tell us that the star is not simply a point pinned to a diagram: it has a physical identity, and its changing life is written into the light we receive.\n\nThere is motion in its position, too. SIMBAD gives Beta Ser a proper motion of about 66 milliarcseconds per year eastward and 48 milliarcseconds per year southward. Combined, that is around 0.08 arcsecond annually\u2014far too small to notice from one night to the next, but enough to add up over generations. The constellations are not fixed arrangements; their stars drift, and the patterns we recognize are temporary.\n\nTo find Beta Ser, look for Serpens Caput, the serpent\u2019s head, near Ophiuchus and Corona Borealis. A handy starting point is Arcturus, the bright orange star in Bo\u00f6tes: Beta Ser lies about 22 degrees east and a little south of it. A star chart or planetarium app can help confirm the field, especially under light-polluted skies. Once you have the region, scan for a modest third-magnitude star rather than expecting a dazzling landmark. Binoculars will make the surrounding pattern easier to trace, but they are not essential in a dark sky.\n\nFor a satisfying observing moment, look up when Serpens is well above the horizon and give your eyes time to adapt. Then consider the contrast: the star appears still, yet its measured position shifts year after year, and its light has crossed interstellar space to reach you. Beta Ser is no showstopper. It is something better for a patient observer\u2014a small, steady invitation to look closer.\n\n**Source:** SIMBAD entry for HIP 77233 / Beta Ser: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2077233",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2077233",
+            "overlap_terms": [
+              "around",
+              "before",
+              "class",
+              "degrees",
+              "event",
+              "ident",
+              "inside",
+              "luminosity",
+              "magnitude",
+              "measurement",
+              "motion",
+              "optical"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
