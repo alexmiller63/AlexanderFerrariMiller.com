@@ -24,6 +24,9 @@ SHOWERS = [
     ("LEO", 13, "Leonids", 11, 17, 15),
     ("GEM", 4, "Geminids", 12, 14, 120),
     ("URS", 15, "Ursids", 12, 22, 10),
+    ("STA", 2, "Southern Taurids", 11, 5, 5),
+    ("NTA", 17, "Northern Taurids", 11, 12, 5),
+    ("CAP", 1, "alpha Capricornids", 7, 31, 5),
 ]
 SOURCE = "https://www.imo.net/calendar/"
 
