@@ -2,7 +2,7 @@
 import html
 import json
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 
 ARISTOTLE = "https://classics.mit.edu/Aristotle/heavens.2.ii.html"
 
@@ -141,8 +141,35 @@ def history(event):
             "the changing shadow, as well as to note the time of greatest eclipse.")
 
 
+
+def utc_parts(value):
+    """Separate the UTC date and clock for readable display."""
+    instant = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    if instant.tzinfo is None:
+        instant = instant.replace(tzinfo=timezone.utc)
+    instant = instant.astimezone(timezone.utc)
+    return f"{instant.strftime('%B')} {instant.day}, {instant.year}", instant.strftime("%H:%M:%S")
+
+
+def format_utc(value):
+    if not value:
+        return "Not available"
+    try:
+        day, clock = utc_parts(value)
+    except ValueError:
+        return str(value)
+    return f"{day} at {clock} UTC"
+
+
+def utc_cell(value):
+    day, clock = utc_parts(value)
+    return (f'<time datetime="{html.escape(str(value), quote=True)}">'
+            f'<span class="utc-date">{html.escape(day)}</span>'
+            f'<span class="utc-clock">{clock} UTC</span></time>')
+
+
 def facts(event):
-    items = [("Greatest eclipse (UTC)", event.get("greatest_utc", "Not available"))]
+    items = [("Greatest eclipse (UTC)", format_utc(event.get("greatest_utc")))]
     if event.get("magnitude"):
         definition = ("Umbral magnitude, measured along the Moon’s diameter; not the "
                       "fraction of its area covered." if event["kind"] == "lunar" else
@@ -190,7 +217,7 @@ def render_contacts(event):
     if not contacts:
         return ""
     rows = "".join(f"<tr><th scope=\"row\">{html.escape(labels.get(key, key))}</th>"
-                   f"<td>{html.escape(value)}</td></tr>" for key, value in sorted(contacts.items(), key=lambda kv: kv[1]) if value)
+                   f"<td>{utc_cell(value)}</td></tr>" for key, value in sorted(contacts.items(), key=lambda kv: kv[1]) if value)
     duration = ""
     start, end = ("U1", "U4") if event["kind"] == "lunar" else (None, None)
     if start and contacts.get(start) and contacts.get(end):
@@ -215,7 +242,10 @@ def render_page(event):
             '<style>body{max-width:760px;margin:2rem auto;padding:0 1rem;font:1.12rem/1.65 Georgia,serif;'
             'color:#202833;background:#fffdf8}h1,h2{line-height:1.2;color:#17344d}a{color:#245c86}'
             'dt{font-weight:bold}dd{margin:0 0 .75rem}table{width:100%;border-collapse:collapse}'
-            'th,td{padding:.5rem;text-align:left;border-bottom:1px solid #ccc}.eclipse-sources{font-size:.9em}</style>'
+            'th,td{padding:.6rem;text-align:left;vertical-align:top;border-bottom:1px solid #ccc}'
+            '.utc-date,.utc-clock{display:block}.utc-date{font-size:.88em}'
+            '.utc-clock{white-space:nowrap;font-variant-numeric:tabular-nums}'
+            '.eclipse-sources{font-size:.9em}</style>'
             '</head><body><main><nav><a href="/star-almanack/">Star Almanack</a> / '
             '<a href="/almanack/eclipses/">Eclipses</a></nav>'
             f'<h1>{heading}</h1><p>{html.escape(event["date_utc"])}</p>'
