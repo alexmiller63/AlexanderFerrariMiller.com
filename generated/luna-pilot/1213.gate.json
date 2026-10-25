@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20111188"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Beta PsA: A Quiet Beacon in the Southern Fish\n\n*An unassuming fourth-magnitude star offers a lesson in how distance, motion and careful timing turn a point of light into a place in space.*\n\nThere is a particular pleasure in finding a star that does not announce itself. Beta PsA\u2014also catalogued as HIP 111188\u2014shines modestly in Piscis Austrinus, the Southern Fish. It is no dazzling planet or showpiece cluster. Yet this small, steady point has a measurable address, a measurable motion and a useful invitation: look south, take your time, and let the sky become more than a pattern.\n\nThe SIMBAD astronomical database lists Beta PsA as an A1Va star, a classification indicating an A-type star on the main sequence. Its recorded visual magnitude is 4.29, bright enough to see with the unaided eye under a reasonably dark sky, though city glare can easily overwhelm it. The database gives its parallax as 22.0836 milliarcseconds. Inverting that measurement gives a distance of about 45 parsecs, or 148 light-years. That distance is a calculation from the catalogued parallax, not a direct journey measured in ordinary units. ( [SIMBAD: HIP 111188](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20111188) )\n\nThe star is moving across our line of sight, too. SIMBAD reports proper motion of about 58.6 milliarcseconds per year in right ascension and \u221218.9 milliarcseconds per year in declination. That adds up to roughly 0.062 arcsecond of apparent movement annually\u2014far too little to notice from one night to the next. But over centuries, the positions of stars shift against one another. The constellations feel fixed because human lives are brief, not because the stars are pinned to a celestial backdrop.\n\n## Finding the Fish\n\nBeta PsA\u2019s listed J2000 coordinates are right ascension 22 hours 31 minutes 30 seconds and declination \u221232 degrees 20 minutes 46 seconds. In practical terms, that southern declination means the star climbs well above the horizon for observers south of the equator. From mid-northern latitudes, it stays low in the southern sky; from around 58 degrees north, it only grazes the horizon at best.\n\nChoose a clear evening when Piscis Austrinus is above the horizon. Give your eyes time to adapt to darkness, then use a star chart or planetarium app set to your location to trace the constellation and identify Beta PsA. Binoculars can help with orientation, but the star itself should be visible without them from a dark site. A low southern horizon matters: haze, buildings and trees can hide a star even when the chart says it is up.\n\nOnce you have found it, pause before moving on. The light reaching your eye began its trip roughly 148 years ago. That is not ancient by cosmic standards; it is simply long enough for the star\u2019s photons to have crossed the space between us and the Southern Fish. The catalog\u2019s precise coordinates and motion measurements make Beta PsA more than a faint point in a pattern. They let us place it in three dimensions and recognize that it, too, is traveling.\n\nThe next time you are under a dark sky, look for this quiet beacon. You do not need a telescope or a dramatic discovery. Just a clear view south, a little patience and the knowledge that even an ordinary-looking star has a story written in its light.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20111188",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "celestial",
+              "coordinates",
+              "database",
+              "declination",
+              "degrees",
+              "ident",
+              "listed",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
