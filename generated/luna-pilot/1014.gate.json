@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2076267"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alphecca, the Jewel at the Crown\u2019s Edge\n\n*An easy-to-find summer star in Corona Borealis is more than a single point of light: its spectrum tells of a stellar companion.*\n\nOn a clear evening, look for the small arc of stars between the larger patterns of Bo\u00f6tes and Hercules. Corona Borealis is a delicate crown in the northern sky, and Alphecca\u2014also called Alpha Coronae Borealis\u2014shines near its curved rim like a bright pin fastening the circlet in place. Its name is the first thing to look for; its hidden company is the reason to linger.\n\nAlphecca is bright enough to find with the unaided eye. SIMBAD lists its visual magnitude as 2.24 and classifies it as A1IV, a star of spectral type A and luminosity class IV. It also identifies Alphecca as a spectroscopic binary: a system whose components are recognized through changes in the spectrum, rather than as two separately resolved stars. SIMBAD additionally lists an eclipsing-binary classification, so the system has been catalogued as one whose changing alignment can produce eclipses. The database does not, in the entry cited here, give a period or a predicted date for an eclipse. [SIMBAD: Alphecca](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2076267)\n\nThat distinction\u2014one point of light, more than one star\u2014is a useful reminder that a telescope\u2019s view is only part of astronomy. A backyard observer may see Alphecca as a single steady-looking jewel. Spectroscopy, which separates starlight into its component wavelengths, can reveal motion in the system even when the stars themselves cannot be picked apart in the eyepiece. The sky offers several kinds of evidence; not all of them arrive as a more detailed picture.\n\nSIMBAD reports a parallax of 42.2408 milliarcseconds. Converting that measurement gives a distance of about 24 parsecs, or roughly 77 light-years. The conversion is approximate: distance in parsecs is the inverse of parallax measured in arcseconds. The star\u2019s listed coordinates\u2014right ascension 15h 34m and declination +26\u00b0 43\u2032\u2014place it well north of the celestial equator, a helpful clue for observers in the Northern Hemisphere. [SIMBAD: Alphecca](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2076267)\n\n**How to find it:** Start with the Big Dipper and follow the curve of its handle outward to Arcturus, the bright star in Bo\u00f6tes. From there, look toward the region between Bo\u00f6tes and Hercules for Corona Borealis: a modest, shallow arc rather than a closed ring. Alphecca is the crown\u2019s standout light. If you are under suburban skies, give your eyes time to adapt and use binoculars to trace the fainter arc around it. The binoculars help reveal the pattern, not split Alphecca\u2019s spectroscopic pair.\n\nFor a satisfying session, first identify the crown without optical aid, then use binoculars to follow its curve. Return to Alphecca and consider what the naked eye cannot show: two stellar components registered in a shared point of light, their presence read from the starlight itself. No elaborate equipment is needed to begin the observation. The small constellation supplies the map; the star supplies the mystery.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2076267",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "binary",
+              "celestial",
+              "class",
+              "coordinates",
+              "database",
+              "declination",
+              "ident",
+              "listed",
+              "luminosity",
+              "magnitude"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
