@@ -4,6 +4,7 @@ import html
 import json
 import math
 from eclipse_path_display import central_path_events
+from eclipse_cities import reference_cities
 
 
 def instant(value):
@@ -13,7 +14,7 @@ def instant(value):
 def chart(event, shapes):
     """Render stored geometry and times without introducing new predictions."""
     has_path=bool(event.get('central_path',{}).get('points'))
-    height=1800 if has_path else 1480
+    height=1830 if has_path else 1480
     out=[f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 {height}" role="img" aria-labelledby="solar-title solar-desc">',
          '<title id="solar-title">'+html.escape(event['date_utc']+' '+event['type']+' solar eclipse study chart')+'</title>',
          '<desc id="solar-desc">Numbered shadow-plane cross-section, global UTC contacts and timeline, geometry ledger, and available calculated central-path coordinates.</desc>',
@@ -97,7 +98,7 @@ def chart(event, shapes):
     text(50,1250,'05  /  CALCULATED CENTRAL PATH',19,'font-weight="bold"')
     points=event.get('central_path',{}).get('points',[])
     if points:
-        # Coordinate plot uses no borrowed basemap. Break at the dateline.
+        # Plot our calculated track and cached geographic reference cities.
         def geo(p): return 120+(p['longitude_deg']+180)*3.2,1300+(90-p['latitude_deg'])*1.6
         out.append('<g id="timed-central-path">')
         out.append('<rect x="120" y="1300" width="1152" height="288" fill="#edf3f5" stroke="#708090"/>')
@@ -114,6 +115,11 @@ def chart(event, shapes):
             x1,y1=geo(a);x2,y2=geo(b)
             color='#195ea8' if b['phase']=='total' else '#b35400'
             line(x1,y1,x2,y2,f'stroke="{color}" stroke-width="3"')
+        for city in reference_cities(points):
+            x,y=city['x'],city['y']
+            out.append(f'<circle data-city-id="{city["id"]}" cx="{x:.3f}" cy="{y:.3f}" r="3" fill="#654520" stroke="#fffdf8"><title>{html.escape(city["label"])}; geographic reference only</title></circle>')
+            text(city['tx'],city['ty'],city['label'],14,'style="fill:#edf3f5" stroke="#edf3f5" stroke-width="3" stroke-linejoin="round"')
+            text(city['tx'],city['ty'],city['label'],14)
         for n,milestone in enumerate(central_path_events(event)):
             p=milestone['point'];x,y=geo(p);tx=230+n*465;ty=1660
             line(x,y,tx,ty+4 if ty<1300 else ty-34,'stroke="#526c7b" stroke-width=".8"')
@@ -122,6 +128,12 @@ def chart(event, shapes):
             text(tx,ty,instant(milestone['utc']).strftime('%H:%M:%S UTC'),16,'text-anchor="middle" class="mono"')
         out.append('</g>')
         text(50,1725,'Event times are calculated; markers use nearest stored positions. Path limits are central-axis contacts.',16)
+        text(50,1748,'Cities are geographic references, not confirmed central-path locations. City data: GeoNames (CC BY 4.0).',16)
+        out.append('<a href="https://www.geonames.org/">')
+        text(50,1771,'GeoNames city locations',14)
+        out.append('</a><a href="https://creativecommons.org/licenses/by/4.0/">')
+        text(270,1771,'CC BY 4.0 · selected from our cached city gazetteer',14)
+        out.append('</a>')
         text(50,1702,f'{len(points)} stored coordinates. Longitude east +; latitude geocentric. Blue: total. Orange: annular. Center line only; no path width.',16)
     else:
         text(50,1310,'No calculated central-axis surface path for this event.',23)
@@ -130,3 +142,4 @@ def chart(event, shapes):
     text(50,height-40,'Original chart and calculations: Star Almanack. Positions: JPL DE440s. Spherical Earth; instantaneous geometry; provisional model.',16)
     text(50,height-15,'Surface core extrema describe the sampled surface path; the cross-section core radius describes a different plane.',16)
     return ''.join(out)+'</svg>'
+

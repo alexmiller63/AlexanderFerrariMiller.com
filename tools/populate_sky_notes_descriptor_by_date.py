@@ -569,7 +569,8 @@ def patch_page(path, payload: dict) -> bool:
     # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
-    body = eclipse_treatments(path) + "\n" + rendered + "\n"
+    from integrate_meteor_showers import notes_block
+    body = eclipse_treatments(path) + "\n" + notes_block(path, root=base.ROOT) + "\n" + rendered + "\n"
     # Put story headlines immediately after the observing introduction, before planet details.
     if inline:
         body += inline + "\n"
@@ -590,7 +591,7 @@ def patch_page(path, payload: dict) -> bool:
         'style="border:0;border-left:1px solid currentColor;border-radius:0 999px 999px 0;padding:.35rem .7rem">Wordy</button>'
         '</div>'
     )
-    highlights = eclipse_treatments(path, highlights=True) + render_planet_treatments(payload, highlights=True) + render_linked_stories(payload.get("linked_stories", []))
+    highlights = eclipse_treatments(path, highlights=True) + notes_block(path, highlights=True, root=base.ROOT) + render_planet_treatments(payload, highlights=True) + render_linked_stories(payload.get("linked_stories", []))
     if not highlights:
         highlights = '<p class="sky-note-highlights-empty">No linked Sky Note stories are available for this week.</p>'
     script = '''<script id="sky-note-mode-script">(function(){
@@ -676,4 +677,5 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
 

@@ -198,6 +198,10 @@ def populate_year(year):
         f"{year}: {len(maxima)} shower maxima with radiant/ZHR/Moon/guidance details, "
         f"{changed} pages updated"
     )
+    from integrate_meteor_showers import publish_year
+    # A first build can populate the Calendar before Sky Notes exist; the
+    # Sky Notes generator renders its own meteor blocks later in the pipeline.
+    publish_year(year, ROOT, require_notes=False)
     return changed
 
 
@@ -220,3 +224,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

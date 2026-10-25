@@ -1,0 +1,40 @@
+name: Publish Meteor Showers
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: Publication year
+        required: true
+        default: all
+        type: choice
+        options: [all, '2025', '2026', '2027']
+permissions:
+  contents: write
+concurrency:
+  group: meteor-publication
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Publish stored meteor calculations
+        env:
+          YEAR: ${{ inputs.year }}
+        run: |
+          if [ "$YEAR" = all ]; then
+            python tools/integrate_meteor_showers.py 2025 2026 2027
+          else
+            python tools/integrate_meteor_showers.py "$YEAR"
+          fi
+      - name: Commit generated meteor pages and affected weeks
+        run: |
+          git add -- almanack/
+          git diff --cached --quiet && exit 0
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish meteor-shower cards and weekly observing notes"
+          git push
