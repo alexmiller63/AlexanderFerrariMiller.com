@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086032"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Rasalhague: A bright marker in the Serpent Bearer\n\n*An easy summer target, Alpha Ophiuchi offers a naked-eye welcome\u2014and a reminder that even a familiar point of light has a measurable place and character.*\n\nOn a clear summer evening, look toward Ophiuchus, the Serpent Bearer, and find its brightest star: Rasalhague. It stands out without optical aid, a steady-looking point that has helped give this broad constellation a recognizable anchor. But the star is more than a handy signpost. Its catalogued position, distance and spectral classification turn a quick glance into a small exercise in stellar astronomy.\n\nSIMBAD identifies Rasalhague as **Alpha Ophiuchi**, or alf Oph, and classifies it as a double or multiple star. The database lists a visual magnitude of 2.07\u2014bright enough to be readily seen from a reasonably dark site, though haze, city lighting and the Moon can all make fainter stars harder to pick out. Its listed spectral type is **A5IVnn**: the \u201cA\u201d indicates a hot, blue-white class of star, while \u201cIV\u201d places it in the subgiant category. The classification\u2019s \u201cnn\u201d is part of the catalogued spectral type; it is a reminder that stellar labels can carry detail beyond the broad color-and-temperature shorthand familiar from star charts. [SIMBAD: Alpha Ophiuchi](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086032)\n\nDistance is another way to give this point of light depth. SIMBAD reports a parallax of 67.13 milliarcseconds. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun. Converting that value gives a distance of about 15 parsecs, or roughly 49 light-years. That is close by the scale of the Milky Way, though still far beyond any journey a person could make. The star\u2019s measured proper motion\u2014its slow change of position across the sky\u2014also shows that the apparently fixed pattern of the constellations is not truly fixed. [SIMBAD astrometry](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086032)\n\nFor a first look, go out on a summer evening in the Northern Hemisphere and give your eyes a few minutes to adapt. Ophiuchus occupies a large area of sky; a planisphere or astronomy app can help you trace its outline and identify Rasalhague near the constellation\u2019s northern end. If you use binoculars, steady them against a wall or tripod and take in the surrounding star field. The catalog\u2019s multiple-star classification does not, by itself, mean that a companion will be easy to separate in binoculars or a small telescope. For this session, the main target is the bright primary itself.\n\nA simple way to make the observation more meaningful is to note the date, time and sky conditions, then compare the star\u2019s location with a chart. You can also record whether it appeared white or slightly blue-white; apparent color is subtle and can be affected by atmospheric conditions and individual vision. Rasalhague rewards both kinds of attention: the unaided glance that recognizes a bright star, and the slower one that asks what the light has crossed to reach us.\n\n**Source:** SIMBAD, Centre de Donn\u00e9es astronomiques de Strasbourg, Alpha Ophiuchi (HIP 86032): https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086032",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2086032",
+            "overlap_terms": [
+              "around",
+              "catalog",
+              "class",
+              "database",
+              "double",
+              "ident",
+              "listed",
+              "magnitude",
+              "motion",
+              "multiple",
+              "optical",
+              "parallax"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
