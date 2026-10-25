@@ -13,11 +13,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from eclipse_engine import EclipseEngine, gregorian_to_jd, jd_to_iso_utc
-from lunar_eclipse_engine import find_lunar_eclipse
+from lunar_eclipse_engine import find_lunar_eclipse, SHADOW_EARTH_RADIUS_FACTOR
 
 SEED = date(2026, 8, 12)  # lunation search anchor, not a reference prediction
 SYNODIC_DAYS = 29.530588853
-FIELDS = ["id", "detail_path", "kind", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
+FIELDS = ["id", "detail_path", "kind", "position_source", "shadow_earth_radius_factor", "contacts_utc", "date_utc", "greatest_utc", "type", "axis_distance_km",
           "penumbra_margin_km", "central_margin_km", "core_radius_km",
           "status"]
 
@@ -61,8 +61,14 @@ def global_solar_boundaries(engine, greatest_jd, *, hours=12.0):
             raise RuntimeError(f"Unable to bracket {label} within {hours} hours")
     return out
 
-def generate(start_year, end_year):
-    engine = EclipseEngine()
+def generate(start_year, end_year, kernel=None):
+    if kernel is not None:
+        from kernel_eclipse_engine import KernelEclipseEngine
+        engine = KernelEclipseEngine(kernel)
+        position_source = "JPL DE440s kernel; Star Almanack shadow geometry"
+    else:
+        engine = EclipseEngine()
+        position_source = "ELP2000-82B Moon and compact solar model; Star Almanack shadow geometry"
     start, end = date(start_year, 1, 1), date(end_year + 1, 1, 1)
     results = {}
     print(f'Starting eclipse search {start_year}–{end_year}', flush=True)
@@ -87,6 +93,7 @@ def generate(start_year, end_year):
         )
         results[event.greatest_utc[:16]] = {
             "kind": "solar", "contacts_utc": json.dumps(solar_contacts),
+            "position_source": position_source,
             "date_utc": event_day.isoformat(),
             "greatest_utc": event.greatest_utc,
             "type": event.eclipse_type,
@@ -103,7 +110,7 @@ def generate(start_year, end_year):
         if not start - timedelta(days=3) <= candidate < end + timedelta(days=3):
             continue
         jd = gregorian_to_jd(candidate.year, candidate.month, candidate.day, 12.0)
-        event = find_lunar_eclipse(engine, jd)
+        event = find_lunar_eclipse(engine, jd, search_hours=48.0)
         if event is None:
             continue
         greatest = jd_to_iso_utc(event["greatest_jd_utc"])
@@ -114,6 +121,8 @@ def generate(start_year, end_year):
         print(f"FOUND LUNAR {greatest} {event['type']} contacts={len(event['contacts_jd_utc'])}", flush=True)
         results["lunar:"+greatest[:16]] = {
             "kind": "lunar", "date_utc": event_day.isoformat(),
+            "position_source": position_source,
+            "shadow_earth_radius_factor": SHADOW_EARTH_RADIUS_FACTOR,
             "greatest_utc": greatest, "type": event["type"],
             "axis_distance_km": round(g.axis_distance_km, 3),
             "penumbra_margin_km": round(g.penumbral_margin_km, 3),
@@ -131,10 +140,11 @@ def main():
     parser.add_argument("--start-year", type=int, default=2025)
     parser.add_argument("--end-year", type=int, default=2036)
     parser.add_argument("--output-dir", type=Path, default=Path("generated/eclipse-catalog"))
+    parser.add_argument("--kernel", type=Path, help="Local DE440s kernel for Sun and Moon positions")
     args = parser.parse_args()
     if args.end_year < args.start_year:
         parser.error("end-year must not precede start-year")
-    rows = generate(args.start_year, args.end_year)
+    rows = generate(args.start_year, args.end_year, kernel=args.kernel)
     # Registry identity is persistent across recalculations. Never derive a new
     # identifier solely because an improved ephemeris shifts the UTC date.
     registry_path = args.output_dir / "eclipse-registry.json"
@@ -176,3 +186,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

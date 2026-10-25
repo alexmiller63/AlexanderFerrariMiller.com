@@ -27,7 +27,7 @@ def main():
         if not re.fullmatch(r'ECL-\d{4}-\d{2}-\d{2}-[SL]',eid): raise ValueError('Unsafe eclipse ID: '+eid)
         title=f"{e['type'].title()} {e['kind'].title()} Eclipse"
         url=f"/almanack/eclipses/{eid}.html"
-        detail=render_page({**e, **{key: value for key, value in publication_events.get(eid, {}).items() if key in ("magnitude", "visibility", "observing_note")}})
+        detail=render_page({**e, **{key: value for key, value in publication_events.get(eid, {}).items() if key in ("magnitude", "visibility", "observing_note", "earlier_calculation", "earlier_method", "visibility_reference")}})
         write(ROOT/'almanack'/f'eclipses/{eid}.html',detail)
         if 2025<=day.year<=2027:
             y,w,_=day.isocalendar()

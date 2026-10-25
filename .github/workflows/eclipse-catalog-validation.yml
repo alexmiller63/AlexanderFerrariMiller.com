@@ -5,6 +5,9 @@ on:
   push:
     paths:
       - tools/generate_decade_eclipses.py
+      - eclipse_engine.py
+      - lunar_eclipse_engine.py
+      - kernel_eclipse_engine.py
       - .github/workflows/eclipse-catalog-validation.yml
 
 permissions:
@@ -18,21 +21,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
-      - name: Bootstrap and normalize ELP2000 lunar data
-        shell: bash
-        run: |
-          set -euo pipefail
-          if [ ! -s star-almanack-elp82b/elp82b-manifest.json ]; then
-            (
-              cd star-almanack-elp82b
-              python lunar_elp.py bootstrap data/elp82b
-              python lunar_elp.py verify data/elp82b
-              python normalize_elp82b.py data/elp82b elp82b-manifest.json
-            )
-          fi
-          test -s star-almanack-elp82b/elp82b-manifest.json
-      - name: Generate provisional eclipse catalog
-        run: python -u tools/generate_decade_eclipses.py --start-year 2025 --end-year 2036
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install kernel reader
+        run: python -m pip install skyfield==1.55
+      - uses: actions/cache@v4
+        with:
+          path: .cache/skyfield/de440s.bsp
+          key: star-almanack-de440s-v1
+      - name: Ensure cached production ephemeris
+        run: python tools/ensure_ephemeris_kernels.py
+      - name: Generate calculated eclipse catalog
+        run: python -u tools/generate_decade_eclipses.py --start-year 2025 --end-year 2036 --kernel .cache/skyfield/de440s.bsp
       - name: Validate registry and catalog
         run: |
           python - <<'PY'
@@ -46,6 +47,12 @@ jobs:
           assert len(ids) == len(set(ids)), "Duplicate permanent IDs"
           assert len(registry) == len(rows), "Registry/catalog mismatch"
           assert all(2025 <= int(r["date_utc"][:4]) <= 2036 for r in rows)
+          expected = json.loads(Path("data/eclipse-visibility.json").read_text())["events"]
+          actual = {(r["kind"], r["date_utc"]) for r in rows}
+          missing = [(e["kind"], e["date"]) for e in expected.values()
+                     if 2025 <= int(e["date"][:4]) <= 2036
+                     and (e["kind"], e["date"]) not in actual]
+          assert not missing, f"Missing reference events: {missing}"
           assert all(r["detail_path"] == "eclipses/" + r["id"] + ".html" for r in rows)
           print(f"Validated {len(rows)} provisional eclipse records")
           PY
@@ -60,3 +67,4 @@ jobs:
           name: eclipse-catalog-2025-2036
           path: generated/eclipse-catalog/
           retention-days: 30
+

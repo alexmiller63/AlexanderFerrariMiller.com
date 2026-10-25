@@ -3,11 +3,15 @@ on:
   workflow_dispatch:
     inputs:
       year:
-        description: "Year to process (2025, 2026, or 2027)"
+        description: "Publication year, or all three years"
         required: true
-        default: "2026"
+        default: "all"
         type: choice
-        options: ["2025", "2026", "2027"]
+        options: ["all", "2025", "2026", "2027"]
+  workflow_run:
+    workflows: ["Eclipse Catalog Validation (2025–2036)"]
+    types: [completed]
+    branches: [main]
 permissions:
   contents: write
 concurrency:
@@ -15,11 +19,16 @@ concurrency:
   cancel-in-progress: false
 jobs:
   publish:
+    if: >-
+      ${{ github.event_name != 'workflow_run' ||
+          (github.event.workflow_run.conclusion == 'success' &&
+           github.event.workflow_run.head_repository.full_name == github.repository) }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          ref: main
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
@@ -33,20 +42,21 @@ jobs:
         run: python tools/integrate_eclipses.py --catalog generated/eclipse-catalog/eclipses-2025-2036.json
       - name: Identify and generate eclipse weeks
         env:
-          YEAR: ${{ inputs.year }}
+          YEAR: ${{ inputs.year || 'all' }}
         run: |
           python - <<'PY'
           import json, os, subprocess, sys
           from datetime import date, timedelta
           from pathlib import Path
-          year = int(os.environ["YEAR"])
+          selected_year = os.environ["YEAR"]
+          years = {2025, 2026, 2027} if selected_year == "all" else {int(selected_year)}
           registry = Path("generated/eclipse-catalog/eclipse-registry.json")
           if not registry.exists():
               raise SystemExit("Missing eclipse registry; publish the catalog first")
           events = [e for e in json.loads(registry.read_text())["events"]
-                    if date.fromisoformat(e["date_utc"]).year == year]
+                    if date.fromisoformat(e["date_utc"]).year in years]
           if not events:
-              raise SystemExit(f"No eclipse events found for {year}")
+              raise SystemExit(f"No eclipse events found for {selected_year}")
           weeks = sorted({date.fromisoformat(e["date_utc"]).isocalendar()[:2] for e in events})
           for iso_year, week in weeks:
               monday = date.fromisocalendar(iso_year, week, 1)

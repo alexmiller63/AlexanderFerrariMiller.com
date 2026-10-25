@@ -84,6 +84,12 @@ def load_events(root):
     """Keep numerical catalog data authoritative; add existing Calendar publication notes."""
     path = root / "generated/eclipse-catalog/eclipses-2025-2036.json"
     events = {e["id"]: dict(e) for e in json.loads(path.read_text())["eclipses"]}
+    visibility_path = root / "data/eclipse-visibility.json"
+    if visibility_path.exists():
+        references = json.loads(visibility_path.read_text())["events"]
+        for eid, event in events.items():
+            if eid in references:
+                event["visibility_reference"] = references[eid]
     source = root / "eclipse.yaml"
     if source.exists():
         # This repository's Calendar source uses flat, quoted publication fields.
@@ -96,6 +102,8 @@ def load_events(root):
             eid = f"ECL-{day[1]}-{kind[1][0].upper()}"
             if eid not in events:
                 continue
+            events[eid]["earlier_calculation"] = "  - id: " + block.rstrip()
+            events[eid]["earlier_method"] = source.read_text().split("\neclipses:", 1)[0]
             for field in ("magnitude", "visibility", "observing_note"):
                 value = re.search(rf'(?m)^    {field}: "([^"\n]*)"$', block)
                 if value:
@@ -180,6 +188,10 @@ def utc_cell(value):
 
 def facts(event):
     items = [("Greatest eclipse (UTC)", format_utc(event.get("greatest_utc")))]
+    if event.get("position_source"):
+        items.append(("Position source", event["position_source"]))
+    if event.get("shadow_earth_radius_factor") is not None:
+        items.append(("Effective Earth-radius factor for lunar shadow", str(event["shadow_earth_radius_factor"])))
     if event.get("magnitude"):
         definition = ("Umbral magnitude, measured along the Moon’s diameter; not the "
                       "fraction of its area covered." if event["kind"] == "lunar" else
@@ -192,6 +204,9 @@ def facts(event):
 
 def sources(event):
     links = []
+    if event.get("visibility_reference"):
+        links.append((event["visibility_reference"]["source_url"],
+                      "Visibility regions and maps: Eclipse Predictions by Fred Espenak, NASA/GSFC"))
     if event["kind"] == "solar":
         links.append(("https://science.nasa.gov/eclipses/safety/", "NASA: solar viewing safety"))
     if history(event):
@@ -217,6 +232,80 @@ def render_note(event, *, highlights=False):
             paragraphs([observing(event)]) + sources(event))
 
 
+def render_visibility(event):
+    reference = event.get("visibility_reference")
+    if not reference:
+        return '<h2>Where to watch</h2>' + paragraphs([event.get("visibility", "Geographic visibility has not been added for this event.")])
+    def region_words(text):
+        for short, full in (("N.", "North"), ("S.", "South"), ("C.", "Central"), ("Mid East", "Middle East")):
+            text = text.replace(short, full)
+        for short, full in (("n", "northern"), ("s", "southern"), ("e", "eastern"), ("w", "western"), ("c", "central"),
+                            ("nw", "northwestern"), ("ne", "northeastern"), ("sw", "southwestern"), ("se", "southeastern")):
+            text = re.sub(rf'\b{short}\b', full, text)
+        return text
+    result = '<section id="eclipse-visibility"><h2>Where to watch</h2>'
+    result += paragraphs([region_words(reference["regions"])])
+    if reference.get("central_path"):
+        heading = {"total": "Path of totality", "annular": "Path of annularity", "hybrid": "Hybrid eclipse path"}[reference["path_type"]]
+        result += f'<h3>{heading}</h3>' + paragraphs([region_words(reference["central_path"])])
+        result += paragraphs(["Only the narrow central path receives this phase. The wider visibility region sees a partial solar eclipse. A country’s inclusion does not mean the path covers the whole country."])
+    if reference.get("type") != event["type"]:
+        result += paragraphs([f"The published map classifies this event as {reference['type']}; the stored Star Almanack geometry currently classifies it as {event['type']}."])
+    if event["kind"] == "lunar":
+        result += paragraphs(["Visibility depends on the Moon being above your horizon during each phase. Some places see the whole event; others see only the beginning or end near moonset or moonrise."])
+    url = html.escape(reference["map_url"], quote=True)
+    if event["kind"] == "solar":
+        result += f'<a href="{url}"><img class="eclipse-map" src="{url}" loading="lazy" alt="Published geographic visibility map for the {html.escape(event["date_utc"], quote=True)} solar eclipse"></a>'
+        result += f'<p><a href="{url}">Open full-size visibility map</a></p>'
+    else:
+        result += f'<p><a href="{url}">Open visibility map and eclipse diagram (PDF)</a></p>'
+    for key, label in (("interactive_path_url", "Explore the central path on a map"), ("path_table_url", "Path coordinates and limits")):
+        if reference.get(key):
+            result += f'<p><a href="{html.escape(reference[key], quote=True)}">{label}</a></p>'
+    result += paragraphs(["The map and regional descriptions are published reference predictions. Star Almanack’s calculated event times and geometry are shown separately below."])
+    result += f'<p class="eclipse-sources">{html.escape(reference["credit"])}</p></section>'
+    return result
+
+
+def render_geometry(event):
+    lunar = event["kind"] == "lunar"
+    fields = {
+        "axis_distance_km": ("Shadow-axis distance", "Moon-center distance from Earth’s shadow axis at greatest eclipse." if lunar else "Closest distance of the Sun–Moon shadow axis from Earth’s center at greatest eclipse."),
+        "penumbra_margin_km": ("Penumbral margin", "Axis distance minus the sum of penumbral and lunar radii; a negative value indicates overlap." if lunar else "Axis distance minus the sum of Earth’s radius and the penumbral radius; negative indicates overlap in the engine’s geometry."),
+        "central_margin_km": ("Umbral overlap margin" if lunar else "Shadow-axis margin", "Axis distance minus the sum of umbral and lunar radii; negative indicates umbral overlap, not necessarily totality." if lunar else "Axis distance minus Earth’s radius; negative means the shadow axis passes inside Earth’s radius."),
+        "core_radius_km": ("Earth’s umbral radius" if lunar else "Signed central-shadow radius", "Radius of Earth’s umbra at the Moon’s projected distance behind Earth." if lunar else "Shadow-core radius at the plane of closest axis approach to Earth’s center. Positive denotes umbra; negative denotes antumbra."),
+    }
+    rows = []
+    for key, (label, meaning) in fields.items():
+        if key in event:
+            value = str(event[key])
+            rows.append(f'<tr><th scope="row">{html.escape(label)}<br><small>{key}</small></th>'
+                        f'<td class="geometry-value">{html.escape(value)} km</td>'
+                        f'<td>{html.escape(meaning)}</td></tr>')
+    return ('<h2>Calculated geometry</h2><p>Stored catalog values at greatest eclipse. '
+            'Signs and precision are retained as calculated.</p><div class="data-table-scroll">'
+            '<table><thead><tr><th>Quantity</th><th>Value</th><th>Meaning</th></tr></thead>'
+            '<tbody>' + ''.join(rows) + '</tbody></table></div>')
+
+
+def render_records(event):
+    record = {key: value for key, value in event.items()
+              if key not in ("earlier_calculation", "earlier_method")}
+    # Keep the original field values, including the serialized contacts and status.
+    raw = html.escape(json.dumps(record, indent=2, ensure_ascii=False))
+    result = ('<h2>Complete stored record</h2><p>Current catalog output, including its '
+              'original calculation-status field and all stored values.</p>'
+              f'<pre class="calculation-record">{raw}</pre>')
+    if event.get("earlier_calculation"):
+        result += ('<h2>Earlier stored calculation</h2><p>Source: eclipse.yaml. '
+                   'This is a separate result set; its values are reproduced without '
+                   'reconciling them with the catalog above.</p>'
+                   f'<pre class="calculation-record">{html.escape(event["earlier_calculation"])}</pre>'
+                   '<h3>Earlier calculation method and source notes</h3>'
+                   f'<pre class="calculation-record">{html.escape(event["earlier_method"])}</pre>')
+    return result
+
+
 def render_contacts(event):
     contacts = event.get("contacts_utc", {})
     if isinstance(contacts, str):
@@ -227,15 +316,24 @@ def render_contacts(event):
               "global_end": "Eclipse ends everywhere on Earth"}
     if not contacts:
         return ""
-    rows = "".join(f"<tr><th scope=\"row\">{html.escape(labels.get(key, key))}</th>"
-                   f"<td>{utc_cell(value)}</td></tr>" for key, value in sorted(contacts.items(), key=lambda kv: kv[1]) if value)
-    duration = ""
-    start, end = ("U1", "U4") if event["kind"] == "lunar" else (None, None)
-    if start and contacts.get(start) and contacts.get(end):
-        seconds = (datetime.fromisoformat(contacts[end].replace("Z", "+00:00")) -
-                   datetime.fromisoformat(contacts[start].replace("Z", "+00:00"))).total_seconds()
-        if seconds >= 0:
-            duration = f"<p>Partial-or-total umbral phase duration: {int(seconds // 3600)} h {int(seconds % 3600 // 60)} min.</p>"
+    timeline = {**contacts, "greatest_utc": event.get("greatest_utc")}
+    labels["greatest_utc"] = "Greatest eclipse"
+    rows = "".join(f"<tr><th scope=\"row\">{html.escape(labels.get(key, key))}<br><small>{html.escape(key)}</small></th>"
+                   f"<td>{utc_cell(value) if value else 'Not available'}</td></tr>"
+                   for key, value in sorted(timeline.items(), key=lambda kv: kv[1] or ""))
+    durations = []
+    pairs = (("P1", "P4", "Entire penumbral event"), ("U1", "U4", "Partial-or-total umbral phases"),
+             ("U2", "U3", "Totality")) if event["kind"] == "lunar" else (
+                 ("global_begin", "global_end", "Global event window; not duration at one location"),)
+    for start, end, label in pairs:
+        if contacts.get(start) and contacts.get(end):
+            seconds = round((datetime.fromisoformat(contacts[end].replace("Z", "+00:00")) -
+                             datetime.fromisoformat(contacts[start].replace("Z", "+00:00"))).total_seconds())
+            sign = "−" if seconds < 0 else ""
+            value = abs(seconds)
+            durations.append(f'<li>{html.escape(label)} ({start}–{end}): '
+                             f'{sign}{value // 3600} h {value % 3600 // 60} min {value % 60} s</li>')
+    duration = ('<h3>Durations derived from the stored times</h3><ul>' + ''.join(durations) + '</ul>') if durations else ""
     qualifier = ("These lunar phases happen at the same instants for everyone; only phases "
                  "with the Moon above your horizon can be seen." if event["kind"] == "lunar" else
                  "These are global limits, not contact times or duration at your location.")
@@ -256,15 +354,23 @@ def render_page(event):
             'th,td{padding:.6rem;text-align:left;vertical-align:top;border-bottom:1px solid #ccc}'
             '.utc-date,.utc-clock{display:block}.utc-date{font-size:.88em}'
             '.utc-clock{white-space:nowrap;font-variant-numeric:tabular-nums}'
+            '.data-table-scroll{overflow-x:auto}small{font-size:.75em;overflow-wrap:anywhere}'
+            '.eclipse-map{display:block;width:100%;height:auto;margin:1rem 0}'
+            '.geometry-value{white-space:nowrap;font-variant-numeric:tabular-nums}'
+            '.calculation-record{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.82em;'
+            'padding:1rem;background:#f0ede5;border-radius:.3rem}'
             'blockquote{margin:1.25rem 0;padding:.2rem 1rem;border-left:3px solid #c5a45c}'
             '.eclipse-quotation-credit,.eclipse-sources{font-size:.9em}</style>'
             '</head><body><main><nav><a href="/star-almanack/">Star Almanack</a> / '
             '<a href="/almanack/eclipses/">Eclipses</a></nav>'
-            f'<h1>{heading}</h1><p>{html.escape(event["date_utc"])}</p>'
+            f'<h1>{heading}</h1><p>{html.escape(event["date_utc"])}</p>' +
+            render_visibility(event) +
             '<h2>What this eclipse means</h2>' + paragraphs([meaning]) +
             '<h2>What to look for</h2>' + paragraphs([watching]) + past +
             '<h2>This event</h2><dl>' + details + '</dl>' +
-            render_contacts(event) + '<h2>Watching the eclipse</h2>' + paragraphs([observing(event)]) +
+            render_contacts(event) + render_geometry(event) +
+            '<h2>Watching the eclipse</h2>' + paragraphs([observing(event)]) +
+            render_records(event) +
             '<h2>Sources</h2>' + sources(event) +
             '<p>Event times and geometry: Star Almanack’s calculated eclipse catalog. '
             'Visibility and magnitude, where supplied: the Calendar’s publication metadata.</p>'

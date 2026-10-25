@@ -12,6 +12,11 @@ from eclipse_engine import (
     EclipseEngine, utc_to_tdb_approx, sun_vector_j2000,
 )
 
+# Danjon-style effective Earth-radius factor for atmospheric shadow enlargement.
+# This spherical approximation is explicit; it does not model weather or the
+# detailed oblate-Earth shadow. See NASA LEcat5/shadow.html, equations 1-5/1-6.
+SHADOW_EARTH_RADIUS_FACTOR = 1.01
+
 @dataclass(frozen=True)
 class LunarShadow:
     jd_utc: float
@@ -27,7 +32,7 @@ class LunarShadow:
 def lunar_shadow_at_utc_jd(engine: EclipseEngine, jd_utc: float) -> LunarShadow:
     jd = utc_to_tdb_approx(jd_utc)
     moon = engine.moon_vector_j2000(jd)
-    sun = sun_vector_j2000(jd)
+    sun = engine.sun_vector_j2000(jd)
     sun_distance = sun.norm()
     moon_distance = moon.norm()
     # Earth shadow axis extends in the direction opposite the Sun.
@@ -39,8 +44,9 @@ def lunar_shadow_at_utc_jd(engine: EclipseEngine, jd_utc: float) -> LunarShadow:
                            float('inf'), float('inf'), float('inf'), 'none')
     # Similar triangles for the umbral and penumbral cones at the
     # Moon's projected distance behind Earth.
-    umbra = EARTH_RADIUS_KM - axial_distance * (SUN_RADIUS_KM - EARTH_RADIUS_KM) / sun_distance
-    penumbra = EARTH_RADIUS_KM + axial_distance * (SUN_RADIUS_KM + EARTH_RADIUS_KM) / sun_distance
+    shadow_earth_radius = EARTH_RADIUS_KM * SHADOW_EARTH_RADIUS_FACTOR
+    umbra = shadow_earth_radius - axial_distance * (SUN_RADIUS_KM - shadow_earth_radius) / sun_distance
+    penumbra = shadow_earth_radius + axial_distance * (SUN_RADIUS_KM + shadow_earth_radius) / sun_distance
     p_margin = transverse - (penumbra + MOON_RADIUS_KM)
     u_margin = transverse - (umbra + MOON_RADIUS_KM)
     t_margin = transverse + MOON_RADIUS_KM - umbra
@@ -80,18 +86,25 @@ def _bisect(f, a, b, iterations=45):
     return (a+b)/2.0
 
 def find_lunar_eclipse(engine: EclipseEngine, jd_center: float,
-                       search_hours: float = 18.0):
+                       search_hours: float = 48.0):
     """Find closest shadow alignment and all applicable contacts.
 
-    jd_center should be within roughly 18 hours of full Moon. Return None
+    jd_center is an approximate full-Moon candidate, rounded to a civil day.
+    Search two days either side so that rounding and lunar phase variations do
+    not truncate the minimum. Return None
     if the lunar disc does not enter Earth's penumbra.
     """
     half = search_hours / 24.0
-    step = 0.5 / 24.0
+    # The objective varies smoothly across a full-Moon passage. A two-hour
+    # coarse grid brackets the minimum; the minimizer refines it independently
+    # of this sampling interval.
+    step = 2.0 / 24.0
     samples = [jd_center-half+i*step
                for i in range(int(2*half/step)+1)]
     best = min(samples, key=lambda t: lunar_shadow_at_utc_jd(
         engine, t).axis_distance_km)
+    if best in (samples[0], samples[-1]):
+        raise RuntimeError('Lunar alignment minimum is outside the search window; widen the candidate search')
     peak = _minimize(lambda t: lunar_shadow_at_utc_jd(
         engine, t).axis_distance_km, best-step, best+step)
     geom = lunar_shadow_at_utc_jd(engine, peak)
@@ -122,3 +135,4 @@ def find_lunar_eclipse(engine: EclipseEngine, jd_center: float,
         renamed[{'P2':'P4','U2':'U4','T1':'U2','T4':'U3'}.get(key,key)] = value
     return {'greatest_jd_utc': peak, 'type': geom.eclipse_type,
             'geometry': geom, 'contacts_jd_utc': renamed}
+

@@ -1124,6 +1124,8 @@ def utc_to_tdb_approx(jd_utc: float) -> float:
 
 class EclipseEngine:
 
+    sun_vector_j2000 = staticmethod(sun_vector_j2000)
+
     def __init__(
 
         self,
@@ -1214,7 +1216,7 @@ class EclipseEngine:
 
         )
 
-        sun = sun_vector_j2000(
+        sun = self.sun_vector_j2000(
 
             jd_tdb
 
