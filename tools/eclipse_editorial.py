@@ -384,7 +384,6 @@ def render_page(event):
             '<h2>Watching the eclipse</h2>' + paragraphs([observing(event)]) +
             render_records(event) +
             '<h2>Sources</h2>' + sources(event) +
-            '<p>Event times and geometry: Star Almanack’s calculated eclipse catalog. '
-            'Central-path coordinates, where supplied: Star Almanack’s calculated spherical-Earth track. '
+            '<p>Explanatory text and eclipse calculations are original work by Star Almanack. The calculations use Sun, Earth, and Moon positions from <a href="https://ssd.jpl.nasa.gov/planets/eph_export.html">JPL’s DE440s ephemeris kernel</a>. Event times, shadow geometry, and the supplied central-path coordinates are calculated by Star Almanack from those positions.</p><p>'
             'Other visibility and magnitude, where supplied: the Calendar’s publication metadata.</p>'
             '</main></body></html>')
