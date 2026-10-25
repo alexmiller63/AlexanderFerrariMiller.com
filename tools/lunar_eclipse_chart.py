@@ -151,6 +151,20 @@ def chart(event):
         text(cx,cy+radius-23,name.upper(),17,'text-anchor="middle" letter-spacing="2"')
     line(cx-17,cy,cx+17,cy)
     line(cx,cy-17,cx,cy+17)
+    # Numbered coordinates measure physical displacement from the shadow axis.
+    # Draw over the shadow fills so the grid remains visible inside both circles.
+    step = 2000 if extent <= 16000 else 5000
+    limit = math.floor(extent / step) * step
+    out.append('<g id="shadow-coordinate-grid">')
+    for value in range(-limit, limit+1, step):
+        x, y = cx+value*scale, cy-value*scale
+        line(x,cy-350,x,cy+350,'stroke="#526c7b" stroke-opacity=".28" stroke-dasharray="3 5"')
+        line(cx-350,y,cx+350,y,'stroke="#526c7b" stroke-opacity=".28" stroke-dasharray="3 5"')
+        if value % (2*step) == 0:
+            text(x,1014,f'{value:+,}' if value else '0',14,'text-anchor="middle" class="mono"')
+        text(112,y+5,f'{value:+,}' if value else '0',14,'text-anchor="end" class="mono"')
+    out.append('</g>')
+    text(470,1055,'Shadow-axis offsets (km): west +x, north +y',16,'text-anchor="middle"')
     points=' '.join(f'{xy(p)[0]:.2f},{xy(p)[1]:.2f}' for p in track)
     out.append(f'<polyline points="{points}" fill="none" stroke="#ab562d" stroke-width="2.5" marker-end="url(#motion)"/>')
     for i,p in enumerate(phases):
@@ -164,17 +178,18 @@ def chart(event):
         ly=y-62 if sign<0 else y+65
         line(x,y,lx,ly,'stroke="#526c7b" stroke-width="1"')
         text(lx,ly-7,p['phase'],19,'text-anchor="middle" font-weight="bold"')
+        text(lx,ly+14,instant(p['utc']).strftime('%H:%M:%S'),16,'text-anchor="middle" class="mono"')
     text(470,232,'North',18,'text-anchor="middle"')
     line(470,273,470,244,'stroke="#203747" marker-end="url(#motion)"')
-    text(70,645,'East',18)
-    text(818,645,'West',18)
-    text(470,1036,'South',18,'text-anchor="middle"')
+    text(70,282,'East',18)
+    text(818,282,'West',18)
+    text(470,1036,'South',16,'text-anchor="middle"')
     # Scale and orientation notes belong to the actual geometric view.
     length=5000*scale
-    line(80,1000,80+length,1000,'stroke="#203747" stroke-width="3"')
-    line(80,994,80,1006,'stroke="#203747"')
-    line(80+length,994,80+length,1006,'stroke="#203747"')
-    text(80,1030,'5,000 km in the Moon’s shadow plane',16)
+    line(120,260,120+length,260,'stroke="#203747" stroke-width="3"')
+    line(120,254,120,266,'stroke="#203747"')
+    line(120+length,254,120+length,266,'stroke="#203747"')
+    text(120,246,'5,000 km',16)
     text(50,1072,'Disk size and track are to scale. Shadow circles show their radii at greatest eclipse.',17)
     text(50,1098,'North is celestial north; east is left. Arrow follows increasing UTC. Gold marks greatest eclipse.',17)
     text(50,1124,'Outlined disks are contact positions, not surface photographs or predicted lunar brightness.',17)
@@ -264,3 +279,4 @@ def chart(event):
     ]
     for i,note in enumerate(notes): text(50,1720+i*23,note,17)
     return ''.join(out)+'</svg>'
+
