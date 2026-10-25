@@ -34,6 +34,9 @@ def circles(event):
 
 def svg(event):
     shapes = circles(event)
+    if event['kind'] == 'lunar':
+        from lunar_eclipse_chart import chart
+        return chart(event)
     left = min(x-r for _, x, r, _ in shapes)
     right = max(x+r for _, x, r, _ in shapes)
     height = max(r for _, _, r, _ in shapes)
@@ -62,6 +65,18 @@ def svg(event):
 
 def render_artwork(event):
     eid = html.escape(event['id'], quote=True)
+    if event['kind'] == 'lunar':
+        return ('<section id="lunar-event-chart"><h2>Calculated lunar eclipse chart</h2>'
+                f'<p><a href="{eid}-shadow.svg">Open the full-resolution chart for detailed study</a></p>'
+                f'<figure style="margin:0"><a href="{eid}-shadow.svg"><img src="{eid}-shadow.svg" '
+                'style="width:100%;height:auto" alt="Detailed calculated lunar eclipse chart: track, contact positions, timing, geometry and geographic horizon maps"></a>'
+                '<figcaption>The full event in one chart. North is celestial north and east is left. '
+                'The maps show the geometric Moon-center horizon at three instants, rather than whole-event visibility. '
+                'Open or download the SVG to enlarge its labels and inspect the calculations.</figcaption></figure>'
+                f'<p><a href="{eid}-contacts.csv" download>Contact coordinates (CSV)</a> · '
+                f'<a href="{eid}-chart.json" download>Complete chart measurements (JSON)</a></p>'
+                '<p>Original chart and calculations by Star Almanack; positional input from the credited JPL kernel. '
+                'Model assumptions and limitations appear on the chart.</p></section>')
     description = (
         'Earth’s shadow at the Moon’s projected distance. The Moon is shown at greatest eclipse.'
         if event['kind'] == 'lunar' else

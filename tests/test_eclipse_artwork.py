@@ -1,5 +1,6 @@
 """Publication checks against every stored event, without external artwork."""
 import json
+import math
 from pathlib import Path
 import sys
 import unittest
@@ -17,7 +18,28 @@ class ArtworkTests(unittest.TestCase):
         for event in events:
             with self.subTest(event=event['id']):
                 drawing = ET.fromstring(svg(event))
-                self.assertEqual(len(drawing.findall('{http://www.w3.org/2000/svg}circle')), 3)
+                if event['kind'] == 'lunar':
+                    text = ''.join(drawing.itertext())
+                    self.assertIn('CONTACTS', text)
+                    self.assertIn('VISIBILITY', text)
+                    self.assertIn('North', text)
+                    self.assertTrue(drawing.findall('.//{http://www.w3.org/2000/svg}polyline'))
+                    from lunar_eclipse_chart import calculate
+                    from eclipse_engine import MOON_RADIUS_KM
+                    for point in calculate(event)['phases']:
+                        phase = point['phase']
+                        distance = math.hypot(point['x_km'], point['y_km'])
+                        if phase in ('P1', 'P4'):
+                            expected = point['penumbra_radius_km'] + MOON_RADIUS_KM
+                        elif phase in ('U1', 'U4'):
+                            expected = point['umbra_radius_km'] + MOON_RADIUS_KM
+                        elif phase in ('U2', 'U3'):
+                            expected = point['umbra_radius_km'] - MOON_RADIUS_KM
+                        else:
+                            expected = event['axis_distance_km']
+                        self.assertAlmostEqual(distance, expected, delta=1.)
+                else:
+                    self.assertEqual(len(drawing.findall('{http://www.w3.org/2000/svg}circle')), 3)
                 self.assertFalse(drawing.findall('.//{http://www.w3.org/2000/svg}image'))
                 name = event['id'] + '-shadow.svg'
                 self.assertIn(name, render_page(event))
@@ -36,3 +58,14 @@ class ArtworkTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 svg(dict(kind='lunar', axis_distance_km=distance,
                          core_radius_km=4000, penumbra_margin_km=-10000))
+
+    def test_topocentric_horizon(self):
+        from lunar_eclipse_chart import above_horizon
+        from eclipse_engine import EARTH_RADIUS_KM
+        # Sub-lunar point, antipode, and the geometric parallax horizon.
+        moon = [384000., 0., 0.]
+        self.assertTrue(above_horizon(moon, 0., 0.))
+        self.assertFalse(above_horizon(moon, 0., 180.))
+        horizon = math.degrees(math.acos(EARTH_RADIUS_KM / 384000.))
+        self.assertTrue(above_horizon(moon, 0., horizon-.01))
+        self.assertFalse(above_horizon(moon, 0., horizon+.01))

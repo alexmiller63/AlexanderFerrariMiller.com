@@ -222,6 +222,12 @@ def render_note(event, *, highlights=False):
 
 
 def render_visibility(event):
+    if event['kind'] == 'lunar':
+        return ('<section id="eclipse-visibility"><h2>Where to watch</h2><p>'
+                'The calculated chart above maps where the Moon’s center is above the '
+                'geometric horizon at penumbral ingress, greatest eclipse, and penumbral egress. '
+                'These are three snapshots; they do not establish whole-event visibility or account '
+                'for terrain, refraction, weather, or twilight.</p></section>')
     if event.get("central_path", {}).get("points"):
         from eclipse_path_display import render_central_path
         return render_central_path(event)
@@ -260,6 +266,9 @@ def record_downloads(event):
     from eclipse_artwork import svg
     files = {f'{event["id"]}-shadow.svg': svg(event), f'{event["id"]}-record.json':
              json.dumps(record, indent=2, ensure_ascii=False) + "\n"}
+    if event['kind'] == 'lunar':
+        from lunar_eclipse_chart import downloads
+        files.update(downloads(event))
     if event.get("earlier_calculation"):
         files[f'{event["id"]}-earlier-calculation.yaml'] = (
             event["earlier_method"].rstrip() + "\n\neclipses:\n" +
