@@ -8,7 +8,7 @@ on:
       - .github/workflows/eclipse-catalog-validation.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   catalog:
@@ -16,6 +16,8 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - name: Bootstrap and normalize ELP2000 lunar data
         shell: bash
         run: |
@@ -47,6 +49,12 @@ jobs:
           assert all(r["detail_path"] == "eclipses/" + r["id"] + ".html" for r in rows)
           print(f"Validated {len(rows)} provisional eclipse records")
           PY
+      - name: Commit catalog to repository
+        run: |
+          git add generated/eclipse-catalog/
+          git diff --cached --quiet && echo "Eclipse catalog already current" && exit 0
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish validated eclipse catalog"
+          git push
       - uses: actions/upload-artifact@v4
         with:
           name: eclipse-catalog-2025-2036
