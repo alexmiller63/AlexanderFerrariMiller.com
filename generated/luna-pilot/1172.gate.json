@@ -1,0 +1,75 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20104987"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Kitalpha, the Little Horse\u2019s Hidden Pair\n\n*An autumn star with a quiet double life: one point of light, two stars revealed by their spectra.*\n\nOn an autumn evening, look for Kitalpha in the small constellation Equuleus, the Little Horse. To the unaided eye it is a single, steady point. Even through binoculars it remains one point. Yet that modest glimmer is a duet: Kitalpha is a **spectroscopic binary**, a pair whose shared motion is detected not by separating their images, but by studying the light each sends across space.\n\nSIMBAD identifies Kitalpha as Alpha Equulei, or HIP 104987, and classifies it as a spectroscopic binary. Its listed spectral types are G6IV and B9.5V: a G-type subgiant paired with a hotter, B-type main-sequence star. The catalogue gives the system a visual magnitude of 3.93\u2014bright enough to see without optical aid under reasonably dark skies, though it may be lost amid city glare. [SIMBAD: Kitalpha / HIP 104987](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20104987)\n\nThe pair\u2019s secret is written in its spectrum. A spectrograph spreads starlight into a band of colors crossed by dark absorption lines. As stars orbit their common center of mass, their motion alternately carries them toward and away from Earth. The lines shift slightly, betraying that motion through the Doppler effect. In a suitable observing program, astronomers can follow those changing shifts and infer a companion even when the telescope shows only one blended point.\n\nKitalpha is not just a useful lesson in how binaries are found; it is also a reminder that a star\u2019s apparent brightness tells only part of its story. SIMBAD lists a parallax of 17.1985 milliarcseconds. Inverting that measurement gives a distance of about 58 parsecs, or roughly 190 light-years. At that remove, the two stars\u2019 light reaches us as a single pinprick, arriving after a journey that began long before the first telescopes were built. The catalogue also records a G-to-B pairing\u2014two stars with notably different spectral classifications\u2014though the naked eye blends their light into one. (Distance calculated from the listed parallax.) [SIMBAD](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20104987)\n\nFor observers, the challenge is finding the Horse at all. Equuleus is a small constellation, and Kitalpha\u2019s brightness is moderate rather than dazzling. On a clear autumn evening in the Northern Hemisphere, start with a sky chart or planetarium app and search for \u201cKitalpha\u201d or \u201cAlpha Equulei.\u201d Once found, give your eyes a few minutes to adapt to the dark. From a dark site, try spotting it without optical aid; binoculars can help confirm the field, though they will not split this spectroscopic pair into two visible stars. Avoid judging the view through a bright phone screen, and use a red-light setting if consulting a chart.\n\nThen take a moment to look again without the instrument. The apparent simplicity is part of the pleasure: one point of light, carrying evidence of two suns in orbit. Kitalpha asks no special equipment of the casual stargazer, only a little patience\u2014and the willingness to remember that the sky\u2019s smallest-looking stories may have more than one voice.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20104987",
+            "overlap_terms": [
+              "before",
+              "binary",
+              "catalogue",
+              "ident",
+              "images",
+              "listed",
+              "magnitude",
+              "measurement",
+              "motion",
+              "optical",
+              "parallax",
+              "point"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [
+      {
+        "quoted_text": "Alpha Equulei.",
+        "source_matches": [],
+        "exact_text_confirmed": false
+      }
+    ],
+    "all_quoted_passages_confirmed": false,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
