@@ -1,0 +1,20 @@
+name: Count Pilot Stories
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  count:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Count existing stories (read-only)
+        run: python3 tools/count_pilot_stories.py
+      - name: Upload inventory
+        uses: actions/upload-artifact@v4
+        with:
+          name: pilot-story-count
+          path: story-count.json
