@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2087833"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Eltanin, the Dragon\u2019s bright eye\n\n*An orange giant in Draco offers an easy naked-eye target\u2014and a reminder that a star\u2019s apparent place in the sky can hide its true distance.*\n\nOn a clear northern night, look north of brilliant Vega for a warm point of light in the head of Draco. That is Eltanin, also known as Gamma Draconis. It is bright enough to see without a telescope, but its steady glow comes from a star far larger and more evolved than the Sun.\n\nDraco\u2019s winding pattern can be tricky to trace, but its head is a useful starting point. Eltanin is one of the prominent stars there, near Rastaban, or Beta Draconis. From many northern locations, the Dragon circles the sky around Polaris rather than dipping below the horizon. North of about 39 degrees latitude, Eltanin itself is circumpolar: it never sets. On a summer or autumn evening, use Vega as a guide, then scan northward with your eyes. Binoculars can help pick out the surrounding star pattern, though Eltanin needs no optical aid.\n\nThere is more to the point of light than its familiar place in a constellation. SIMBAD lists Eltanin as a K5III star. The \u201cK\u201d marks a relatively cool, orange-hued stellar type; \u201cIII\u201d identifies it as a giant. Such stars have expanded beyond the stage the Sun is in now. Eltanin\u2019s catalogue entry gives it an apparent visual magnitude of 2.23\u2014bright by naked-eye standards\u2014and a parallax of 21.14 milliarcseconds. ( [SIMBAD: HIP 87833 / Gamma Draconis](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2087833) )\n\nParallax is the tiny apparent shift a nearby star makes against more distant background stars as Earth moves around the Sun. The measured angle places Eltanin about 47 parsecs away, or roughly 154 light-years. That is close enough, in cosmic terms, for its light to reach us in a human lifetime many times over, yet distant enough that the star\u2019s position is measured through a shift far smaller than the width of a grain of sand seen from across a room.\n\nFor an observer, Eltanin\u2019s appeal is its combination of accessibility and scale. You can find it with unaided eyes, then remember that the orange point is a giant star, not a nearby ember. Its catalogue coordinates\u2014right ascension 17 hours 56 minutes, declination +51 degrees 29 minutes\u2014also explain why it sits so high in northern skies. At latitude 51 degrees north, it passes almost overhead.\n\nGive your eyes a few minutes to adjust, and let the constellations emerge around it. Draco is not as instantly recognizable as the Big Dipper or Orion; its long, looping body takes patience to follow. But Eltanin rewards that slower look. It is both a practical signpost in the Dragon\u2019s head and a distant stellar sun whose light has crossed space to become a small, steady mark in our night.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2087833",
+            "overlap_terms": [
+              "angle",
+              "around",
+              "ascension",
+              "catalogue",
+              "coordinates",
+              "declination",
+              "degrees",
+              "ident",
+              "known",
+              "magnitude",
+              "north",
+              "optical"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
