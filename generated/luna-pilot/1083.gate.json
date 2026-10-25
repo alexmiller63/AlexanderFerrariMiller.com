@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085792"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alpha Ara: A Hot Star With a Stellar Halo\n\n*In Ara, a bright southern constellation, this blue-white star offers an easy naked-eye sight\u2014and a glimpse into the restless lives of massive stars.*\n\nOn a clear winter night in the Southern Hemisphere, look toward Ara, the Altar, below Scorpius. There, Alpha Ara shines as a steady point of light. Its name sounds like a simple label on a star chart, but the star is anything but ordinary: astronomical databases classify it as a Be star, a hot, massive star whose surroundings can glow with light from its own ejected gas.\n\nAlpha Ara is bright enough to see without optical aid, at about magnitude 2.95 in the visible-light measurements listed by SIMBAD. Its catalogued position is right ascension 17h 31m 50.5s and declination \u221249\u00b0 52\u2032 34\u2033. That far-southern declination makes it a rewarding target for observers south of the equator, but a difficult one from much of the Northern Hemisphere.\n\nThe \u201cBe\u201d in Be star refers to a B-type star whose spectrum shows emission lines. B-type stars are hot and blue-white; in Be stars, some of the characteristic emission comes from gas around the star. Astronomers think this gas forms a flattened, rotating disk, supplied by material that the star has shed. The disk is not something a backyard telescope can resolve: it is far too small and distant. Instead, spectroscopy\u2014splitting starlight into its component colors\u2014reveals the telltale signs.\n\nSIMBAD lists Alpha Ara\u2019s spectral type as B2Vne, a classification that describes a hot star and notes emission-related spectral features. Its catalogued parallax is 12.20 milliarcseconds, corresponding to a distance of roughly 270 light-years if interpreted directly. As with any catalog value, the measurement carries uncertainty; SIMBAD reports an uncertainty of 0.85 milliarcseconds.\n\nFor a first look, use the naked eye and a star chart to pick out Ara in the southern sky, south of Scorpius. Alpha Ara is a good target for unaided viewing under a reasonably dark sky, and binoculars can help distinguish its surrounding star field. A telescope is not needed to see the star itself, and increasing magnification will not reveal its disk.\n\nTiming and location matter. Ara is best placed in evening skies during the Southern Hemisphere\u2019s winter, roughly June through August. Alpha Ara\u2019s declination means it reaches only about 10 degrees above the horizon at 30\u00b0 north latitude; from around 40\u00b0 north, it lies at or below the horizon. Farther south, it climbs higher and is easier to observe. Give it a clear southern horizon, let your eyes adapt to the dark, and use a chart or astronomy app to confirm the constellation before settling on the bright star.\n\nThe view is modest: a point of light, not a spectacle of visible gas. Yet that point carries evidence of a star shedding material into its surroundings. Alpha Ara rewards the observer who looks twice\u2014first to find it, then to imagine the invisible disk that its spectrum betrays.\n\n**Source:** SIMBAD entry for HIP 85792 / Alpha Ara: https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085792",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2085792",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "before",
+              "catalog",
+              "corresponding",
+              "declination",
+              "degrees",
+              "ident",
+              "increasing",
+              "listed",
+              "magnitude",
+              "measurement"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
