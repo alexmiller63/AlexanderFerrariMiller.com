@@ -293,21 +293,26 @@ def render_geometry(event):
             '<tbody>' + ''.join(rows) + '</tbody></table></div>')
 
 
-def render_records(event):
+def record_downloads(event):
+    """Downloadable records preserve the exact values formerly displayed inline."""
     record = {key: value for key, value in event.items()
               if key not in ("earlier_calculation", "earlier_method")}
-    # Keep the original field values, including the serialized contacts and status.
-    raw = html.escape(json.dumps(record, indent=2, ensure_ascii=False))
-    result = ('<h2>Complete stored record</h2><p>Current catalog output, including its '
-              'original calculation-status field and all stored values.</p>'
-              f'<pre class="calculation-record">{raw}</pre>')
+    files = {f'{event["id"]}-record.json':
+             json.dumps(record, indent=2, ensure_ascii=False) + "\n"}
     if event.get("earlier_calculation"):
-        result += ('<h2>Earlier stored calculation</h2><p>Source: eclipse.yaml. '
-                   'This is a separate result set; its values are reproduced without '
-                   'reconciling them with the catalog above.</p>'
-                   f'<pre class="calculation-record">{html.escape(event["earlier_calculation"])}</pre>'
-                   '<h3>Earlier calculation method and source notes</h3>'
-                   f'<pre class="calculation-record">{html.escape(event["earlier_method"])}</pre>')
+        files[f'{event["id"]}-earlier-calculation.yaml'] = (
+            event["earlier_method"].rstrip() + "\n\neclipses:\n" +
+            event["earlier_calculation"].rstrip() + "\n")
+    return files
+
+
+def render_records(event):
+    eid = html.escape(event["id"], quote=True)
+    result = ('<h2>Calculation records</h2>'
+              f'<p><a href="{eid}-record.json" download>Download complete stored record (JSON)</a></p>')
+    if event.get("earlier_calculation"):
+        result += (f'<p><a href="{eid}-earlier-calculation.yaml" download>'
+                   'Download earlier calculation and method notes (YAML)</a></p>')
     return result
 
 
