@@ -28,8 +28,14 @@ def publish_year(year, root=ROOT, require_notes=True):
     weeks = {}
     for event in events:
         target = root / 'almanack' / 'meteors'
+        from meteor_radiant_finder import render as render_radiant, RADIANTS, SOURCE
+        write(target / f'{event_id(event)}-radiant.svg', render_radiant(event))
         write(target / f'{event_id(event)}.html', render_card(event))
-        write(target / f'{event_id(event)}.json', json.dumps(event, indent=2, ensure_ascii=False) + '\n')
+        ra, dec = RADIANTS[event['name']]
+        record = {**event, 'radiant_reference': {'ra_deg':ra, 'dec_deg':dec,
+                  'source':SOURCE, 'source_table':'Table 5, page 25',
+                  'meaning':'Approximate nominal peak position; daily drift not modeled'}}
+        write(target / f'{event_id(event)}.json', json.dumps(record, indent=2, ensure_ascii=False) + '\n')
         day = date.fromisoformat(event['utc'][:10])
         y, w, _ = day.isocalendar()
         weeks.setdefault((y, w), []).append((day, event))
@@ -74,3 +80,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

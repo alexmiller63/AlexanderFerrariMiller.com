@@ -47,7 +47,7 @@ def render_note(event, highlights=False):
                  '<p>The radiant is the direction from which shower meteors appear to spread. '
                  'Watch a broad area of sky. A high radiant, darkness, and a clear sky matter more '
                  'than watching at the exact nominal peak time.</p>')
-    return body + '<p>ZHR is an ideal-condition reference rate, not a prediction of how many you will see. Moon interference also depends on whether the Moon is above your horizon.</p>'
+    return body + '<p>ZHR is an ideal-condition reference rate, not a prediction of how many you will see. Moon interference also depends on whether the Moon is above your horizon.</p>' + f'<p><a href="{href(event)}#radiant-finder">Open the wide-field radiant finder</a></p>'
 
 
 def week_notes(page_path, highlights=False, root=ROOT):
@@ -90,6 +90,17 @@ def render_card(event):
     day = date.fromisoformat(event['utc'][:10])
     year, week, _ = day.isocalendar()
     body = render_note(event)
+    body += (f'<section id="radiant-finder"><h2>Find the radiant</h2>'
+             f'<figure style="margin:0"><a href="{event_id(event)}-radiant.svg">'
+             f'<img src="{event_id(event)}-radiant.svg" style="display:block;width:100%;height:auto" '
+             f'alt="{html.escape(event["name"])} radiant finder with constellation figures and guide stars"></a>'
+             '<figcaption>North up, east left. The yellow open circle marks the approximate radiant near maximum; '
+             'it does not show a measured radiant size. Open the SVG to enlarge the finder. '
+             'Meteors appear across the sky, so use the radiant for orientation rather than staring at it.</figcaption></figure>'
+             '<p>Nominal peak radiant coordinates: '
+             '<a href="https://www.imo.net/files/meteor-shower/cal2026.pdf">IMO 2026 Calendar, Table 5 (page 25)</a>. '
+             'These seasonal reference positions are reused for the annual shower; daily radiant drift is not modeled. '
+             'Star positions and accepted Martz/MacRobert figures use the Almanack’s cached HYG/Hipparcos data.</p></section>')
     body += (f'<h2>Calculated seasonal marker</h2><p>Solar longitude: {event["solar_longitude_deg"]}°. '
              'The published clock retains the calculation’s precision; it does not imply that '
              'the physical shower maximum is known to the second.</p>'
@@ -119,3 +130,4 @@ def render_index(events):
                          f'{clock(event)} · Moon {event["moon_illumination_percent"]}%</li>')
         body += '</ul></section>'
     return page('Meteor showers', body)
+
