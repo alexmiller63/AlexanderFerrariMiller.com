@@ -449,6 +449,35 @@ def generated_note(year: int, week: int, page_path, yearly, stars: list[dict]) -
 
 
 
+def eclipse_treatments(page_path, *, highlights: bool = False) -> str:
+    """Use canonical Calendar eclipse events as the weekly Sky Notes source."""
+    blocks = []
+    seen = set()
+    for day, events in base.calendar_events_from_page(page_path):
+        for event in events:
+            if not re.search(r"\\b(?:solar|lunar) eclipse\\b", event, re.I):
+                continue
+            kind_match = re.search(r"\\b(solar|lunar) eclipse\\b", event, re.I)
+            kind = kind_match.group(1).lower()
+            event_id = f"ECL-{day.isoformat()}-{'S' if kind == 'solar' else 'L'}"
+            if event_id in seen:
+                continue
+            seen.add(event_id)
+            title = event.split(" · ", 1)[0].strip()
+            href = f"/eclipses/{event_id}.html"
+            details = event.split(" · ", 1)[1].strip() if " · " in event else ""
+            prose = (
+                f"{day.strftime('%B')} {day.day}, {day.year}: {title}. "
+                + (details if not highlights else "See the eclipse page for timing, visibility, and observing circumstances.")
+            )
+            blocks.append(
+                f'<section class="sky-note-eclipse" data-eclipse-id="{html.escape(event_id, quote=True)}">'
+                f'<h4><a href="{html.escape(href, quote=True)}">{html.escape(title)}</a></h4>'
+                f'<p>{html.escape(prose)}</p></section>'
+            )
+    return "\\n".join(blocks)
+
+
 def render_planet_treatments(payload: dict, *, highlights: bool = False) -> str:
     """Render reader-facing prose destinations owned by permanent numeric object identity."""
     blocks = []
@@ -541,7 +570,7 @@ def patch_page(path, payload: dict) -> bool:
     # Legacy week-owned artwork is deliberately removed. Fixed-object artwork
     # belongs on the object story/package and is published independently.
     artwork_slot = ""
-    body = rendered + "\n"
+    body = eclipse_treatments(path) + "\n" + rendered + "\n"
     # Put story headlines immediately after the observing introduction, before planet details.
     if inline:
         body += inline + "\n"
@@ -562,7 +591,7 @@ def patch_page(path, payload: dict) -> bool:
         'style="border:0;border-left:1px solid currentColor;border-radius:0 999px 999px 0;padding:.35rem .7rem">Wordy</button>'
         '</div>'
     )
-    highlights = render_planet_treatments(payload, highlights=True) + render_linked_stories(payload.get("linked_stories", []))
+    highlights = eclipse_treatments(path, highlights=True) + render_planet_treatments(payload, highlights=True) + render_linked_stories(payload.get("linked_stories", []))
     if not highlights:
         highlights = '<p class="sky-note-highlights-empty">No linked Sky Note stories are available for this week.</p>'
     script = '''<script id="sky-note-mode-script">(function(){
