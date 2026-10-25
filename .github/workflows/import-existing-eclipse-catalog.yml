@@ -1,0 +1,69 @@
+name: Import Existing Eclipse Catalog Artifact
+
+on:
+  workflow_dispatch:
+    inputs:
+      artifact_id:
+        description: "GitHub Actions artifact ID containing the completed eclipse catalog"
+        required: true
+        default: "12581663704"
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: eclipse-catalog-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download existing catalog artifact
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTIFACT_ID: ${{ inputs.artifact_id }}
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/artifacts/${ARTIFACT_ID}/zip" \
+            -o /tmp/eclipse-catalog.zip
+          mkdir -p /tmp/eclipse-catalog
+          unzip -q /tmp/eclipse-catalog.zip -d /tmp/eclipse-catalog
+          test -s /tmp/eclipse-catalog/eclipse-registry.json
+          test -s /tmp/eclipse-catalog/eclipses-2025-2036.json
+          test -s /tmp/eclipse-catalog/eclipses-2025-2036.csv
+      - name: Validate catalog before publishing
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          base = Path("/tmp/eclipse-catalog")
+          registry = json.loads((base / "eclipse-registry.json").read_text())["events"]
+          rows = json.loads((base / "eclipses-2025-2036.json").read_text())["eclipses"]
+          assert rows, "No eclipse records in artifact"
+          assert len(registry) == len(rows), "Registry/catalog mismatch"
+          ids = [row["id"] for row in rows]
+          assert len(ids) == len(set(ids)), "Duplicate eclipse IDs"
+          assert {row["id"] for row in registry} == set(ids), "Registry IDs differ from catalog IDs"
+          assert all(row["detail_path"] == "eclipses/" + row["id"] + ".html" for row in rows)
+          print(f"Validated {len(rows)} eclipse records and permanent IDs")
+          PY
+      - name: Publish catalog into its permanent repository location
+        run: |
+          set -euo pipefail
+          mkdir -p generated/eclipse-catalog
+          cp /tmp/eclipse-catalog/eclipse-registry.json generated/eclipse-catalog/
+          cp /tmp/eclipse-catalog/eclipses-2025-2036.json generated/eclipse-catalog/
+          cp /tmp/eclipse-catalog/eclipses-2025-2036.csv generated/eclipse-catalog/
+          git add generated/eclipse-catalog/eclipse-registry.json generated/eclipse-catalog/eclipses-2025-2036.json generated/eclipse-catalog/eclipses-2025-2036.csv
+          git diff --cached --quiet && echo "Repository already contains this catalog" && exit 0
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit -m "Publish existing eclipse catalog and registry"
+          git push
