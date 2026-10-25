@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20107315"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Enif: The Steady Point That Doesn\u2019t Stay the Same\n\n*Pegasus\u2019s bright nose belongs to a star whose light changes over time\u2014and whose ancient-looking glow rewards a patient look.*\n\nIn Pegasus, the winged horse seems to run across the autumn sky with a bright star at the end of its muzzle. That star is **Enif**, also catalogued as epsilon Pegasi. To the unaided eye it looks like a fixed point, but astronomical records classify it as a long-period variable: its brightness changes over time. The shift is not a flicker you can watch in a single sitting. It\u2019s a reminder that even a familiar landmark has a life of its own.\n\nEnif\u2019s light has a warm, golden-orange cast. Its catalogued spectral type, K2 Ib\u2013II, describes a relatively cool star in a bright giant or supergiant luminosity class. \u201cCool\u201d is relative: its surface is still far hotter than a flame. Its color is easier to appreciate when Enif is high above the horizon, where Earth\u2019s atmosphere is less likely to tint it. The SIMBAD astronomical database lists a visual magnitude of 2.39, bright enough to make it an unaided-eye target under ordinary dark skies, though its variability means it should not be treated as a perfectly constant beacon. ([SIMBAD: Enif / HIP 107315](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20107315))\n\nThe same record gives Enif a parallax of 4.73 milliarcseconds. Parallax is the tiny apparent shift in a star\u2019s position as Earth circles the Sun; the smaller the shift, the farther away the star. Taking the reciprocal of that value gives a rough distance of about 211 parsecs, or roughly 690 light-years. It is an estimate, not a direct measurement with a tape measure, but it conveys the scale: the light reaching your eyes tonight began its journey centuries ago.\n\nThat long journey makes Enif a fine subject for a Star Almanack pause. Its changing brightness is a stellar process unfolding on a timescale longer than a brief glance. You won\u2019t see it swell or shrink, and you may not notice a change from one night to the next. But repeated observations can turn the star from a point on a chart into something more personal: a presence you check in on, knowing that its light does not always arrive at precisely the same strength.\n\n**How to find it:** Choose a clear evening when Pegasus is well placed, typically in the Northern Hemisphere\u2019s autumn sky. Find the Great Square of Pegasus, then look just beyond its southwestern side for Enif, the prominent star marking the horse\u2019s muzzle. A simple sky chart can help distinguish the square from nearby patterns. Enif is visible to the naked eye from a reasonably dark location; binoculars can make the surrounding star field easier to explore, but are not required.\n\nFor a small observing project, note the date and how bright Enif appears compared with nearby stars. Use the same method each time, and avoid judging it when it is low in the sky, where atmospheric effects can interfere with color and brightness. Don\u2019t expect a dramatic change overnight. Instead, make occasional comparisons over a longer stretch of time. The point is not to catch Enif changing in the act, but to notice that the sky\u2019s familiar landmarks are not always as fixed as they seem.\n\n**Source:** [SIMBAD entry for HIP 107315 (epsilon Pegasi)](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20107315)",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%20107315",
+            "overlap_terms": [
+              "class",
+              "database",
+              "ident",
+              "luminosity",
+              "magnitude",
+              "measure",
+              "measurement",
+              "parallax",
+              "period",
+              "point",
+              "position",
+              "shift"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
