@@ -264,7 +264,6 @@ def render_page(event):
             '<h2>What this eclipse means</h2>' + paragraphs([meaning]) +
             '<h2>What to look for</h2>' + paragraphs([watching]) + past +
             '<h2>This event</h2><dl>' + details + '</dl>' +
-            '<p><strong>Provisional:</strong> catalog geometry and times have not been independently validated.</p>' +
             render_contacts(event) + '<h2>Watching the eclipse</h2>' + paragraphs([observing(event)]) +
             '<h2>Sources</h2>' + sources(event) +
             '<p>Event times and geometry: Star Almanack’s calculated eclipse catalog. '

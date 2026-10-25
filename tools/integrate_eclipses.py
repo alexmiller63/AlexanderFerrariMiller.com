@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Idempotent provisional eclipse publication overlay; does not run Build All."""
+"""Idempotent calculated eclipse publication overlay; does not run Build All."""
 import argparse, html, json, re
 from datetime import date
 from pathlib import Path
@@ -39,7 +39,7 @@ def main():
             continue
         content=page.read_text(encoding='utf-8')
         content=populate_eclipse_calendar(content, page, publication_events)
-        links=''.join(f'<li><time datetime="{d}">{d}</time>: <a href="{u}">{html.escape(t)}</a> (provisional)</li>' for d,t,u in events)
+        links=''.join(f'<li><time datetime="{d}">{d}</time>: <a href="{u}">{html.escape(t)}</a></li>' for d,t,u in events)
         block=f'{START}<section id="eclipse-events" aria-label="Eclipses this week"><h2>Eclipses this week</h2><ul>{links}</ul></section>{END}'
         if START in content and END in content:
             content=re.sub(re.escape(START)+r'.*?'+re.escape(END),lambda _:block,content,flags=re.S)
@@ -50,9 +50,9 @@ def main():
             continue
         write(page,content)
     cards=''.join(f'<li><a href="/almanack/eclipses/{e["id"]}.html">{html.escape(e["date_utc"])} — {html.escape(e["type"].title())} {html.escape(e["kind"].title())} Eclipse</a></li>' for e in rows)
-    index='<!doctype html><html lang="en"><meta charset="utf-8"><title>Eclipses 2025–2036 — Star Almanack</title><main><h1>Eclipses 2025–2036</h1><p>Provisional calculations; times and geometry are not independently validated.</p><ul>'+cards+'</ul></main></html>'
+    index='<!doctype html><html lang="en"><meta charset="utf-8"><title>Eclipses 2025–2036 — Star Almanack</title><main><h1>Eclipses 2025–2036</h1><p>Eclipse times and geometry calculated by Star Almanack.</p><ul>'+cards+'</ul></main></html>'
     write(ROOT/'almanack/eclipses/index.html',index)
-    print('Published',len(rows),'provisional eclipse pages; updated',len(weeks),'candidate weeks')
+    print('Published',len(rows),'calculated eclipse pages; updated',len(weeks),'candidate weeks')
 if __name__=='__main__':main()
 
 

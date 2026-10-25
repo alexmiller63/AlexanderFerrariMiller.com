@@ -42,7 +42,7 @@ def populate_eclipse_calendar(text, path, events=None):
         for field, heading in (("magnitude", "magnitude"), ("visibility", "visibility"), ("observing_note", "observing")):
             if event.get(field):
                 body += f' · {heading}: {html.escape(str(event[field]))}'
-        body += ' · provisional</span>'
+        body += '</span>'
         text, found = set_events(text, day, [CalendarEvent(body)] + records)
         if not found:
             raise RuntimeError(f"Could not write eclipse {eid} in {path}")
