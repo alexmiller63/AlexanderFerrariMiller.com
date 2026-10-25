@@ -1,0 +1,69 @@
+{
+  "screen_passed": true,
+  "checks": {
+    "research_present": true,
+    "draft_length": true,
+    "title_present": true,
+    "source_citation": true,
+    "audit_present": true,
+    "no_placeholder": true
+  },
+  "publication_approved": false,
+  "reason": "Independent source verification and editorial approval still required",
+  "source_verification": {
+    "provenance_passed": true,
+    "checks": {
+      "source_retrieved": true,
+      "cited_source_retrieved": true,
+      "research_cites_retrieved_source": true,
+      "draft_cites_retrieved_source": true
+    },
+    "factual_claims_verified": false,
+    "reason": "URL provenance does not verify individual astronomical claims"
+  },
+  "claim_evidence_review": {
+    "substantive_sentences": 1,
+    "sentences_with_retrieved_source_url": 1,
+    "source_urls": [
+      "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2098036"
+    ],
+    "claims_independently_verified": false,
+    "publication_ready": false,
+    "reason": "Source attribution alone cannot prove each claim is supported by source text"
+  },
+  "evidence_support_matrix": {
+    "claims": [
+      {
+        "claim": "# Alshain: Aquila\u2019s Quiet Neighbor\n\n*Near brilliant Altair, this modest star rewards a simple summer-sky search\u2014and a second look at what \u201cnear\u201d means in astronomy.*\n\nAlshain doesn\u2019t announce itself. On a clear summer evening, find brilliant Altair, the brightest star in Aquila, then look a little south for a fainter point of light. That is Alshain, also catalogued as Beta Aquilae. It\u2019s no rival to Altair\u2019s glare, but it is bright enough to see with the unaided eye under a reasonably dark sky\u2014and close enough in the sky to make a natural companion for an observing session.\n\nThe apparent closeness is a matter of perspective. Alshain is about four degrees from Altair in the sky, but that doesn\u2019t make the two stars a physical pair. Their placement is a useful guide for the eye, not evidence that they travel together through space.\n\nAlshain has its own quieter distinction: it is a subgiant, a star in a transitional stage beyond the main sequence. SIMBAD classifies it as G8IV and lists its visual magnitude as 3.71. Its measured parallax\u2014about 73.5 milliarcseconds\u2014puts it roughly 44 light-years away. Parallax is the apparent shift of a nearby star against more distant background stars as Earth moves around the Sun; the smaller the measured shift, the farther away the star. ([SIMBAD: HIP 98036 / Beta Aquilae](https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2098036))\n\nThat distance makes Alshain a neighbor by cosmic standards, though its light still takes decades to reach us. The star is also moving across our line of sight. SIMBAD lists its proper motion at about 46 milliarcseconds per year in right ascension and 481 milliarcseconds per year in declination. That motion is far too small to notice while you watch the sky, or even over a human lifetime without careful measurements. Over centuries, though, stars shift against the patterns people use to recognize constellations.\n\nFor a practical search, choose a night when Aquila is well above the horizon. In the Northern Hemisphere, that\u2019s easiest on summer evenings and into early autumn. Start with Altair, then scan a few degrees south; Gamma Aquilae, or Tarazed, lies on the other side of Altair and helps mark the familiar line of bright stars. A sky map or planetarium app can confirm the pattern if you\u2019re unsure. From a dark location, give your eyes several minutes to adjust. Alshain should be visible without binoculars, though binoculars can help if light pollution or haze washes out the fainter stars.\n\nTry looking both with and without optical aid. Through binoculars, the star remains a point of light, but the wider field brings more of Aquila\u2019s surrounding stars into view. A telescope is not necessary for this target: the pleasure is in finding the star and recognizing how a seemingly simple point of light carries measurable information\u2014its brightness, distance, spectral type and motion.\n\nAlshain\u2019s name may be less familiar than Altair\u2019s, but that\u2019s part of its appeal. It gives the eye a small, achievable destination beside one of the summer sky\u2019s brightest stars. Find it once, and the next time Aquila rises, you\u2019ll know where to look.",
+        "candidate_sources": [
+          {
+            "url": "https://simbad.cds.unistra.fr/simbad/sim-id?Ident=HIP%2098036",
+            "overlap_terms": [
+              "around",
+              "ascension",
+              "declination",
+              "degrees",
+              "ident",
+              "magnitude",
+              "motion",
+              "optical",
+              "other",
+              "parallax",
+              "point",
+              "proper"
+            ]
+          }
+        ],
+        "verified": false
+      }
+    ],
+    "verified_claims": 0,
+    "requires_independent_review": true
+  },
+  "exact_source_claim_check": {
+    "quoted_passages": [],
+    "all_quoted_passages_confirmed": true,
+    "paraphrased_claims_verified": false,
+    "publication_approved": false
+  }
+}
