@@ -13,6 +13,33 @@ from eclipse_editorial import record_downloads, render_page
 
 
 class ArtworkTests(unittest.TestCase):
+    def test_solar_numerical_charts(self):
+        events = json.loads((ROOT / 'generated/eclipse-catalog/eclipses-2025-2036.json').read_text())['eclipses']
+        for event in events:
+            if event['kind'] != 'solar':
+                continue
+            with self.subTest(event=event['id']):
+                drawing = ET.fromstring(svg(event))
+                ns = '{http://www.w3.org/2000/svg}'
+                self.assertIsNotNone(drawing.find(f'.//{ns}g[@id="shadow-coordinate-grid"]'))
+                text = ''.join(drawing.itertext())
+                self.assertIn('GLOBAL UTC TIMELINE', text)
+                contacts = event['contacts_utc']
+                if isinstance(contacts, str):
+                    contacts = json.loads(contacts)
+                for value in [event['greatest_utc'], *contacts.values()]:
+                    if value:
+                        self.assertIn(value[11:19], text)
+                plotted = drawing.findall(ns+'circle')
+                geometry = circles(event)
+                scales = [float(c.attrib['r']) / shape[2] for c, shape in zip(plotted, geometry)]
+                self.assertEqual(len(plotted), 3)
+                self.assertLess(max(scales)-min(scales), .00001)
+                self.assertAlmostEqual(float(plotted[0].attrib['cx'])-float(plotted[1].attrib['cx']),
+                                       event['axis_distance_km']*scales[0], delta=.002)
+                self.assertEqual(drawing.find(f'.//{ns}g[@id="timed-central-path"]') is not None,
+                                 bool(event.get('central_path', {}).get('points')))
+
     def test_catalog_publication(self):
         events = json.loads((ROOT / 'generated/eclipse-catalog/eclipses-2025-2036.json').read_text())['eclipses']
         for event in events:
@@ -69,3 +96,4 @@ class ArtworkTests(unittest.TestCase):
         horizon = math.degrees(math.acos(EARTH_RADIUS_KM / 384000.))
         self.assertTrue(above_horizon(moon, 0., horizon-.01))
         self.assertFalse(above_horizon(moon, 0., horizon+.01))
+
