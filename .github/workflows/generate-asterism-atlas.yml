@@ -4,6 +4,15 @@ on:
     branches: [main]
     paths:
       - tools/generate_asterism_atlas.py
+      - tools/sky_optional_layers.py
+      - asterism-figure-paths.json
+      - asterism-member-coordinates.csv
+      - reference-data/iau-constellation-boundaries/**
+      - fixed-objects.yaml
+      - caldwell-catalog.csv
+      - finest-ngc-catalog.csv
+      - expanded-bayer-stars.csv
+      - finder-geometry/martz-macrobert.json
       - .github/workflows/generate-asterism-atlas.yml
   workflow_dispatch:
 permissions:
@@ -16,6 +25,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install catalog reader
+        run: python -m pip install PyYAML==6.0.3
       - name: Generate asterism charts
         run: |
           python -m py_compile tools/generate_asterism_atlas.py
@@ -35,7 +46,7 @@ jobs:
       - name: Publish charts
         run: |
           mkdir -p star-almanack/chart-library/asterisms
-          cp /tmp/asterism-atlas/*.svg /tmp/asterism-atlas/manifest.json star-almanack/chart-library/asterisms/
+          cp /tmp/asterism-atlas/*.svg /tmp/asterism-atlas/manifest.json /tmp/asterism-atlas/index.html star-almanack/chart-library/asterisms/
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add star-almanack/chart-library/asterisms/
