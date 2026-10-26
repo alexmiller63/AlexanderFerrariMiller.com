@@ -1,128 +1,165 @@
 #!/usr/bin/env python3
-"""Generate six March-equinox horizon panoramas from local Star Almanack stars.
+"""Star Almanack 14-region seasonal atlas. Deterministic, offline SVG generation.
 
-Standalone standard-library SVG generator. Seasonal event is calculated from
-apparent solar longitude; sidereal orientation is derived from 21h apparent
-solar time (Sun hour angle +9h), not a civil clock approximation.
+Season membership is assigned by each star's 21:00 local apparent solar-time
+meridian-transit DATE, not by equal right-ascension quadrants.
 """
 import argparse
 import csv
 import datetime as dt
+import html
 import json
 import math
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-LATITUDES = (75, 45, 15, -15, -45, -75)
-SIZE = 900
-RADIUS = 360
-CX = CY = SIZE / 2
+OBLIQUITY = 23.4393
+SEASONS = ("Spring", "Summer", "Autumn", "Winter")
+GLYPHS = ("♈", "♋", "♎", "♑")
+WIDTH, HEIGHT = 1200, 720
 
 def solar_longitude(t):
-    jd = (t - dt.datetime(2000, 1, 1, 12)).total_seconds() / 86400 + 2451545
-    T = (jd - 2451545) / 36525
-    L = (280.46646 + T * (36000.76983 + .0003032 * T)) % 360
-    M = math.radians((357.52911 + T * (35999.05029 - .0001537 * T)) % 360)
-    C = (1.914602 - T * (.004817 + .000014 * T)) * math.sin(M) + (.019993 - .000101 * T) * math.sin(2*M) + .000289 * math.sin(3*M)
-    omega = math.radians(125.04 - 1934.136 * T)
-    return (L + C - .00569 - .00478 * math.sin(omega)) % 360
+    jd = (t - dt.datetime(2000, 1, 1, 12)).total_seconds()/86400 + 2451545
+    T = (jd - 2451545)/36525
+    L = (280.46646 + T*(36000.76983 + .0003032*T))%360
+    M = math.radians((357.52911 + T*(35999.05029 - .0001537*T))%360)
+    C = (1.914602 - T*(.004817 + .000014*T))*math.sin(M) + (.019993 - .000101*T)*math.sin(2*M) + .000289*math.sin(3*M)
+    omega = math.radians(125.04 - 1934.136*T)
+    return (L+C-.00569-.00478*math.sin(omega))%360
 
-def equinox(year):
-    lo, hi = dt.datetime(year, 3, 18), dt.datetime(year, 3, 23)
-    for _ in range(55):
-        mid = lo + (hi - lo) / 2
-        if solar_longitude(mid) > 180: lo = mid
-        else: hi = mid
-    return lo + (hi - lo) / 2
+def solar_ra(t):
+    lon = math.radians(solar_longitude(t))
+    return math.atan2(math.cos(math.radians(OBLIQUITY))*math.sin(lon),math.cos(lon))%(2*math.pi)
 
-def sun_ra(lon):
-    eps = math.radians(23.4393)
-    l = math.radians(lon)
-    return math.atan2(math.cos(eps) * math.sin(l), math.cos(l))
+def ingress(year, angle, month):
+    lo = dt.datetime(year, month, 15)
+    hi = lo + dt.timedelta(days=12)
+    for _ in range(45):
+        mid = lo + (hi-lo)/2
+        if (solar_longitude(mid)-angle+360)%360 < 180:
+            hi = mid
+        else:
+            lo = mid
+    return hi
 
-def project(ra, dec, lat, lst):
-    h = lst - ra
-    phi = math.radians(lat)
-    altitude = math.asin(max(-1, min(1, math.sin(phi)*math.sin(dec)+math.cos(phi)*math.cos(dec)*math.cos(h))))
-    if altitude < 0: return None
-    east = -math.cos(dec)*math.sin(h)
-    north = math.sin(dec)*math.cos(phi)-math.cos(dec)*math.cos(h)*math.sin(phi)
-    az = math.atan2(east, north)
-    radius = RADIUS * (math.pi/2 - altitude)/(math.pi/2)
-    return (CX + radius*math.sin(az), CY-radius*math.cos(az))
+def boundaries(year):
+    return [ingress(year, a, m) for a,m in ((0,3),(90,6),(180,9),(270,12))]
 
-def svg_poly(points, color, width=1.1, dash=''):
-    chunks = []
-    segment = []
-    def flush():
-        if len(segment)>1:
-            chunks.append('<polyline points="'+ ' '.join(f'{x:.1f},{y:.1f}' for x,y in segment)+'" fill="none" stroke="'+color+'" stroke-width="'+str(width)+'"'+ (' stroke-dasharray="'+dash+'"' if dash else '')+'/>')
-    for point in points:
-        if point is None:
-            flush(); segment=[]
-        else: segment.append(point)
-    flush()
-    return ''.join(chunks)
+def season_for_date(day, starts):
+    for i in range(3,-1,-1):
+        if day >= starts[i].date():
+            return SEASONS[i]
+    return "Winter"
 
-def make_chart(lat, stars, event, output):
-    # Apparent solar time 21h: local hour angle of Sun = +9h.
-    lst = sun_ra(solar_longitude(event)) + math.radians(135)
-    title = ('+' if lat>0 else '') + str(lat) + '°'
-    s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-label="March equinox panorama at {title} latitude">', '<rect width="900" height="900" fill="#071527"/>',f'<text x="450" y="43" text-anchor="middle" fill="white" font-size="25">March equinox · {title} latitude</text>', '<text x="450" y="72" text-anchor="middle" fill="#b9d5e6" font-size="15">21:00 local apparent solar time · horizon-centered azimuthal equidistant projection</text>',f'<circle cx="450" cy="450" r="{RADIUS}" fill="none" stroke="#c1d0e4" stroke-width="2"/>']
-    for altitude in (30,60):
-        r=RADIUS*(90-altitude)/90
-        s.append(f'<circle cx="450" cy="450" r="{r}" fill="none" stroke="#38516c" stroke-dasharray="3 6"/>')
-    for label, x,y in [('N',450,78),('E',824,454),('S',450,828),('W',76,454)]:
-        s.append(f'<text x="{x}" y="{y}" fill="#f2df9d" text-anchor="middle" font-size="21">{label}</text>')
-    # Sample in equatorial coordinates; break curves at horizon and at large jumps.
-    for dec, color, dash in [(0,'#65cbd6',''),(23.4393,'#c78cfa','5 5'),(-23.4393,'#c78cfa','5 5')]:
-        pts=[]
-        for i in range(721):
-            p=project(math.radians(i/2),math.radians(dec),lat,lst)
-            if p and pts and pts[-1] and math.dist(p,pts[-1])>30:pts.append(None)
-            pts.append(p)
-        s.append(svg_poly(pts,color,1.7,dash))
-    eps=math.radians(23.4393)
-    pts=[]
-    for i in range(721):
-        lam=math.radians(i/2)
-        ra=math.atan2(math.cos(eps)*math.sin(lam),math.cos(lam))
-        dec=math.asin(math.sin(eps)*math.sin(lam))
-        p=project(ra,dec,lat,lst)
-        if p and pts and pts[-1] and math.dist(p,pts[-1])>30:pts.append(None)
-        pts.append(p)
-    s.append(svg_poly(pts,'#efc36d',2))
-    for star in stars:
-        try:
-            ra=math.radians(float(star['ra_h'])*15)
-            dec=math.radians(float(star['dec_deg']))
-            mag=float(star['representative_vmax'])
-        except (ValueError,KeyError):continue
-        p=project(ra,dec,lat,lst)
-        if not p:continue
-        x,y=p; radius=max(1.1,4.5-mag*.8)
-        s.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{radius:.2f}" fill="#e5eefc"/>')
-        if mag<1.4 and star.get('proper'):
-            name=star['proper'].replace('&','&amp;')
-            s.append(f'<text x="{x+7:.1f}" y="{y-6:.1f}" fill="#c6dbed" font-size="12">{name}</text>')
-    s.append('<text x="450" y="871" fill="#9bb8cc" text-anchor="middle" font-size="13">Gold: ecliptic · Cyan: celestial equator · Violet: celestial tropics · Star Almanack</text></svg>')
-    output.write_text('\n'.join(s),encoding='utf-8')
+def transit_day(ra_hours, year):
+    """Find calendar date whose 21:00 apparent solar meridian RA is closest.
+
+    The Sun's hour angle at 21:00 apparent solar time is +9h. Evaluate each
+    UTC date at 12:00 as the date label; the annual sky repeats cyclically.
+    """
+    ra = math.radians(ra_hours*15)
+    best = None
+    for n in range(365 + (year%4==0 and (year%100!=0 or year%400==0))):
+        day = dt.date(year,1,1)+dt.timedelta(days=n)
+        t = dt.datetime.combine(day,dt.time(12))
+        lst = (solar_ra(t)+math.radians(135))%(2*math.pi)
+        delta = abs(math.atan2(math.sin(lst-ra),math.cos(lst-ra)))
+        if best is None or delta < best[0]:
+            best = (delta,day)
+    return best[1]
+
+def band(dec):
+    if dec >= 90-OBLIQUITY: return "Arctic"
+    if dec >= OBLIQUITY: return "Northern"
+    if dec >= -OBLIQUITY: return "Tropical"
+    if dec > -(90-OBLIQUITY): return "Southern"
+    return "Antarctic"
+
+def views():
+    return [("Arctic",None)] + [(b,s) for b in ("Northern","Tropical","Southern") for s in SEASONS] + [("Antarctic",None)]
+
+def render(view, rows, output, year, starts):
+    region,season = view
+    title = region + (" "+season if season else "") 
+    # RA horizontal, declination vertical. Use one continuous 0..24h frame
+    # for reproducible positioning; stars outside the region are not plotted.
+    left,right,top,bottom = 76,WIDTH-34,92,HEIGHT-75
+    limits = {"Arctic":(90-OBLIQUITY,90),"Northern":(OBLIQUITY,90-OBLIQUITY),
+              "Tropical":(-OBLIQUITY,OBLIQUITY),
+              "Southern":(-(90-OBLIQUITY),-OBLIQUITY),
+              "Antarctic":(-90,-(90-OBLIQUITY))}
+    low,high = limits[region]
+    def xy(ra,dec):
+        return left+(ra%24)/24*(right-left),bottom-(dec-low)/(high-low)*(bottom-top)
+    s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-label="{html.escape(title)} celestial chart">',
+         f'<rect width="{WIDTH}" height="{HEIGHT}" fill="#071527"/>',
+         f'<text x="{WIDTH/2}" y="39" text-anchor="middle" fill="white" font-size="27">{html.escape(title)} · {year}</text>',
+         '<text x="600" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Season by 21:00 apparent-solar transit date · RA/declination chart</text>']
+    for hour in range(0,25,2):
+        x=left+hour/24*(right-left)
+        s += [f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{bottom}" stroke="#28415c"/>',
+              f'<text x="{x:.1f}" y="{bottom+23}" text-anchor="middle" fill="#b9d5e6" font-size="13">{hour}h</text>']
+    for dec in range(-90,91,10):
+        if low <= dec <= high:
+            y=xy(0,dec)[1]
+            s += [f'<line x1="{left}" y1="{y:.1f}" x2="{right}" y2="{y:.1f}" stroke="#28415c"/>',
+                  f'<text x="{left-8}" y="{y+4:.1f}" text-anchor="end" fill="#b9d5e6" font-size="12">{dec}°</text>']
+    if low<=0<=high:
+        y=xy(0,0)[1]
+        s.append(f'<line x1="{left}" y1="{y:.1f}" x2="{right}" y2="{y:.1f}" stroke="#65cbd6" stroke-width="2"/>')
+    # Ecliptic: trace only where it crosses the chart's declination band.
+    prev=None
+    for n in range(1441):
+        lon=math.radians(n/4)
+        ra=math.atan2(math.cos(math.radians(OBLIQUITY))*math.sin(lon),math.cos(lon))%(2*math.pi)
+        dec=math.degrees(math.asin(math.sin(math.radians(OBLIQUITY))*math.sin(lon)))
+        p=xy(math.degrees(ra)/15,dec) if low<=dec<=high else None
+        if p and prev and abs(p[0]-prev[0])<20:
+            s.append(f'<line x1="{prev[0]:.1f}" y1="{prev[1]:.1f}" x2="{p[0]:.1f}" y2="{p[1]:.1f}" stroke="#efc36d" stroke-width="1.6"/>')
+        prev=p
+    for row in rows:
+        if row["band"]!=region or (season and row["season"]!=season):continue
+        x,y=xy(row["ra_h"],row["dec_deg"])
+        r=max(1.4,4.8-row["mag"]*.8)
+        s.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{r:.2f}" fill="#e5eefc"/>')
+        if row["mag"]<1.5 and row["name"]:
+            s.append(f'<text x="{x+7:.1f}" y="{y-7:.1f}" fill="#d0e1f3" font-size="12">{html.escape(row["name"])}</text>')
+    s += ['<text x="600" y="696" text-anchor="middle" fill="#9bb8cc" font-size="13">Gold: ecliptic · Cyan: celestial equator · Star Almanack</text>','</svg>']
+    output.write_text("\n".join(s)+"\n",encoding="utf-8")
 
 def main():
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--year',type=int,default=2026)
-    parser.add_argument('--output',type=Path,default=ROOT/'star-almanack/chart-library/panoramic')
-    args=parser.parse_args()
+    p=argparse.ArgumentParser()
+    p.add_argument("--year",type=int,default=2026)
+    p.add_argument("--output",type=Path,default=ROOT/"star-almanack/chart-library/panoramic")
+    args=p.parse_args()
     args.output.mkdir(parents=True,exist_ok=True)
-    with (ROOT/'bright-stars-2mag.csv').open(newline='',encoding='utf-8') as f:
-        stars=list(csv.DictReader(f))
-    event=equinox(args.year)
-    manifest={'year':args.year,'event':'March equinox','event_utc_approx':event.isoformat()+'Z','time':'21:00 local apparent solar time','projection':'azimuthal equidistant','catalog':'bright-stars-2mag.csv','views':[]}
-    for lat in LATITUDES:
-        name=f'march-equinox-{args.year}-lat-{lat:+d}.svg'
-        make_chart(lat,stars,event,args.output/name)
-        manifest['views'].append({'latitude':lat,'file':name})
-    (args.output/'manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
-    print('Generated',len(manifest['views']),'panoramas in',args.output)
+    starts=boundaries(args.year)
+    with (ROOT/"bright-stars-2mag.csv").open(encoding="utf-8",newline="") as f:
+        catalog=list(csv.DictReader(f))
+    rows=[]
+    for star in catalog:
+        try:
+            ra=float(star["ra_h"]); dec=float(star["dec_deg"])
+            mag=float(star["representative_vmax"])
+        except (KeyError,ValueError,TypeError):continue
+        day=transit_day(ra,args.year)
+        rows.append(dict(name=star.get("proper",""),ra_h=ra,dec_deg=dec,mag=mag,
+                         transit_date=day.isoformat(),band=band(dec),season=season_for_date(day,starts)))
+    manifest={"year":args.year,"model":"season-by-21h-transit-date",
+              "catalog":"bright-stars-2mag.csv",
+              "season_ingresses_utc":[x.isoformat()+"Z" for x in starts],
+              "season_start_dates":[x.date().isoformat() for x in starts],
+              "projection":"equatorial rectangular RA/declination",
+              "note":"Seasonal membership is date-based; horizontal RA extent is not forced to match season duration.",
+              "views":[]}
+    for region,season in views():
+        key="-".join(x.lower() for x in (region,season) if x)
+        name=f"{key}-{args.year}.svg"
+        selected=[r for r in rows if r["band"]==region and (season is None or r["season"]==season)]
+        render((region,season),rows,args.output/name,args.year,starts)
+        manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected)})
+    (args.output/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n",encoding="utf-8")
+    print("Generated",len(manifest["views"]),"regional charts;",len(rows),"catalog stars")
 
-if __name__=='__main__':main()
+if __name__=="__main__":
+    main()
