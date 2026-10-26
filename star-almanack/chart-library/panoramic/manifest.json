@@ -1,18 +1,18 @@
 {
-  "year": 2026,
+  "epoch": "J2000.0",
   "model": "season-by-21h-transit-date",
   "catalog": "bright-stars-2mag.csv",
-  "season_ingresses_utc": [
-    "2026-03-20T14:37:44.340759Z",
-    "2026-06-21T08:20:37.260634Z",
-    "2026-09-23T00:09:42.431180Z",
-    "2026-12-21T20:49:12.232462Z"
+  "reference_ingresses_utc": [
+    "2000-03-20T07:31:44.918663Z",
+    "2000-06-21T01:43:53.515315Z",
+    "2000-09-22T17:18:57.498753Z",
+    "2000-12-21T13:31:34.922177Z"
   ],
-  "season_start_dates": [
-    "2026-03-20",
-    "2026-06-21",
-    "2026-09-23",
-    "2026-12-21"
+  "reference_season_start_dates": [
+    "2000-03-20",
+    "2000-06-21",
+    "2000-09-22",
+    "2000-12-21"
   ],
   "projection": "equatorial rectangular for seasonal views; azimuthal equidistant for polar caps",
   "note": "Seasonal membership is date-based; horizontal RA extent is not forced to match season duration.",
@@ -20,7 +20,7 @@
     {
       "region": "Arctic",
       "season": null,
-      "file": "arctic-2026.svg",
+      "file": "arctic.svg",
       "stars": 19,
       "figure_segments": 0,
       "asterism_segments": 0
@@ -28,7 +28,7 @@
     {
       "region": "Northern",
       "season": "Spring",
-      "file": "northern-spring-2026.svg",
+      "file": "northern-spring.svg",
       "stars": 48,
       "figure_segments": 50,
       "asterism_segments": 14
@@ -36,7 +36,7 @@
     {
       "region": "Northern",
       "season": "Summer",
-      "file": "northern-summer-2026.svg",
+      "file": "northern-summer.svg",
       "stars": 60,
       "figure_segments": 62,
       "asterism_segments": 23
@@ -44,7 +44,7 @@
     {
       "region": "Northern",
       "season": "Autumn",
-      "file": "northern-autumn-2026.svg",
+      "file": "northern-autumn.svg",
       "stars": 64,
       "figure_segments": 65,
       "asterism_segments": 9
@@ -52,7 +52,7 @@
     {
       "region": "Northern",
       "season": "Winter",
-      "file": "northern-winter-2026.svg",
+      "file": "northern-winter.svg",
       "stars": 50,
       "figure_segments": 53,
       "asterism_segments": 12
@@ -60,15 +60,15 @@
     {
       "region": "Tropical",
       "season": "Spring",
-      "file": "tropical-spring-2026.svg",
-      "stars": 63,
+      "file": "tropical-spring.svg",
+      "stars": 62,
       "figure_segments": 70,
       "asterism_segments": 14
     },
     {
       "region": "Tropical",
       "season": "Summer",
-      "file": "tropical-summer-2026.svg",
+      "file": "tropical-summer.svg",
       "stars": 69,
       "figure_segments": 81,
       "asterism_segments": 22
@@ -76,15 +76,15 @@
     {
       "region": "Tropical",
       "season": "Autumn",
-      "file": "tropical-autumn-2026.svg",
-      "stars": 59,
+      "file": "tropical-autumn.svg",
+      "stars": 60,
       "figure_segments": 65,
       "asterism_segments": 22
     },
     {
       "region": "Tropical",
       "season": "Winter",
-      "file": "tropical-winter-2026.svg",
+      "file": "tropical-winter.svg",
       "stars": 105,
       "figure_segments": 104,
       "asterism_segments": 24
@@ -92,23 +92,23 @@
     {
       "region": "Southern",
       "season": "Spring",
-      "file": "southern-spring-2026.svg",
-      "stars": 64,
+      "file": "southern-spring.svg",
+      "stars": 65,
       "figure_segments": 54,
       "asterism_segments": 8
     },
     {
       "region": "Southern",
       "season": "Summer",
-      "file": "southern-summer-2026.svg",
-      "stars": 82,
+      "file": "southern-summer.svg",
+      "stars": 81,
       "figure_segments": 88,
       "asterism_segments": 24
     },
     {
       "region": "Southern",
       "season": "Autumn",
-      "file": "southern-autumn-2026.svg",
+      "file": "southern-autumn.svg",
       "stars": 51,
       "figure_segments": 50,
       "asterism_segments": 0
@@ -116,7 +116,7 @@
     {
       "region": "Southern",
       "season": "Winter",
-      "file": "southern-winter-2026.svg",
+      "file": "southern-winter.svg",
       "stars": 68,
       "figure_segments": 65,
       "asterism_segments": 3
@@ -124,7 +124,7 @@
     {
       "region": "Antarctic",
       "season": null,
-      "file": "antarctic-2026.svg",
+      "file": "antarctic.svg",
       "stars": 32,
       "figure_segments": 0,
       "asterism_segments": 0
