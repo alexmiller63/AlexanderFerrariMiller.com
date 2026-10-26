@@ -52,16 +52,22 @@ def load_layers():
       placed=False
       for text,size in [(label,12),(label,11),(label,10)]:
        w=len(text)*size*.59
+       # Search all candidate positions by leader length. Previously the
+       # whole-chart grid ran inside the first ring, before closer rings.
+       candidates=[]
        for radius in [12,20,30,42,60,80,105,135,170,210,260,320,400,500,650,800,1000]:
-        for dx,dy in [(radius,-radius),(radius,radius),(-radius-w,-radius),(-radius-w,radius),(radius,4),(-radius-w,4)]+[(radius*math.cos(a*math.pi/16)-w/2,radius*math.sin(a*math.pi/16)) for a in range(32)]+[(tx-x,ty-y) for ty in range(130,950,18) for tx in range(40,1710,30)]:
-         tx,ty=x+dx,y+dy;box=(tx-3,ty-size-3,tx+w+3,ty+4)
-         if not inside(box[0],box[1],2) or not inside(box[2],box[3],2):continue
-         if any(box[0]<b[2] and b[0]<box[2] and box[1]<b[3] and b[1]<box[3] for b in occupied):continue
-         if any(hits((a,b),(c,d),box) for a,b,c,d in segments):continue
-         if any(box[0]-5<ox<box[2]+5 and box[1]-5<oy<box[3]+5 for _,ox,oy in visible):continue
-         parts.append(f'<path d="M{x:.2f} {y:.2f} L{tx if dx>0 else tx+w:.2f} {ty-4:.2f}" stroke="{color}" opacity=".5" fill="none"/><text x="{tx:.2f}" y="{ty:.2f}" font-size="{size}" fill="{color}" paint-order="stroke" stroke="#071527" stroke-width="3">{esc(text)}</text>')
-         occupied.append(box);placed=True;break
-        if placed:break
+        candidates.extend([(radius,-radius),(radius,radius),(-radius-w,-radius),(-radius-w,radius),(radius,4),(-radius-w,4)])
+        candidates.extend((radius*math.cos(a*math.pi/16)-w/2,radius*math.sin(a*math.pi/16)) for a in range(32))
+       candidates.extend((tx-x,ty-y) for ty in range(130,950,18) for tx in range(40,1710,30))
+       candidates.sort(key=lambda p: math.hypot(max(p[0],min(0,p[0]+w)),p[1]-4))
+       for dx,dy in candidates:
+        tx,ty=x+dx,y+dy;box=(tx-3,ty-size-3,tx+w+3,ty+4)
+        if not inside(box[0],box[1],2) or not inside(box[2],box[3],2):continue
+        if any(box[0]<b[2] and b[0]<box[2] and box[1]<b[3] and b[1]<box[3] for b in occupied):continue
+        if any(hits((a,b),(c,d),box) for a,b,c,d in segments):continue
+        if any(box[0]-5<ox<box[2]+5 and box[1]-5<oy<box[3]+5 for _,ox,oy in visible):continue
+        parts.append(f'<path d="M{x:.2f} {y:.2f} L{max(tx,min(x,tx+w)):.2f} {ty-4:.2f}" stroke="{color}" opacity=".5" fill="none"/><text x="{tx:.2f}" y="{ty:.2f}" font-size="{size}" fill="{color}" paint-order="stroke" stroke="#071527" stroke-width="3">{esc(text)}</text>')
+        occupied.append(box);placed=True;break
        if placed:break
       assert placed, ('Cannot place catalog label', label, tag)
      parts.append('</g>')
