@@ -299,6 +299,22 @@ def overlay_asterisms(output, view, year, starts):
         width = 7.3*len(display) + 12
         if width > right-left-8:
             continue
+        # Prefer the open Capella–Pollux edge for the Winter Hexagon label.
+        # Anchor to actual projected star positions, not a fixed pixel location.
+        if name.startswith("Winter Hexagon"):
+            capella = coords.get((name, "Capella"))
+            pollux = coords.get((name, "Pollux"))
+            if capella and pollux:
+                ax, ay = point(*capella)
+                bx, by = point(*pollux)
+                period = (right-left)*24/ra_span
+                if bx-ax > period/2:
+                    bx -= period
+                elif ax-bx > period/2:
+                    bx += period
+                edge_mid = ((ax+bx)/2, (ay+by)/2)
+                if left+width/2+4 <= edge_mid[0] <= right-width/2-4 and top+20 <= edge_mid[1] <= bottom-12:
+                    points = [edge_mid]
         candidates = sorted(points, key=lambda p: abs(p[0]-(left+right)/2)+abs(p[1]-(top+bottom)/2))
         for px, py in candidates:
             x = min(max(px-width/2, left+4), right-width-4)
