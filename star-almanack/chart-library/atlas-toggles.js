@@ -10,7 +10,8 @@
   function setup(root) {
     const svg = root.querySelector("svg");
     if (!svg) return;
-    const controls = root.querySelectorAll("input[type=checkbox][data-atlas-toggle]");
+    const scope = root.closest("main") || document;
+    const controls = scope.querySelectorAll("input[type=checkbox][data-atlas-toggle]");
     function refresh() {
       const enabled = Object.assign({}, defaults);
       controls.forEach(box => { enabled[box.dataset.atlasToggle] = box.checked; });
