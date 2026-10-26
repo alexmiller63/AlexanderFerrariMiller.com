@@ -112,7 +112,7 @@ def render(view, rows, output, year, starts):
     s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_width} {HEIGHT}" role="img" aria-label="{html.escape(title)} celestial chart">',
          f'<rect width="{canvas_width}" height="{HEIGHT}" fill="#071527"/>',
          f'<text x="{canvas_width/2}" y="39" text-anchor="middle" fill="white" font-size="27">{html.escape(title)} · {year}</text>',
-         '<text x="{canvas_width/2}" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Season by 21:00 apparent-solar transit date · RA/declination chart</text>']
+         f'<text x="{canvas_width/2}" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Season by 21:00 apparent-solar transit date · RA/declination chart</text>']
     for hour in range(25):
         offset=(hour-ra_start)%24
         if offset>ra_span:continue
@@ -145,7 +145,7 @@ def render(view, rows, output, year, starts):
         s.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{r:.2f}" fill="#e5eefc"/>')
         if row["name"]:
             s.append(f'<text x="{x+7:.1f}" y="{y-7:.1f}" fill="#d0e1f3" font-size="12">{html.escape(row["name"])}</text>')
-    s += ['<text x="{canvas_width/2}" y="696" text-anchor="middle" fill="#9bb8cc" font-size="13">Gold: ecliptic · Cyan: celestial equator · Star Almanack</text>','</svg>']
+    s += [f'<text x="{canvas_width/2}" y="696" text-anchor="middle" fill="#9bb8cc" font-size="13">Gold: ecliptic · Cyan: celestial equator · Star Almanack</text>','</svg>']
     output.write_text("\n".join(s)+"\n",encoding="utf-8")
 
 def load_figure_geometry():
