@@ -82,6 +82,16 @@ def render(abbr="Ori"):
             mx,my=xy(*pts[len(pts)//2])
             overlays.append(f'<text x="{mx+10:.1f}" y="{my+22:.1f}" font-size="15" fill="#69dc94">{html.escape(name)}</text>')
     out.append(group("asterisms",overlays))
+    # Messier objects in Orion's Sword (J2000); visibility controlled by Catalog objects.
+    catalog = [("M42", 5 + 35/60 + 17.3/3600, -(5 + 23/60 + 28/3600)),
+               ("M43", 5 + 35/60 + 31/3600, -(5 + 16/60 + 3/3600))]
+    objects=[]
+    for name,ra,dec in catalog:
+        x,y=xy(ra,dec)
+        objects.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="5" fill="none" stroke="#ffcc77" stroke-width="1.8"/>')
+        objects.append(f'<text x="{x+9:.1f}" y="{y-7:.1f}" font-size="13" fill="#ffcc77">{name}</text>')
+    out.append(group("catalog",objects))
+
     out.append('</svg>')
     OUT.mkdir(parents=True,exist_ok=True)
     (OUT/"orion.svg").write_text("\n".join(out)+"\n",encoding="utf-8")
