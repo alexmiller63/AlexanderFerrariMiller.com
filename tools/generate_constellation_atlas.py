@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Offline J2000 constellation portraits. Pilot: Orion; no hand-edited SVGs."""
+"""Offline J2000 constellation portraits. Generated artwork; no hand-edited SVGs."""
 import argparse
 import csv
 import html
@@ -29,7 +29,12 @@ def render(abbr="Ori"):
     # Preserve a rectangular aspect in angular coordinates, with RA corrected for declination.
     center_dec = (min(p[1] for p in border)+max(p[1] for p in border))/2
     scale_ra = 15 * math.cos(math.radians(center_dec))
-    raw = [(ra*scale_ra, dec) for ra,dec in border]
+    angles = [ra for ra, dec in border]
+    center_ra = math.atan2(sum(math.sin(ra*math.pi/12) for ra in angles),
+                           sum(math.cos(ra*math.pi/12) for ra in angles))*12/math.pi % 24
+    def unwrap(ra):
+        return center_ra + ((ra-center_ra+12)%24)-12
+    raw = [(unwrap(ra)*scale_ra, dec) for ra,dec in border]
     xmin,xmax = min(x for x,y in raw),max(x for x,y in raw)
     ymin,ymax = min(y for x,y in raw),max(y for x,y in raw)
     dx,dy = xmax-xmin,ymax-ymin
@@ -37,7 +42,7 @@ def render(abbr="Ori"):
     scale = min(960/(xmax-xmin), 650/(ymax-ymin))
     cx,cy = (xmin+xmax)/2,(ymin+ymax)/2
     def xy(ra,dec):
-        return (W/2+(ra*scale_ra-cx)*scale,H/2-(dec-cy)*scale)
+        return (W/2+(unwrap(ra)*scale_ra-cx)*scale,H/2-(dec-cy)*scale)
     def poly(points):
         return " ".join(f"{xy(a,b)[0]:.2f},{xy(a,b)[1]:.2f}" for a,b in points)
     def group(layer,parts):
@@ -74,7 +79,7 @@ def render(abbr="Ori"):
             coords[(row["asterism"],row["member"])] = (float(row["ra_h"]),float(row["dec_deg"]))
     overlays=[]
     for name,entry in asterisms.items():
-        if name not in ("Orion's Belt","Orion's Sword"): continue
+        if not any(an == name and xmin <= unwrap(pt[0])*scale_ra <= xmax and ymin <= pt[1] <= ymax for (an,member),pt in coords.items()): continue
         for p in entry["paths"]:
             pts=[coords.get((name,member)) for member in p]
             if any(pt is None for pt in pts): continue
@@ -124,7 +129,7 @@ def render(abbr="Ori"):
     out.append(group("catalog", objects))
     out.append('</svg>')
     OUT.mkdir(parents=True,exist_ok=True)
-    (OUT/"orion.svg").write_text("\n".join(out)+"\n",encoding="utf-8")
+    (OUT/(abbr.lower()+".svg")).write_text("\n".join(out)+"\n",encoding="utf-8")
     # Inline SVG is necessary for independent, client-side layer toggles.
     svg="\n".join(out)
     controls=[("asterisms","Asterisms",True),("boundaries","Boundaries",True),
@@ -132,16 +137,22 @@ def render(abbr="Ori"):
               ("stars","Stars",True),("catalog","Catalog objects",False)]
     toggles=" ".join(f'<label><input type="checkbox" data-atlas-toggle="{key}" {"checked" if checked else ""}> {label}</label>' for key,label,checked in controls)
     page=('---\nlayout: null\n---\n<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-          '<title>Orion · Constellation Atlas</title><style>body{margin:0;background:#071527;color:#e8f3ff;font:16px system-ui}main{max-width:1200px;margin:auto;padding:1rem}nav{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem}svg{width:100%;height:auto}a{color:#8fd5ff}</style></head><body>'
-          '<main><p><a href="../">← Constellation Atlas</a></p><h1>Orion</h1><nav aria-label="Chart layers">'+toggles+'</nav>'
-          '<div data-atlas-chart>'+svg+'</div><p><a href="orion.svg">Full-resolution SVG</a></p></main>'
+          '<title>{html.escape(figure["name"])} · Constellation Atlas</title><style>body{margin:0;background:#071527;color:#e8f3ff;font:16px system-ui}main{max-width:1200px;margin:auto;padding:1rem}nav{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem}svg{width:100%;height:auto}a{color:#8fd5ff}</style></head><body>'
+          '<main><p><a href="../">← Constellation Atlas</a></p><h1>{html.escape(figure["name"])}</h1><nav aria-label="Chart layers">'+toggles+'</nav>'
+          '<div data-atlas-chart>'+svg+'</div><p><a href="{abbr.lower()}.svg">Full-resolution SVG</a></p></main>'
           '<script src="../atlas-toggles.js?v=8134e6a"></script></body></html>')
-    (OUT/"orion.html").write_text(page,encoding="utf-8")
-    (OUT/"index.html").write_text('---\nlayout: null\n---\n<!doctype html><html lang="en"><meta charset="utf-8"><title>Constellation Atlas</title><body><h1>Constellation Atlas</h1><p>Orion pilot</p><p><a href="orion.html">Orion</a></p><p><a href="../">Chart Library</a></p></body></html>\n',encoding="utf-8")
-    print("Generated Orion portrait, inline-toggle page and atlas index")
+    (OUT/(abbr.lower()+".html")).write_text(page,encoding="utf-8")
+    print(f"Generated {figure['name']} portrait")
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser()
-    parser.add_argument("--constellation",default="Ori",choices=["Ori"],help="Pilot only")
+    parser.add_argument("--constellation",default="all",help="IAU abbreviation or all")
     args=parser.parse_args()
-    render(args.constellation)
+    geometry=json.loads((ROOT/"finder-geometry/martz-macrobert.json").read_text())["constellations"]
+    available=[k for k in sorted(geometry) if (ROOT/"reference-data/iau-constellation-boundaries"/(k.lower()+".txt")).exists()]
+    targets=available if args.constellation=="all" else [args.constellation]
+    for abbr in targets:
+        render(abbr)
+    links="".join(f'<li><a href="{abbr.lower()}.html">{html.escape(geometry[abbr]["name"])}</a></li>' for abbr in targets)
+    (OUT/"index.html").write_text('---\\nlayout: null\\n---\\n<!doctype html><html lang="en"><meta charset="utf-8"><title>Constellation Atlas</title><body><h1>Constellation Atlas</h1><ul>'+links+'</ul><a href="../">Chart Library</a></body></html>\\n',encoding="utf-8")
+    print(f"Generated {len(targets)} constellation portraits")
