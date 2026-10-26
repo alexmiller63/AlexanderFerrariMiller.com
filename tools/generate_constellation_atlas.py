@@ -14,8 +14,14 @@ W, H = 1100, 800
 def boundary(abbr):
     path = ROOT / "reference-data/iau-constellation-boundaries" / (abbr.lower() + ".txt")
     points = []
-    for line in path.read_text().splitlines():
-        ra, dec, *_ = line.split("|")
+    for number, line in enumerate(path.read_text().splitlines(), 1):
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        fields = line.split("|")
+        if len(fields) < 2:
+            raise ValueError(f"{path}:{number}: expected RA|Dec boundary record: {line!r}")
+        ra, dec = fields[:2]
         h, m, s = map(float, ra.strip().split())
         points.append((h + m/60 + s/3600, float(dec)))
     return points
