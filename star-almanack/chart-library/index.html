@@ -4,14 +4,15 @@ layout: null
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Chart Library · Star Almanack</title><link rel="stylesheet" href="../css/star-almanack-nav-20261022.css">
-<style>.library-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}.library-grid article{padding:1.2rem;border:1px solid #a8b3bd;border-radius:.6rem}.library-grid h2{margin-top:0}.note{max-width:75ch}</style></head>
+<style>.library-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem}.library-grid article{padding:1.2rem;border:1px solid #a8b3bd;border-radius:.6rem}.library-grid h2{margin-top:0}.note{max-width:75ch}.atlas-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin:1.2rem 0 2rem}.atlas-card{display:block;padding:1rem;border:1px solid #7d9bb5;border-radius:.65rem;color:inherit;text-decoration:none;background:#10263b}.atlas-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#071527}.atlas-card strong{display:block;margin:.7rem 0 .2rem;color:#d9efff}.atlas-card span{font-size:.9rem;color:#a9c8dd}.atlas-card:hover{border-color:#69dc94}</style></head>
 <body>{% include star-almanack-nav.html %}
 <main class="page-shell"><section class="hero"><p class="eyebrow">Star Almanack</p><h1>Chart Library</h1><p class="tagline">An atlas of the heavens: complete reference collections and selected astronomical artwork.</p></section>
-<p class="note">The library is being assembled from original Star Almanack charts. The collections below describe the planned atlas; chart entries will appear as they are selected and verified.</p>
+<p class="note">The 2026 Seasonal Panoramic Atlas contains 14 original SVG sky charts. Open a card for its full-resolution chart. Other collections remain in development.</p>
+<section aria-label="Seasonal Panoramic Atlas"><h2>2026 Seasonal Panoramic Atlas</h2><div class="atlas-grid" id="seasonal-atlas-grid"></div></section>
 <section class="library-grid" aria-label="Chart Library collections">
 <article><h2>Constellation Atlas</h2><p>86 of the 88 IAU constellations currently represented, with Serpens Caput and Serpens Cauda on separate charts: 87 views. Mensa and Microscopium remain to be completed.</p></article>
 <article><h2>Asterism Atlas</h2><p>The complete Star Almanack catalog of 28 asterisms, including familiar sky landmarks.</p></article>
-<article><h2>Panoramic Sky Atlas</h2><p>Twenty seasonal all-sky views: Arctic, Northern Temperate, Tropical, Southern Temperate, and Antarctic skies in four seasons.</p><p>Geographic regions are bounded by the polar circles and the Tropics of Cancer and Capricorn.</p></article>
+<article><h2>Panoramic Sky Atlas</h2><p>Fourteen published regional views: one Arctic, four Northern, four Tropical, four Southern, and one Antarctic.</p><p>Geographic regions are bounded by the polar circles and the Tropics of Cancer and Capricorn.</p></article>
 <article><h2>Selected Planet Finders</h2><p>Curated charts of planets among the stars.</p></article>
 <article><h2>Meteor Shower Finders</h2><p>Wide-field radiant charts and their guide constellations.</p></article>
 <article><h2>Eclipse Charts</h2><p>Selected eclipse geometry, timing, and visibility diagrams.</p></article>
@@ -19,4 +20,23 @@ layout: null
 <article><h2>Special Events</h2><p>Selected conjunctions, alignments, and other celestial events.</p></article>
 </section>
 <section><h2>Reading the sky</h2><p>Panoramic charts will show the celestial equator, ecliptic, celestial tropics, poles, horizon, and cardinal directions. Ecliptic labels will distinguish twelve equal 30° tropical zodiac signs from the unequal IAU constellation spans, including Ophiuchus. Reference overlays and Greek, Mixed, and English labels are planned.</p><p>Charts will be generated using the Almanack's established calculations and reused by reference, with permanent identifiers and links back to their observing pages.</p></section>
+<script>
+(function(){
+  const regions=[["Arctic",[""]],["Northern",["Spring","Summer","Autumn","Winter"]],["Tropical",["Spring","Summer","Autumn","Winter"]],["Southern",["Spring","Summer","Autumn","Winter"]],["Antarctic",[""]]];
+  const grid=document.getElementById("seasonal-atlas-grid");
+  for(const [region,seasons] of regions) for(const season of seasons){
+    const name=[region,season].filter(Boolean).join(" ");
+    const filename=[region,season,"2026"].filter(Boolean).join("-").toLowerCase()+".svg";
+    const href="panoramic/"+filename;
+    const card=document.createElement("a");
+    card.className="atlas-card";
+    card.href=href;
+    const preview=document.createElement("img");
+    preview.src=href; preview.alt=name+" celestial chart"; preview.loading="lazy";
+    const title=document.createElement("strong"); title.textContent=name;
+    const detail=document.createElement("span"); detail.textContent="2026 · Full-resolution SVG";
+    card.append(preview,title,detail); grid.append(card);
+  }
+})();
+</script>
 </main><div id="almanack-bottom-nav" aria-hidden="true"></div>{% include star-almanack-footer.html %}</body></html>
