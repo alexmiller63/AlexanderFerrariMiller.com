@@ -1,21 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740">
 <rect width="1200" height="740" fill="#071527"/>
 <text x="600" y="55" text-anchor="middle" font-size="30" fill="#d9efff">Orion&#x27;s Belt</text>
-<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0 · accepted asterism geometry</text>
-<line x1="957.31" y1="112.00" x2="800.00" y2="520.25" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="800.00" y1="520.25" x2="592.27" y2="384.83" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="592.27" y1="384.83" x2="400.00" y2="219.75" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="400.00" y1="219.75" x2="372.15" y2="112.00" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="800.00" y1="520.25" x2="843.86" y2="714.00" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="400.00" y1="219.75" x2="55.86" y2="603.37" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="55.86" y1="603.37" x2="24.00" y2="677.82" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<text x="506.68" y="415.16" text-anchor="middle" font-size="15" fill="#adc4dd" opacity=".85" paint-order="stroke" stroke="#071527" stroke-width="4">Orion</text>
-<line x1="800.00" y1="520.25" x2="592.27" y2="384.83" stroke="#4fc47b" stroke-width="3"/>
-<line x1="592.27" y1="384.83" x2="400.00" y2="219.75" stroke="#4fc47b" stroke-width="3"/>
-<circle cx="800.00" cy="520.25" r="5.5" fill="#f6f4dc"/>
-<text x="809.00" y="511.25" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Alnitak</text>
-<circle cx="592.27" cy="384.83" r="5.5" fill="#f6f4dc"/>
-<text x="601.27" y="375.83" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Alnilam</text>
-<circle cx="400.00" cy="219.75" r="5.2" fill="#f6f4dc"/>
-<text x="409.00" y="210.75" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Mintaka</text>
+<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0</text>
+<defs><clipPath id="sky-window"><rect x="24" y="112" width="1152" height="602"/></clipPath></defs>
+<g clip-path="url(#sky-window)">
+<circle cx="1027.34" cy="652.46" r="2.07" fill="#aabed0" opacity=".9"/>
+<circle cx="1168.88" cy="242.63" r="1.25" fill="#aabed0" opacity=".9"/>
+<circle cx="534.37" cy="462.31" r="2.56" fill="#aabed0" opacity=".9"/>
+<circle cx="602.52" cy="417.85" r="2.59" fill="#aabed0" opacity=".9"/>
+<circle cx="665.63" cy="363.69" r="2.32" fill="#aabed0" opacity=".9"/>
+<circle cx="778.47" cy="489.71" r="1.79" fill="#aabed0" opacity=".9"/>
+<circle cx="614.90" cy="636.12" r="1.20" fill="#aabed0" opacity=".9"/>
+<circle cx="614.18" cy="700.50" r="2.08" fill="#aabed0" opacity=".9"/>
+<line x1="1027.34" y1="652.46" x2="1365.33" y2="544.30" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="1233.77" y1="198.57" x2="1168.88" y2="242.63" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="318.78" y1="-100.28" x2="534.37" y2="462.31" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="534.37" y1="462.31" x2="602.52" y2="417.85" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="602.52" y1="417.85" x2="665.63" y2="363.69" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="665.63" y1="363.69" x2="768.48" y2="-36.07" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="534.37" y1="462.31" x2="430.84" y2="927.26" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="665.63" y1="363.69" x2="778.47" y2="489.71" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="778.47" y1="489.71" x2="925.78" y2="839.63" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line class="asterism" x1="534.37" y1="462.31" x2="602.52" y2="417.85" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="602.52" y1="417.85" x2="665.63" y2="363.69" stroke="#4fc47b" stroke-width="3"/>
+<circle class="member" cx="534.37" cy="462.31" r="5.5" fill="#f6f4dc"/>
+<text x="544.37" y="450.31" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Alnitak</text>
+<circle class="member" cx="602.52" cy="417.85" r="5.5" fill="#f6f4dc"/>
+<text x="612.52" y="405.85" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Alnilam</text>
+<circle class="member" cx="665.63" cy="363.69" r="5.2" fill="#f6f4dc"/>
+<text x="675.63" y="351.69" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Mintaka</text>
+<text x="1037.34" y="640.46" font-size="15" fill="#adc4dd" paint-order="stroke" stroke="#071527" stroke-width="4">Eridanus</text>
+<text x="646.20" y="451.31" font-size="15" fill="#adc4dd" paint-order="stroke" stroke="#071527" stroke-width="4">Orion</text>
+</g>
 </svg>

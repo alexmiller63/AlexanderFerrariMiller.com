@@ -1,26 +1,30 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740">
 <rect width="1200" height="740" fill="#071527"/>
 <text x="600" y="55" text-anchor="middle" font-size="30" fill="#d9efff">Lozenge of Draco</text>
-<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0 · accepted asterism geometry</text>
-<circle cx="457.74" cy="509.63" r="2.06" fill="#aabed0" opacity=".78"/>
-<line x1="24.00" y1="649.16" x2="1176.00" y2="695.86" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<text x="600.00" y="672.51" text-anchor="middle" font-size="15" fill="#adc4dd" opacity=".85" paint-order="stroke" stroke="#071527" stroke-width="4">Auriga</text>
-<line x1="708.80" y1="170.00" x2="742.26" y2="570.00" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="742.26" y1="570.00" x2="457.74" y2="509.63" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="457.74" y1="509.63" x2="477.67" y2="296.28" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="477.67" y1="296.28" x2="708.80" y2="170.00" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="708.80" y1="170.00" x2="770.95" y2="112.00" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<text x="625.27" y="337.38" text-anchor="middle" font-size="15" fill="#adc4dd" opacity=".85" paint-order="stroke" stroke="#071527" stroke-width="4">Draco</text>
-<line x1="742.26" y1="570.00" x2="457.74" y2="509.63" stroke="#4fc47b" stroke-width="3"/>
-<line x1="457.74" y1="509.63" x2="477.67" y2="296.28" stroke="#4fc47b" stroke-width="3"/>
-<line x1="477.67" y1="296.28" x2="708.80" y2="170.00" stroke="#4fc47b" stroke-width="3"/>
-<line x1="708.80" y1="170.00" x2="742.26" y2="570.00" stroke="#4fc47b" stroke-width="3"/>
-<circle cx="742.26" cy="570.00" r="5.2" fill="#f6f4dc"/>
-<text x="751.26" y="561.00" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Gamma Draconis</text>
-<circle cx="457.74" cy="509.63" r="4.8" fill="#f6f4dc"/>
-<text x="466.74" y="500.63" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Beta Draconis</text>
-<circle cx="477.67" cy="296.28" r="3.6" fill="#f6f4dc"/>
-<text x="486.67" y="287.28" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Nu Draconis</text>
-<circle cx="708.80" cy="170.00" r="4.3" fill="#f6f4dc"/>
-<text x="717.80" y="161.00" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Xi Draconis</text>
+<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0</text>
+<defs><clipPath id="sky-window"><rect x="24" y="112" width="1152" height="602"/></clipPath></defs>
+<g clip-path="url(#sky-window)">
+<circle cx="721.17" cy="525.40" r="2.06" fill="#aabed0" opacity=".9"/>
+<circle cx="519.35" cy="252.13" r="1.61" fill="#aabed0" opacity=".9"/>
+<circle cx="478.83" cy="573.87" r="2.32" fill="#aabed0" opacity=".9"/>
+<circle cx="697.72" cy="353.89" r="1.07" fill="#aabed0" opacity=".9"/>
+<line x1="519.35" y1="252.13" x2="478.83" y2="573.87" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="478.83" y1="573.87" x2="721.17" y2="525.40" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="721.17" y1="525.40" x2="697.72" y2="353.89" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="697.72" y1="353.89" x2="519.35" y2="252.13" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="519.35" y1="252.13" x2="95.93" y2="-485.74" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line class="asterism" x1="478.83" y1="573.87" x2="721.17" y2="525.40" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="721.17" y1="525.40" x2="697.72" y2="353.89" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="697.72" y1="353.89" x2="519.35" y2="252.13" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="519.35" y1="252.13" x2="478.83" y2="573.87" stroke="#4fc47b" stroke-width="3"/>
+<circle class="member" cx="478.83" cy="573.87" r="5.2" fill="#f6f4dc"/>
+<text x="488.83" y="561.87" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Gamma Draconis</text>
+<circle class="member" cx="721.17" cy="525.40" r="4.8" fill="#f6f4dc"/>
+<text x="731.17" y="513.40" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Beta Draconis</text>
+<circle class="member" cx="697.72" cy="353.89" r="3.6" fill="#f6f4dc"/>
+<text x="707.72" y="341.89" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Nu Draconis</text>
+<circle class="member" cx="519.35" cy="252.13" r="4.3" fill="#f6f4dc"/>
+<text x="529.35" y="240.13" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Xi Draconis</text>
+<text x="604.83" y="394.97" font-size="15" fill="#adc4dd" paint-order="stroke" stroke="#071527" stroke-width="4">Draco</text>
+</g>
 </svg>

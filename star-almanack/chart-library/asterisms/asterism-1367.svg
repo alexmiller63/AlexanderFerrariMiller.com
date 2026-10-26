@@ -1,25 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740">
 <rect width="1200" height="740" fill="#071527"/>
 <text x="600" y="55" text-anchor="middle" font-size="30" fill="#d9efff">Water Jar</text>
-<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0 · accepted asterism geometry</text>
-<line x1="24.00" y1="430.29" x2="400.00" y2="531.44" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="400.00" y1="531.44" x2="609.51" y2="371.75" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="609.51" y1="371.75" x2="505.72" y2="208.56" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="505.72" y1="208.56" x2="24.00" y2="376.33" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="800.00" y1="383.14" x2="609.51" y2="371.75" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="24.00" y1="642.97" x2="50.29" y2="714.00" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<text x="380.19" y="428.50" text-anchor="middle" font-size="15" fill="#adc4dd" opacity=".85" paint-order="stroke" stroke="#071527" stroke-width="4">Aquarius</text>
-<line x1="24.00" y1="428.55" x2="1176.00" y2="427.68" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<text x="600.00" y="428.11" text-anchor="middle" font-size="15" fill="#adc4dd" opacity=".85" paint-order="stroke" stroke="#071527" stroke-width="4">Sextans</text>
-<line x1="400.00" y1="531.44" x2="609.51" y2="371.75" stroke="#4fc47b" stroke-width="3"/>
-<line x1="609.51" y1="371.75" x2="505.72" y2="208.56" stroke="#4fc47b" stroke-width="3"/>
-<line x1="800.00" y1="383.14" x2="609.51" y2="371.75" stroke="#4fc47b" stroke-width="3"/>
-<circle cx="609.51" cy="371.75" r="4.3" fill="#f6f4dc"/>
-<text x="618.51" y="362.75" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Zeta Aquarii</text>
-<circle cx="505.72" cy="208.56" r="3.6" fill="#f6f4dc"/>
-<text x="514.72" y="199.56" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Pi Aquarii</text>
-<circle cx="800.00" cy="383.14" r="4.1" fill="#f6f4dc"/>
-<text x="809.00" y="374.14" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Eta Aquarii</text>
-<circle cx="400.00" cy="531.44" r="4.2" fill="#f6f4dc"/>
-<text x="409.00" y="522.44" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Gamma Aquarii</text>
+<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0</text>
+<defs><clipPath id="sky-window"><rect x="24" y="112" width="1152" height="602"/></clipPath></defs>
+<g clip-path="url(#sky-window)">
+<circle cx="941.10" cy="431.94" r="1.98" fill="#aabed0" opacity=".9"/>
+<circle cx="68.92" cy="181.99" r="1.25" fill="#aabed0" opacity=".9"/>
+<circle cx="702.75" cy="495.95" r="1.55" fill="#aabed0" opacity=".9"/>
+<circle cx="595.13" cy="413.89" r="1.65" fill="#aabed0" opacity=".9"/>
+<circle cx="648.44" cy="330.05" r="1.10" fill="#aabed0" opacity=".9"/>
+<circle cx="497.25" cy="419.75" r="1.46" fill="#aabed0" opacity=".9"/>
+<line x1="941.10" y1="431.94" x2="702.75" y2="495.95" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="702.75" y1="495.95" x2="595.13" y2="413.89" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="595.13" y1="413.89" x2="648.44" y2="330.05" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="648.44" y1="330.05" x2="941.10" y2="431.94" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="941.10" y1="431.94" x2="1456.41" y2="752.33" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="497.25" y1="419.75" x2="595.13" y2="413.89" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="941.10" y1="431.94" x2="774.36" y2="880.67" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line class="asterism" x1="702.75" y1="495.95" x2="595.13" y2="413.89" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="595.13" y1="413.89" x2="648.44" y2="330.05" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="497.25" y1="419.75" x2="595.13" y2="413.89" stroke="#4fc47b" stroke-width="3"/>
+<circle class="member" cx="595.13" cy="413.89" r="4.3" fill="#f6f4dc"/>
+<text x="605.13" y="401.89" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Zeta Aquarii</text>
+<circle class="member" cx="648.44" cy="330.05" r="3.6" fill="#f6f4dc"/>
+<text x="658.44" y="318.05" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Pi Aquarii</text>
+<circle class="member" cx="497.25" cy="419.75" r="4.1" fill="#f6f4dc"/>
+<text x="507.25" y="441.75" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Eta Aquarii</text>
+<circle class="member" cx="702.75" cy="495.95" r="4.2" fill="#f6f4dc"/>
+<text x="712.75" y="483.95" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Gamma Aquarii</text>
+<text x="739.12" y="408.10" font-size="15" fill="#adc4dd" paint-order="stroke" stroke="#071527" stroke-width="4">Aquarius</text>
+</g>
 </svg>

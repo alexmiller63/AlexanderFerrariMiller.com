@@ -1,26 +1,35 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740">
 <rect width="1200" height="740" fill="#071527"/>
 <text x="600" y="55" text-anchor="middle" font-size="30" fill="#d9efff">Pleiades</text>
-<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0 · accepted asterism geometry</text>
-<line x1="698.30" y1="384.22" x2="697.19" y2="400.88" stroke="#4fc47b" stroke-width="3"/>
-<line x1="697.19" y1="400.88" x2="620.67" y2="390.54" stroke="#4fc47b" stroke-width="3"/>
-<line x1="620.67" y1="390.54" x2="545.07" y2="338.01" stroke="#4fc47b" stroke-width="3"/>
-<line x1="545.07" y1="338.01" x2="516.86" y2="318.11" stroke="#4fc47b" stroke-width="3"/>
-<line x1="620.67" y1="390.54" x2="567.85" y2="421.89" stroke="#4fc47b" stroke-width="3"/>
-<line x1="567.85" y1="421.89" x2="501.70" y2="388.90" stroke="#4fc47b" stroke-width="3"/>
-<line x1="501.70" y1="388.90" x2="545.07" y2="338.01" stroke="#4fc47b" stroke-width="3"/>
-<circle cx="620.67" cy="390.54" r="4.8" fill="#f6f4dc"/>
-<text x="629.67" y="381.54" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Alcyone</text>
-<circle cx="697.19" cy="400.88" r="4.3" fill="#f6f4dc"/>
-<text x="706.19" y="391.88" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Atlas</text>
-<circle cx="501.70" cy="388.90" r="4.3" fill="#f6f4dc"/>
-<text x="510.70" y="379.90" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Electra</text>
-<circle cx="545.07" cy="338.01" r="4.2" fill="#f6f4dc"/>
-<text x="554.07" y="329.01" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Maia</text>
-<circle cx="567.85" cy="421.89" r="4.0" fill="#f6f4dc"/>
-<text x="576.85" y="412.89" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Merope</text>
-<circle cx="516.86" cy="318.11" r="3.9" fill="#f6f4dc"/>
-<text x="525.86" y="309.11" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Taygeta</text>
-<circle cx="698.30" cy="384.22" r="3.5" fill="#f6f4dc"/>
-<text x="707.30" y="375.22" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Pleione</text>
+<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0</text>
+<defs><clipPath id="sky-window"><rect x="24" y="112" width="1152" height="602"/></clipPath></defs>
+<g clip-path="url(#sky-window)">
+<circle cx="575.16" cy="437.70" r="2.03" fill="#aabed0" opacity=".9"/>
+<circle cx="483.22" cy="449.87" r="1.66" fill="#aabed0" opacity=".9"/>
+<circle cx="718.04" cy="435.56" r="1.61" fill="#aabed0" opacity=".9"/>
+<circle cx="665.84" cy="374.64" r="1.54" fill="#aabed0" opacity=".9"/>
+<circle cx="638.64" cy="475.33" r="1.41" fill="#aabed0" opacity=".9"/>
+<circle cx="699.58" cy="350.67" r="1.34" fill="#aabed0" opacity=".9"/>
+<line class="asterism" x1="481.96" y1="429.88" x2="483.22" y2="449.87" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="483.22" y1="449.87" x2="575.16" y2="437.70" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="575.16" y1="437.70" x2="665.84" y2="374.64" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="665.84" y1="374.64" x2="699.58" y2="350.67" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="575.16" y1="437.70" x2="638.64" y2="475.33" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="638.64" y1="475.33" x2="718.04" y2="435.56" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="718.04" y1="435.56" x2="665.84" y2="374.64" stroke="#4fc47b" stroke-width="3"/>
+<circle class="member" cx="575.16" cy="437.70" r="4.8" fill="#f6f4dc"/>
+<text x="585.16" y="425.70" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Alcyone</text>
+<circle class="member" cx="483.22" cy="449.87" r="4.3" fill="#f6f4dc"/>
+<text x="493.22" y="437.87" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Atlas</text>
+<circle class="member" cx="718.04" cy="435.56" r="4.3" fill="#f6f4dc"/>
+<text x="728.04" y="423.56" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Electra</text>
+<circle class="member" cx="665.84" cy="374.64" r="4.2" fill="#f6f4dc"/>
+<text x="675.84" y="396.64" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Maia</text>
+<circle class="member" cx="638.64" cy="475.33" r="4.0" fill="#f6f4dc"/>
+<text x="648.64" y="463.33" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Merope</text>
+<circle class="member" cx="699.58" cy="350.67" r="3.9" fill="#f6f4dc"/>
+<text x="709.58" y="338.67" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Taygeta</text>
+<circle class="member" cx="481.96" cy="429.88" r="3.5" fill="#f6f4dc"/>
+<text x="416.10" y="417.88" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Pleione</text>
+</g>
 </svg>

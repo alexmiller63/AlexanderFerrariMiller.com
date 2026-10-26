@@ -1,26 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740">
 <rect width="1200" height="740" fill="#071527"/>
 <text x="600" y="55" text-anchor="middle" font-size="30" fill="#d9efff">Job&#x27;s Coffin</text>
-<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0 · accepted asterism geometry</text>
-<circle cx="491.74" cy="269.39" r="1.59" fill="#aabed0" opacity=".78"/>
-<circle cx="400.00" cy="509.27" r="1.65" fill="#aabed0" opacity=".78"/>
-<line x1="24.00" y1="675.92" x2="1176.00" y2="706.28" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="286.73" y1="714.00" x2="400.00" y2="509.27" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="400.00" y1="509.27" x2="491.74" y2="269.39" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="491.74" y1="269.39" x2="800.00" y2="230.73" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="800.00" y1="230.73" x2="659.51" y2="421.93" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<line x1="659.51" y1="421.93" x2="400.00" y2="509.27" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
-<text x="538.92" y="408.59" text-anchor="middle" font-size="15" fill="#adc4dd" opacity=".85" paint-order="stroke" stroke="#071527" stroke-width="4">Delphinus</text>
-<line x1="491.74" y1="269.39" x2="400.00" y2="509.27" stroke="#4fc47b" stroke-width="3"/>
-<line x1="400.00" y1="509.27" x2="800.00" y2="230.73" stroke="#4fc47b" stroke-width="3"/>
-<line x1="800.00" y1="230.73" x2="659.51" y2="421.93" stroke="#4fc47b" stroke-width="3"/>
-<line x1="659.51" y1="421.93" x2="491.74" y2="269.39" stroke="#4fc47b" stroke-width="3"/>
-<circle cx="491.74" cy="269.39" r="4.2" fill="#f6f4dc"/>
-<text x="500.74" y="260.39" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Alpha Delphini</text>
-<circle cx="400.00" cy="509.27" r="4.3" fill="#f6f4dc"/>
-<text x="409.00" y="500.27" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Beta Delphini</text>
-<circle cx="800.00" cy="230.73" r="3.9" fill="#f6f4dc"/>
-<text x="809.00" y="221.73" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Gamma Delphini</text>
-<circle cx="659.51" cy="421.93" r="3.8" fill="#f6f4dc"/>
-<text x="668.51" y="412.93" fill="#d9efff" font-size="14" paint-order="stroke" stroke="#071527" stroke-width="3">Delta Delphini</text>
+<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0</text>
+<defs><clipPath id="sky-window"><rect x="24" y="112" width="1152" height="602"/></clipPath></defs>
+<g clip-path="url(#sky-window)">
+<circle cx="635.34" cy="379.99" r="1.59" fill="#aabed0" opacity=".9"/>
+<circle cx="665.86" cy="458.90" r="1.65" fill="#aabed0" opacity=".9"/>
+<circle cx="730.64" cy="656.12" r="1.47" fill="#aabed0" opacity=".9"/>
+<circle cx="534.14" cy="367.10" r="1.35" fill="#aabed0" opacity=".9"/>
+<circle cx="580.12" cy="430.26" r="1.27" fill="#aabed0" opacity=".9"/>
+<line x1="730.64" y1="656.12" x2="718.92" y2="552.66" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="718.92" y1="552.66" x2="665.86" y2="458.90" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="665.86" y1="458.90" x2="635.34" y2="379.99" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="635.34" y1="379.99" x2="534.14" y2="367.10" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="534.14" y1="367.10" x2="580.12" y2="430.26" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line x1="580.12" y1="430.26" x2="665.86" y2="458.90" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>
+<line class="asterism" x1="635.34" y1="379.99" x2="665.86" y2="458.90" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="665.86" y1="458.90" x2="534.14" y2="367.10" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="534.14" y1="367.10" x2="580.12" y2="430.26" stroke="#4fc47b" stroke-width="3"/>
+<line class="asterism" x1="580.12" y1="430.26" x2="635.34" y2="379.99" stroke="#4fc47b" stroke-width="3"/>
+<circle class="member" cx="635.34" cy="379.99" r="4.2" fill="#f6f4dc"/>
+<text x="645.34" y="367.99" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Alpha Delphini</text>
+<circle class="member" cx="665.86" cy="458.90" r="4.3" fill="#f6f4dc"/>
+<text x="675.86" y="446.90" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Beta Delphini</text>
+<circle class="member" cx="534.14" cy="367.10" r="3.9" fill="#f6f4dc"/>
+<text x="412.42" y="355.10" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Gamma Delphini</text>
+<circle class="member" cx="580.12" cy="430.26" r="3.8" fill="#f6f4dc"/>
+<text x="590.12" y="418.26" font-size="14" fill="#d9efff" paint-order="stroke" stroke="#071527" stroke-width="4">Delta Delphini</text>
+<text x="551.82" y="479.74" font-size="15" fill="#adc4dd" paint-order="stroke" stroke="#071527" stroke-width="4">Delphinus</text>
+</g>
 </svg>
