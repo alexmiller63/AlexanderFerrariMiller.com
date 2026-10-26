@@ -14,10 +14,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install catalog reader
+        run: python -m pip install PyYAML==6.0.3
       - name: Compile atlas generator
-        run: python -m py_compile tools/generate_panoramic_atlas.py
+        run: python -m py_compile tools/generate_panoramic_atlas.py tools/generate_catalog_atlas.py
       - name: Generate 14 seasonal charts
         run: python tools/generate_panoramic_atlas.py --output /tmp/seasonal-atlas
+      - name: Generate catalog panorama viewer
+        run: python tools/generate_catalog_atlas.py --panoramas /tmp/seasonal-atlas --output star-almanack/chart-library/panoramic/index.html
       - name: Validate atlas
         run: |
           python - <<'PY'
@@ -81,3 +85,4 @@ jobs:
                   raise SystemExit("Published atlas verification failed; charts are preserved in the uploaded artifact. Inspect Pages deployment, domain, and HTTP status.")
               time.sleep(30)
           PY
+
