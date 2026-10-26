@@ -9,7 +9,7 @@ on:
         default: "2026"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   atlas:
@@ -40,6 +40,18 @@ jobs:
               assert ET.parse(path).getroot().tag.endswith('svg'), path
           print('PASS: 14 SVGs, including Northern Winter')
           PY
+      - name: Publish generated charts to Chart Library
+        run: |
+          mkdir -p star-almanack/chart-library/panoramic
+          cp /tmp/seasonal-atlas/*.svg star-almanack/chart-library/panoramic/
+          cp /tmp/seasonal-atlas/manifest.json star-almanack/chart-library/panoramic/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add star-almanack/chart-library/panoramic/
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish seasonal atlas charts for ${{ inputs.year }}"
+            git push
+          fi
       - name: Upload atlas charts
         uses: actions/upload-artifact@v4
         with:
