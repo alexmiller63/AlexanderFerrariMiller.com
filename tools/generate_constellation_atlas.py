@@ -95,7 +95,7 @@ def render(abbr="Ori"):
           '<title>Orion · Constellation Atlas</title><style>body{margin:0;background:#071527;color:#e8f3ff;font:16px system-ui}main{max-width:1200px;margin:auto;padding:1rem}nav{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem}svg{width:100%;height:auto}a{color:#8fd5ff}</style></head><body>'
           '<main><p><a href="../">← Constellation Atlas</a></p><h1>Orion</h1><nav aria-label="Chart layers">'+toggles+'</nav>'
           '<div data-atlas-chart>'+svg+'</div><p><a href="orion.svg">Full-resolution SVG</a></p></main>'
-          '<script src="../atlas-toggles.js"></script></body></html>')
+          '<script src="../atlas-toggles.js?v=8134e6a"></script></body></html>')
     (OUT/"orion.html").write_text(page,encoding="utf-8")
     (OUT/"index.html").write_text('---\nlayout: null\n---\n<!doctype html><html lang="en"><meta charset="utf-8"><title>Constellation Atlas</title><body><h1>Constellation Atlas</h1><p>Orion pilot</p><p><a href="orion.html">Orion</a></p><p><a href="../">Chart Library</a></p></body></html>\n',encoding="utf-8")
     print("Generated Orion portrait, inline-toggle page and atlas index")
