@@ -358,6 +358,82 @@ def overlay_asterisms(output, view, year, starts):
     output.write_text(svg, encoding="utf-8")
     return len(segments)
 
+
+def polar_xy(region, ra, dec):
+    """Azimuthal equidistant celestial polar projection; north/south mirrored."""
+    north = region == "Arctic"
+    cx, cy, radius = 600.0, 385.0, 290.0
+    polar_distance = (90.0-dec) if north else (90.0+dec)
+    r = radius * polar_distance / OBLIQUITY
+    angle = math.radians(15.0*ra)
+    return cx + r*math.sin(angle), cy + (-1 if north else 1)*r*math.cos(angle)
+
+
+def render_polar(view, rows, output, year, figures):
+    """Render complete circular polar charts, with geometry clipped to the cap."""
+    region, _ = view
+    north = region == "Arctic"
+    title = "Arctic" if north else "Antarctic"
+    cx, cy, radius = 600, 385, 290
+    clip_id = "polar-cap"
+    s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="{title} polar celestial chart">',
+         '<rect width="1200" height="720" fill="#071527"/>',
+         f'<title>{title} polar celestial chart · {year}</title>',
+         f'<text x="600" y="39" text-anchor="middle" fill="white" font-size="27">{title} · {year}</text>',
+         '<text x="600" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Azimuthal equidistant polar projection · right ascension / declination</text>',
+         f'<defs><clipPath id="{clip_id}"><circle cx="{cx}" cy="{cy}" r="{radius}"/></clipPath></defs>',
+         f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="#9bb8cc" stroke-width="2"/>']
+    for dec_abs in (70, 75, 80, 85):
+        dec = dec_abs if north else -dec_abs
+        r = radius*(90-dec_abs)/OBLIQUITY
+        s.append(f'<circle cx="{cx}" cy="{cy}" r="{r:.2f}" fill="none" stroke="#28415c"/>')
+        s.append(f'<text x="{cx+7}" y="{cy-r-5:.2f}" fill="#b9d5e6" font-size="12">{dec:+d}°</text>')
+    for hour in range(0,24,2):
+        x,y=polar_xy(region,hour,90-OBLIQUITY if north else -90+OBLIQUITY)
+        s.append(f'<line x1="{cx}" y1="{cy}" x2="{x:.2f}" y2="{y:.2f}" stroke="#28415c"/>')
+        lx,ly=polar_xy(region,hour,90-OBLIQUITY-2 if north else -90+OBLIQUITY+2)
+        s.append(f'<text x="{lx:.2f}" y="{ly:.2f}" text-anchor="middle" fill="#b9d5e6" font-size="12">{hour}h</text>')
+    s.append(f'<g clip-path="url(#{clip_id})">')
+    # Draw line segments in projected space; circular clipping is performed by SVG.
+    for name, vertices in figures:
+        for (ra0,d0),(ra1,d1) in zip(vertices,vertices[1:]):
+            if abs(ra1-ra0)>12 and abs(d0)<85 and abs(d1)<85:
+                continue
+            x0,y0=polar_xy(region,ra0,d0)
+            x1,y1=polar_xy(region,ra1,d1)
+            s.append(f'<line x1="{x0:.2f}" y1="{y0:.2f}" x2="{x1:.2f}" y2="{y1:.2f}" stroke="#5c8fe8" stroke-width="1.8" opacity=".85"/>')
+    paths, coords=load_asterisms()
+    for name,entry in paths.items():
+        for path in entry.get("paths",[]):
+            for u,v in zip(path,path[1:]):
+                a,b=coords.get((name,u)),coords.get((name,v))
+                if not a or not b: continue
+                if abs(a[0]-b[0])>12 and max(abs(a[1]),abs(b[1]))<85: continue
+                x0,y0=polar_xy(region,*a)
+                x1,y1=polar_xy(region,*b)
+                s.append(f'<line x1="{x0:.2f}" y1="{y0:.2f}" x2="{x1:.2f}" y2="{y1:.2f}" stroke="#4fc47b" stroke-width="2" stroke-dasharray="5 4" opacity=".9"/>')
+    for row in rows:
+        if row["band"]!=region: continue
+        x,y=polar_xy(region,row["ra_h"],row["dec_deg"])
+        r=max(1.4,4.8-row["mag"]*.8)
+        s.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{r:.2f}" fill="#e5eefc"/>')
+        if row["name"]:
+            s.append(f'<text x="{x+7:.2f}" y="{y-7:.2f}" fill="#d0e1f3" font-size="12">{html.escape(row["name"])}</text>')
+    s.append('</g>')
+    # Label constellation figures whose projected vertices lie inside the cap.
+    occupied=[]
+    for name,vertices in figures:
+        points=[polar_xy(region,ra,dec) for ra,dec in vertices if (dec>=90-OBLIQUITY if north else dec<=-90+OBLIQUITY)]
+        if not points:continue
+        x=sum(p[0] for p in points)/len(points)
+        y=sum(p[1] for p in points)/len(points)
+        if any(abs(x-a)<85 and abs(y-b)<20 for a,b in occupied):continue
+        occupied.append((x,y))
+        s.append(f'<text x="{x:.1f}" y="{y:.1f}" text-anchor="middle" fill="#92b8ff" font-size="12" font-weight="600" stroke="#071527" stroke-width="3" paint-order="stroke">{html.escape(name)}</text>')
+    s += [f'<text x="600" y="703" text-anchor="middle" fill="#9bb8cc" font-size="13">Boundary: {90-OBLIQUITY:.2f}° from celestial equator · Star Almanack</text>', '</svg>']
+    output.write_text("\n".join(s)+"\n",encoding="utf-8")
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--year",type=int,default=2026)
@@ -382,16 +458,21 @@ def main():
               "catalog":"bright-stars-2mag.csv",
               "season_ingresses_utc":[x.isoformat()+"Z" for x in starts],
               "season_start_dates":[x.date().isoformat() for x in starts],
-              "projection":"equatorial rectangular RA/declination",
+              "projection":"equatorial rectangular for seasonal views; azimuthal equidistant for polar caps",
               "note":"Seasonal membership is date-based; horizontal RA extent is not forced to match season duration.",
               "views":[]}
     for region,season in views():
         key="-".join(x.lower() for x in (region,season) if x)
         name=f"{key}-{args.year}.svg"
         selected=[r for r in rows if r["band"]==region and (season is None or r["season"]==season)]
-        render((region,season),rows,args.output/name,args.year,starts)
-        segments=overlay_figures(args.output/name,(region,season),figures,args.year,starts)
-        asterism_segments=overlay_asterisms(args.output/name,(region,season),args.year,starts)
+        if season is None:
+            render_polar((region,season),rows,args.output/name,args.year,figures)
+            segments = 0
+            asterism_segments = 0
+        else:
+            render((region,season),rows,args.output/name,args.year,starts)
+            segments=overlay_figures(args.output/name,(region,season),figures,args.year,starts)
+            asterism_segments=overlay_asterisms(args.output/name,(region,season),args.year,starts)
         manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected),"figure_segments":segments,"asterism_segments":asterism_segments})
     (args.output/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n",encoding="utf-8")
     print("Generated",len(manifest["views"]),"regional charts;",len(rows),"catalog stars")
