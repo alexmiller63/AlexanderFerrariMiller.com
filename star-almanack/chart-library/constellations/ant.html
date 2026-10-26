@@ -1,0 +1,13 @@
+---
+layout: null
+---
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{html.escape(figure["name"])} · Constellation Atlas</title><style>body{margin:0;background:#071527;color:#e8f3ff;font:16px system-ui}main{max-width:1200px;margin:auto;padding:1rem}nav{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem}svg{width:100%;height:auto}a{color:#8fd5ff}</style></head><body><main><p><a href="../">← Constellation Atlas</a></p><h1>{html.escape(figure["name"])}</h1><nav aria-label="Chart layers"><label><input type="checkbox" data-atlas-toggle="asterisms" checked> Asterisms</label> <label><input type="checkbox" data-atlas-toggle="boundaries" checked> Boundaries</label> <label><input type="checkbox" data-atlas-toggle="figures" checked> Stick figures</label> <label><input type="checkbox" data-atlas-toggle="names" checked> Named stars</label> <label><input type="checkbox" data-atlas-toggle="stars" checked> Stars</label> <label><input type="checkbox" data-atlas-toggle="catalog" > Catalog objects</label></nav><div data-atlas-chart><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 800" role="img" aria-label="Antlia constellation portrait">
+<rect width="1100" height="800" fill="#071527"/>
+<text x="550.0" y="39" text-anchor="middle" font-size="27" fill="#fff">Antlia · J2000.0</text>
+<g data-atlas-layer="boundaries"><polygon points="240.24,161.03 236.87,544.70 235.92,634.98 863.50,638.97 864.08,496.03 800.09,495.78 800.58,380.43 704.71,379.99 705.00,319.80 577.28,319.09 577.74,238.84 386.33,237.50 386.85,162.26" fill="none" stroke="#8494a8" stroke-width="1.6" stroke-dasharray="5 4"/></g>
+<g data-atlas-layer="figures"><polyline points="805.69,540.06 618.06,357.39 250.58,504.36" fill="none" stroke="#75aaff" stroke-width="2.8" stroke-linejoin="round"/></g>
+<g data-atlas-layer="stars"><circle cx="805.69" cy="540.06" r="2.24" fill="#e8f3ff"/><circle cx="618.06" cy="357.39" r="2.43" fill="#e8f3ff"/><circle cx="250.58" cy="504.36" r="2.29" fill="#e8f3ff"/></g>
+<g data-atlas-layer="names"></g>
+<g data-atlas-layer="asterisms"></g>
+<g data-atlas-layer="catalog"></g>
+</svg></div><p><a href="{abbr.lower()}.svg">Full-resolution SVG</a></p></main><script src="../atlas-toggles.js?v=8134e6a"></script></body></html>
