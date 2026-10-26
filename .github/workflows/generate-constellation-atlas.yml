@@ -9,6 +9,9 @@ on:
       - 'asterism-figure-paths.json'
       - 'asterism-member-coordinates.csv'
       - 'bright-stars-2mag.csv'
+concurrency:
+  group: constellation-atlas-publisher
+  cancel-in-progress: false
 permissions:
   contents: write
 jobs:
@@ -16,6 +19,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -28,5 +34,15 @@ jobs:
           git add star-almanack/chart-library/constellations/
           if ! git diff --cached --quiet; then
             git commit -m "Publish generated Orion constellation portrait"
-            git push
+            for attempt in 1 2 3 4 5; do
+              git fetch origin main
+              git rebase origin/main || { echo 'Rebase conflict; refusing to overwrite changes'; git rebase --abort; exit 1; }
+              if git push origin HEAD:main; then
+                exit 0
+              fi
+              echo "Concurrent update detected (attempt $attempt); retrying"
+              sleep $((attempt * 2))
+            done
+            echo 'Unable to publish after five safe attempts'
+            exit 1
           fi
