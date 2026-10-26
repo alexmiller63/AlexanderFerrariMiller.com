@@ -8,11 +8,11 @@ layout: null
 <body>{% include star-almanack-nav.html %}
 <main class="page-shell"><section class="hero"><p class="eyebrow">Star Almanack</p><h1>Chart Library</h1><p class="tagline">An atlas of the heavens: complete reference collections and selected astronomical artwork.</p></section>
 <p class="note">The 2026 Seasonal Panoramic Atlas contains 14 original SVG sky charts. Open a card for its full-resolution chart. Other collections remain in development.</p>
-<section aria-label="Seasonal Panoramic Atlas"><h2>2026 Seasonal Panoramic Atlas</h2><div class="atlas-grid" id="seasonal-atlas-grid"></div></section>
+
 <section class="library-grid" aria-label="Chart Library collections">
 <article><h2>Constellation Atlas</h2><p>86 of the 88 IAU constellations currently represented, with Serpens Caput and Serpens Cauda on separate charts: 87 views. Mensa and Microscopium remain to be completed.</p></article>
 <article><h2>Asterism Atlas</h2><p>The complete Star Almanack catalog of 28 asterisms, including familiar sky landmarks.</p></article>
-<article><h2>Panoramic Sky Atlas</h2><p>Fourteen published regional views: one Arctic, four Northern, four Tropical, four Southern, and one Antarctic.</p><p>Geographic regions are bounded by the polar circles and the Tropics of Cancer and Capricorn.</p></article>
+<article><h2>Panoramic Sky Atlas</h2><p>Fourteen regional views: Arctic, Northern, Tropical, Southern, and Antarctic.</p><p><a href="panoramic/">Open the panoramic charts →</a></p><p>Geographic regions are bounded by the polar circles and the Tropics of Cancer and Capricorn.</p></article>
 <article><h2>Selected Planet Finders</h2><p>Curated charts of planets among the stars.</p></article>
 <article><h2>Meteor Shower Finders</h2><p>Wide-field radiant charts and their guide constellations.</p></article>
 <article><h2>Eclipse Charts</h2><p>Selected eclipse geometry, timing, and visibility diagrams.</p></article>
@@ -20,23 +20,5 @@ layout: null
 <article><h2>Special Events</h2><p>Selected conjunctions, alignments, and other celestial events.</p></article>
 </section>
 <section><h2>Reading the sky</h2><p>Panoramic charts will show the celestial equator, ecliptic, celestial tropics, poles, horizon, and cardinal directions. Ecliptic labels will distinguish twelve equal 30° tropical zodiac signs from the unequal IAU constellation spans, including Ophiuchus. Reference overlays and Greek, Mixed, and English labels are planned.</p><p>Charts will be generated using the Almanack's established calculations and reused by reference, with permanent identifiers and links back to their observing pages.</p></section>
-<script>
-(function(){
-  const regions=[["Arctic",[""]],["Northern",["Spring","Summer","Autumn","Winter"]],["Tropical",["Spring","Summer","Autumn","Winter"]],["Southern",["Spring","Summer","Autumn","Winter"]],["Antarctic",[""]]];
-  const grid=document.getElementById("seasonal-atlas-grid");
-  for(const [region,seasons] of regions) for(const season of seasons){
-    const name=[region,season].filter(Boolean).join(" ");
-    const filename=[region,season,"2026"].filter(Boolean).join("-").toLowerCase()+".svg";
-    const href="panoramic/"+filename;
-    const card=document.createElement("a");
-    card.className="atlas-card";
-    card.href=href;
-    const preview=document.createElement("img");
-    preview.src=href; preview.alt=name+" celestial chart"; preview.loading="lazy";
-    const title=document.createElement("strong"); title.textContent=name;
-    const detail=document.createElement("span"); detail.textContent="2026 · Full-resolution SVG";
-    card.append(preview,title,detail); grid.append(card);
-  }
-})();
-</script>
+
 </main><div id="almanack-bottom-nav" aria-hidden="true"></div>{% include star-almanack-footer.html %}</body></html>
