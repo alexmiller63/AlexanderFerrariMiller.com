@@ -143,7 +143,7 @@ def render(view, rows, output, year, starts):
         x,y=xy(row["ra_h"],row["dec_deg"])
         r=max(1.4,4.8-row["mag"]*.8)
         s.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{r:.2f}" fill="#e5eefc"/>')
-        if row["mag"]<1.5 and row["name"]:
+        if row["name"]:
             s.append(f'<text x="{x+7:.1f}" y="{y-7:.1f}" fill="#d0e1f3" font-size="12">{html.escape(row["name"])}</text>')
     s += ['<text x="{canvas_width/2}" y="696" text-anchor="middle" fill="#9bb8cc" font-size="13">Gold: ecliptic · Cyan: celestial equator · Star Almanack</text>','</svg>']
     output.write_text("\n".join(s)+"\n",encoding="utf-8")
@@ -216,6 +216,38 @@ def overlay_figures(output, view, figures, year, starts):
     return len(strokes)
 
 
+
+def load_asterisms():
+    paths = json.loads((ROOT/"asterism-figure-paths.json").read_text())["asterisms"]
+    coords = {}
+    with (ROOT/"asterism-member-coordinates.csv").open(newline="",encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            try:
+                coords[(row["asterism"],row["member"])] = (float(row["ra_h"]),float(row["dec_deg"]))
+            except (ValueError,KeyError):
+                pass
+    return paths,coords
+
+
+def overlay_asterisms(output,view,year,starts):
+    paths,coords = load_asterisms()
+    low,high,ra_start,ra_span,left,right,top,bottom,xy = chart_frame(view,year,starts)
+    segments=[]
+    for name,entry in paths.items():
+        for path in entry.get("paths",[]):
+            for u,v in zip(path,path[1:]):
+                a=coords.get((name,u)); b=coords.get((name,v))
+                if not a or not b:continue
+                if abs(a[0]-b[0])>12:continue
+                if not (low<=a[1]<=high and low<=b[1]<=high):continue
+                if view[1] and (any((q[0]-ra_start)%24>ra_span for q in (a,b))):continue
+                x0,y0=xy(*a);x1,y1=xy(*b)
+                segments.append(f'<line x1="{x0:.2f}" y1="{y0:.2f}" x2="{x1:.2f}" y2="{y1:.2f}" stroke="#f6bb62" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>')
+    svg=output.read_text(encoding="utf-8")
+    svg=svg.replace("</svg>","\n".join(segments)+"\n</svg>")
+    output.write_text(svg,encoding="utf-8")
+    return len(segments)
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--year",type=int,default=2026)
@@ -249,7 +281,8 @@ def main():
         selected=[r for r in rows if r["band"]==region and (season is None or r["season"]==season)]
         render((region,season),rows,args.output/name,args.year,starts)
         segments=overlay_figures(args.output/name,(region,season),figures,args.year,starts)
-        manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected),"figure_segments":segments})
+        asterism_segments=overlay_asterisms(args.output/name,(region,season),args.year,starts)
+        manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected),"figure_segments":segments,"asterism_segments":asterism_segments})
     (args.output/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n",encoding="utf-8")
     print("Generated",len(manifest["views"]),"regional charts;",len(rows),"catalog stars")
 
