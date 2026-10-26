@@ -1,0 +1,44 @@
+name: Generate asterism atlas
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  atlas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Generate asterism charts
+        run: |
+          python -m py_compile tools/generate_asterism_atlas.py
+          python tools/generate_asterism_atlas.py --output /tmp/asterism-atlas
+      - name: Validate 28 SVG charts
+        run: |
+          python - <<'PY'
+          import json, pathlib, xml.etree.ElementTree as ET
+          p=pathlib.Path('/tmp/asterism-atlas')
+          data=json.loads((p/'manifest.json').read_text())
+          assert len(data['views'])==28
+          assert len({v['file'] for v in data['views']})==28
+          for v in data['views']:
+              ET.parse(p/v['file'])
+          print('PASS: 28 valid asterism SVGs')
+          PY
+      - name: Publish charts
+        run: |
+          mkdir -p star-almanack/chart-library/asterisms
+          cp /tmp/asterism-atlas/*.svg /tmp/asterism-atlas/manifest.json star-almanack/chart-library/asterisms/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add star-almanack/chart-library/asterisms/
+          if ! git diff --cached --quiet; then
+            git commit -m "Publish 28 asterism charts"
+            git push
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: star-almanack-asterism-atlas
+          path: /tmp/asterism-atlas/
