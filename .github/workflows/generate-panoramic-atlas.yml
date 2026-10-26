@@ -2,11 +2,6 @@ name: Generate seasonal celestial atlas
 
 on:
   workflow_dispatch:
-    inputs:
-      year:
-        description: "Atlas year"
-        required: true
-        default: "2026"
 
 permissions:
   contents: write
@@ -22,7 +17,7 @@ jobs:
       - name: Compile atlas generator
         run: python -m py_compile tools/generate_panoramic_atlas.py
       - name: Generate 14 seasonal charts
-        run: python tools/generate_panoramic_atlas.py --year "${{ inputs.year }}" --output /tmp/seasonal-atlas
+        run: python tools/generate_panoramic_atlas.py --output /tmp/seasonal-atlas
       - name: Validate atlas
         run: |
           python - <<'PY'
@@ -49,7 +44,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add star-almanack/chart-library/panoramic/
           if ! git diff --cached --quiet; then
-            git commit -m "Publish seasonal atlas charts for ${{ inputs.year }}"
+            git commit -m "Publish J2000 reference atlas charts"
             git push
           fi
       - name: Upload atlas charts
