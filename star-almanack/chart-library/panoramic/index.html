@@ -15,7 +15,7 @@ for(const [region,seasons] of views) for(const season of seasons){
  const name=[region,season].filter(Boolean).join(" ");
  const filename=[region,season,"2026"].filter(Boolean).join("-").toLowerCase()+".svg";
  const a=document.createElement("a");a.href=filename;
- const img=document.createElement("img");img.src=filename;img.alt=name+" chart";img.loading="lazy";
+ const img=document.createElement("img");img.src=filename+"?v=20261026";img.alt=name+" chart";img.loading="lazy";
  const title=document.createElement("strong");title.textContent=name;
  const desc=document.createElement("small");desc.textContent="2026 · Full-resolution SVG";
  a.append(img,title,desc);list.append(a);
