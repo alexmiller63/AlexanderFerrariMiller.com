@@ -78,25 +78,45 @@ def band(dec):
 def views():
     return [("Arctic",None)] + [(b,s) for b in ("Northern","Tropical","Southern") for s in SEASONS] + [("Antarctic",None)]
 
+def chart_frame(view, year, starts):
+    region, season = view
+    limits = {"Arctic":(90-OBLIQUITY,90),"Northern":(OBLIQUITY,90-OBLIQUITY),
+              "Tropical":(-OBLIQUITY,OBLIQUITY),
+              "Southern":(-(90-OBLIQUITY),-OBLIQUITY),
+              "Antarctic":(-90,-(90-OBLIQUITY))}
+    low, high = limits[region]
+    if season is None:
+        ra_start, ra_span = 0.0, 24.0
+    else:
+        i = SEASONS.index(season)
+        beginning = starts[i]
+        ending = starts[i+1] if i < 3 else ingress(year+1, 0, 3)
+        ra_start = (math.degrees(solar_ra(beginning))/15 + 9) % 24
+        ra_end = (math.degrees(solar_ra(ending))/15 + 9) % 24
+        ra_span = (ra_end-ra_start) % 24
+    left, top = 76, 92
+    plot_height = 510
+    plot_width = plot_height*ra_span*15*math.cos(math.radians((low+high)/2))/(high-low)
+    right, bottom = left+plot_width, top+plot_height
+    def xy(ra, dec):
+        return left+((ra-ra_start)%24)/ra_span*plot_width, bottom-(dec-low)/(high-low)*plot_height
+    return low, high, ra_start, ra_span, left, right, top, bottom, xy
+
 def render(view, rows, output, year, starts):
     region,season = view
     title = region + (" "+season if season else "") 
     # RA horizontal, declination vertical. Use one continuous 0..24h frame
     # for reproducible positioning; stars outside the region are not plotted.
-    left,right,top,bottom = 76,WIDTH-34,92,HEIGHT-75
-    limits = {"Arctic":(90-OBLIQUITY,90),"Northern":(OBLIQUITY,90-OBLIQUITY),
-              "Tropical":(-OBLIQUITY,OBLIQUITY),
-              "Southern":(-(90-OBLIQUITY),-OBLIQUITY),
-              "Antarctic":(-90,-(90-OBLIQUITY))}
-    low,high = limits[region]
-    def xy(ra,dec):
-        return left+(ra%24)/24*(right-left),bottom-(dec-low)/(high-low)*(bottom-top)
-    s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {WIDTH} {HEIGHT}" role="img" aria-label="{html.escape(title)} celestial chart">',
-         f'<rect width="{WIDTH}" height="{HEIGHT}" fill="#071527"/>',
-         f'<text x="{WIDTH/2}" y="39" text-anchor="middle" fill="white" font-size="27">{html.escape(title)} · {year}</text>',
-         '<text x="600" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Season by 21:00 apparent-solar transit date · RA/declination chart</text>']
-    for hour in range(0,25,2):
-        x=left+hour/24*(right-left)
+    low,high,ra_start,ra_span,left,right,top,bottom,xy = chart_frame(view,year,starts)
+    canvas_width = math.ceil(right+50)
+    s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_width} {HEIGHT}" role="img" aria-label="{html.escape(title)} celestial chart">',
+         f'<rect width="{canvas_width}" height="{HEIGHT}" fill="#071527"/>',
+         f'<text x="{canvas_width/2}" y="39" text-anchor="middle" fill="white" font-size="27">{html.escape(title)} · {year}</text>',
+         '<text x="{canvas_width/2}" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Season by 21:00 apparent-solar transit date · RA/declination chart</text>']
+    for hour in range(25):
+        offset=(hour-ra_start)%24
+        if offset>ra_span:continue
+        x=left+offset/ra_span*(right-left)
         s += [f'<line x1="{x:.1f}" y1="{top}" x2="{x:.1f}" y2="{bottom}" stroke="#28415c"/>',
               f'<text x="{x:.1f}" y="{bottom+23}" text-anchor="middle" fill="#b9d5e6" font-size="13">{hour}h</text>']
     for dec in range(-90,91,10):
@@ -114,17 +134,18 @@ def render(view, rows, output, year, starts):
         ra=math.atan2(math.cos(math.radians(OBLIQUITY))*math.sin(lon),math.cos(lon))%(2*math.pi)
         dec=math.degrees(math.asin(math.sin(math.radians(OBLIQUITY))*math.sin(lon)))
         p=xy(math.degrees(ra)/15,dec) if low<=dec<=high else None
-        if p and prev and abs(p[0]-prev[0])<20:
+        if p and prev and left<=p[0]<=right and left<=prev[0]<=right and abs(p[0]-prev[0])<20:
             s.append(f'<line x1="{prev[0]:.1f}" y1="{prev[1]:.1f}" x2="{p[0]:.1f}" y2="{p[1]:.1f}" stroke="#efc36d" stroke-width="1.6"/>')
         prev=p
     for row in rows:
         if row["band"]!=region or (season and row["season"]!=season):continue
+        if season and (row["ra_h"]-ra_start)%24>ra_span:continue
         x,y=xy(row["ra_h"],row["dec_deg"])
         r=max(1.4,4.8-row["mag"]*.8)
         s.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{r:.2f}" fill="#e5eefc"/>')
         if row["mag"]<1.5 and row["name"]:
             s.append(f'<text x="{x+7:.1f}" y="{y-7:.1f}" fill="#d0e1f3" font-size="12">{html.escape(row["name"])}</text>')
-    s += ['<text x="600" y="696" text-anchor="middle" fill="#9bb8cc" font-size="13">Gold: ecliptic · Cyan: celestial equator · Star Almanack</text>','</svg>']
+    s += ['<text x="{canvas_width/2}" y="696" text-anchor="middle" fill="#9bb8cc" font-size="13">Gold: ecliptic · Cyan: celestial equator · Star Almanack</text>','</svg>']
     output.write_text("\n".join(s)+"\n",encoding="utf-8")
 
 def load_figure_geometry():
@@ -158,8 +179,7 @@ def overlay_figures(output, view, figures, year, starts):
               "Tropical":(-OBLIQUITY,OBLIQUITY),
               "Southern":(-(90-OBLIQUITY),-OBLIQUITY),
               "Antarctic":(-90,-(90-OBLIQUITY))}
-    low, high = limits[region]
-    left,right,top,bottom = 76,WIDTH-34,92,HEIGHT-75
+    low,high,ra_start,ra_span,left,right,top,bottom,xy = chart_frame(view,year,starts)
     # Liang-Barsky clipping in chart coordinates. Only draw segments whose
     # midpoint belongs to the chart's season; preserve unclipped geometry.
     def clip(a,b):
@@ -179,17 +199,18 @@ def overlay_figures(output, view, figures, year, starts):
     for abbr, vertices in figures:
         for (ra0,dec0),(ra1,dec1) in zip(vertices,vertices[1:]):
             if abs(ra1-ra0)>12:continue
+            if season and ((ra0-ra_start)%24>ra_span or (ra1-ra_start)%24>ra_span):continue
             mid_ra=(ra0+ra1)/2
             if season and season_for_date(transit_day(mid_ra,year),starts)!=season:continue
-            a=(left+ra0/24*(right-left),bottom-(dec0-low)/(high-low)*(bottom-top))
-            b=(left+ra1/24*(right-left),bottom-(dec1-low)/(high-low)*(bottom-top))
+            a=xy(ra0,dec0)
+            b=xy(ra1,dec1)
             segment=clip(a,b)
             if segment:
                 (x0,y0),(x1,y1)=segment
                 strokes.append(f'<line x1="{x0:.2f}" y1="{y0:.2f}" x2="{x1:.2f}" y2="{y1:.2f}" stroke="#5c8fe8" stroke-width="1.8" opacity=".85"/>')
     svg=output.read_text(encoding="utf-8")
     # Place lines behind stars but in front of the coordinate grid.
-    marker='<text x="600" y="696"'
+    marker='</svg>'
     svg=svg.replace(marker, "\\n".join(strokes)+"\\n"+marker)
     output.write_text(svg,encoding="utf-8")
     return len(strokes)
