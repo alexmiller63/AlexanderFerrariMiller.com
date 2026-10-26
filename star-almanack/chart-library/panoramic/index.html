@@ -6,7 +6,7 @@ layout: null
 <title>Panoramic Sky Atlas · Star Almanack</title><link rel="stylesheet" href="../../css/star-almanack-nav-20261022.css">
 <style>main{max-width:1100px;margin:auto;padding:1.5rem}.atlas-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.atlas-list a{display:block;padding:1rem;border:1px solid #7290ac;border-radius:.5rem;color:inherit;text-decoration:none;background:#10263b}.atlas-list a:hover{border-color:#69dc94}.atlas-list img{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#071527}.atlas-list strong{display:block;margin-top:.6rem;color:#d9efff}.atlas-list small{color:#b4cbdc}</style></head>
 <body>{% include star-almanack-nav.html %}
-<main class="page-shell"><p><a href="../">← Chart Library</a></p><h1>Panoramic Sky Atlas</h1><p>Fourteen original 2026 seasonal sky charts. Select a chart to open its full-resolution SVG.</p>
+<main class="page-shell"><p><a href="../">← Chart Library</a></p><h1>Panoramic Sky Atlas</h1><p>Fourteen original seasonal sky charts. Select a chart to open its full-resolution SVG.</p>
 <div class="atlas-list" id="atlas-list"></div></main>
 <script>
 const views=[["Arctic",[""]],["Northern",["Spring","Summer","Autumn","Winter"]],["Tropical",["Spring","Summer","Autumn","Winter"]],["Southern",["Spring","Summer","Autumn","Winter"]],["Antarctic",[""]]];
@@ -17,7 +17,7 @@ for(const [region,seasons] of views) for(const season of seasons){
  const a=document.createElement("a");a.href=filename;
  const img=document.createElement("img");img.src=filename+"?v=20261026";img.alt=name+" chart";img.loading="lazy";
  const title=document.createElement("strong");title.textContent=name;
- const desc=document.createElement("small");desc.textContent="2026 · Full-resolution SVG";
+ const desc=document.createElement("small");desc.textContent="Full-resolution SVG";
  a.append(img,title,desc);list.append(a);
 }
 </script>{% include star-almanack-footer.html %}</body></html>
