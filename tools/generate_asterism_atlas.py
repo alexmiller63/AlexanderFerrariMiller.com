@@ -6,6 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
  p=argparse.ArgumentParser();p.add_argument("--output",type=Path,default=ROOT/"star-almanack/chart-library/asterisms");a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
  paths=json.loads((ROOT/"asterism-figure-paths.json").read_text())["asterisms"]
+ figures=json.loads((ROOT/"finder-geometry/martz-macrobert.json").read_text())["constellations"]
  stars=[]
  with (ROOT/"expanded-bayer-stars.csv").open(newline="",encoding="utf-8") as catalog:
   for star in csv.DictReader(catalog):
@@ -48,6 +49,42 @@ def main():
    if 24<x<1176 and 112<y<714:
     rad=max(.75,min(3.8,3.4-.48*mag))
     parts.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{rad:.2f}" fill="#aabed0" opacity=".78"/>')
+  # Draw the established constellation figures beneath the accepted green asterisms.
+  # Clip each segment to the chart window instead of changing its projection.
+  def project(ra,dec):
+   dx=((ra-center+180)%360)-180
+   return (600+(dx-midx)*scale*max(.25,math.cos(math.radians(midy))),
+           370-(dec-midy)*scale)
+  def clip(x1,y1,x2,y2):
+   lo,hi=0.0,1.0
+   for p,q in ((-(x2-x1),x1-24),(x2-x1,1176-x1),
+               (-(y2-y1),y1-112),(y2-y1,714-y1)):
+    if abs(p)<1e-12:
+     if q<0:return None
+    else:
+     t=q/p
+     if p<0:lo=max(lo,t)
+     else:hi=min(hi,t)
+   if lo>hi:return None
+   return (x1+(x2-x1)*lo,y1+(y2-y1)*lo,
+           x1+(x2-x1)*hi,y1+(y2-y1)*hi)
+  for fig in figures.values():
+   if not fig.get("has_figure"):continue
+   visible=[]
+   for route in fig.get("paths",[]):
+    for u,v in zip(route,route[1:]):
+     x1,y1=project(float(u["ra_h"])*15,float(u["dec_deg"]))
+     x2,y2=project(float(v["ra_h"])*15,float(v["dec_deg"]))
+     segment=clip(x1,y1,x2,y2)
+     if segment:
+      a1,b1,a2,b2=segment
+      parts.append(f'<line x1="{a1:.2f}" y1="{b1:.2f}" x2="{a2:.2f}" y2="{b2:.2f}" stroke="#738ca7" stroke-width="1.4" opacity=".68"/>')
+      visible.extend(((a1,b1),(a2,b2)))
+   if visible:
+    lx=sum(v[0] for v in visible)/len(visible)
+    ly=sum(v[1] for v in visible)/len(visible)
+    if 55<lx<1145 and 135<ly<680:
+     parts.append(f'<text x="{lx:.2f}" y="{ly:.2f}" text-anchor="middle" font-size="15" fill="#adc4dd" opacity=".85" paint-order="stroke" stroke="#071527" stroke-width="4">{html.escape(fig["name"])}</text>')
   for path in entry["paths"]:
    for u,v in zip(path,path[1:]):
     x1,y1=xy(u);x2,y2=xy(v)
