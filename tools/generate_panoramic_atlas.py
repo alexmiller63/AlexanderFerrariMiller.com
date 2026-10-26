@@ -168,7 +168,7 @@ def load_figure_geometry():
                 stars[key] = dict(name="", ra_h=ra, dec_deg=dec, mag=mag)
                 vertices.append((ra, dec))
             if len(vertices) > 1:
-                figures.append((abbr, vertices))
+                figures.append((entry.get("name", abbr), vertices))
     return list(stars.values()), figures
 
 
