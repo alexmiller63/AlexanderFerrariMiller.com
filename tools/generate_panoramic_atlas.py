@@ -196,6 +196,7 @@ def overlay_figures(output, view, figures, year, starts):
             if t0>t1:return None
         return ((x0+t0*dx,y0+t0*dy),(x0+t1*dx,y0+t1*dy))
     strokes=[]
+    visible = {}
     for abbr, vertices in figures:
         for (ra0,dec0),(ra1,dec1) in zip(vertices,vertices[1:]):
             if abs(ra1-ra0)>12:continue
@@ -208,6 +209,30 @@ def overlay_figures(output, view, figures, year, starts):
             if segment:
                 (x0,y0),(x1,y1)=segment
                 strokes.append(f'<line x1="{x0:.2f}" y1="{y0:.2f}" x2="{x1:.2f}" y2="{y1:.2f}" stroke="#5c8fe8" stroke-width="1.8" opacity=".85"/>')
+                visible.setdefault(abbr, []).append(((x0+x1)/2, (y0+y1)/2))
+    # Every constellation with visible figure segments receives one label.
+    # Choose an interior segment midpoint; distribute close labels vertically.
+    occupied = []
+    for abbr, points in sorted(visible.items(), key=lambda item: -len(item[1])):
+        center_x = sum(p[0] for p in points)/len(points)
+        center_y = sum(p[1] for p in points)/len(points)
+        candidates = sorted(points, key=lambda p: (p[0]-center_x)**2+(p[1]-center_y)**2)
+        candidates += [(center_x, center_y)]
+        selected = None
+        for px, py in candidates:
+            if all(abs(px-ox)>65 or abs(py-oy)>18 for ox,oy in occupied):
+                selected = (px,py)
+                break
+        if selected is None:
+            selected = candidates[0]
+            for shift in (20,-20,40,-40,60,-60):
+                px,py = selected[0], selected[1]+shift
+                if top+12<=py<=bottom-8 and all(abs(px-ox)>65 or abs(py-oy)>18 for ox,oy in occupied):
+                    selected = (px,py)
+                    break
+        px,py=selected
+        occupied.append(selected)
+        strokes.append(f'<text x="{px:.1f}" y="{py:.1f}" text-anchor="middle" fill="#92b8ff" font-size="13" font-weight="600" stroke="#071527" stroke-width="3" paint-order="stroke">{html.escape(abbr)}</text>')
     svg=output.read_text(encoding="utf-8")
     # Place lines behind stars but in front of the coordinate grid.
     marker='</svg>'
