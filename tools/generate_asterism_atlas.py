@@ -6,6 +6,13 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
  p=argparse.ArgumentParser();p.add_argument("--output",type=Path,default=ROOT/"star-almanack/chart-library/asterisms");a=p.parse_args();a.output.mkdir(parents=True,exist_ok=True)
  paths=json.loads((ROOT/"asterism-figure-paths.json").read_text())["asterisms"]
+ stars=[]
+ with (ROOT/"expanded-bayer-stars.csv").open(newline="",encoding="utf-8") as catalog:
+  for star in csv.DictReader(catalog):
+   try:
+    mag=float(star["mag"])
+    if mag<=5.0: stars.append((float(star["ra_h"])*15,float(star["dec_deg"]),mag,star["proper"] or star["bayer"]))
+   except (ValueError,KeyError): continue
  rows={}
  with (ROOT/"asterism-member-coordinates.csv").open(newline="",encoding="utf-8") as f:
   for r in csv.DictReader(f):
@@ -32,6 +39,15 @@ def main():
   def xy(m):
    x,y,_=coords[m];return 600+(x-midx)*scale*max(.25,math.cos(math.radians(midy))),370-(y-midy)*scale
   parts=['<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="740" viewBox="0 0 1200 740">','<rect width="1200" height="740" fill="#071527"/>',f'<text x="600" y="55" text-anchor="middle" font-size="30" fill="#d9efff">{html.escape(name)}</text>','<text x="600" y="84" text-anchor="middle" font-size="15" fill="#a9c7d9">Star Almanack · J2000.0 · accepted asterism geometry</text>']
+  # Context stars share the exact projection used for accepted asterism geometry.
+  # Keep the original scale and geometry unchanged; only add a background layer.
+  for ra,dec,mag,label in stars:
+   dx=((ra-center+180)%360)-180
+   x=600+(dx-midx)*scale*max(.25,math.cos(math.radians(midy)))
+   y=370-(dec-midy)*scale
+   if 24<x<1176 and 112<y<714:
+    rad=max(.75,min(3.8,3.4-.48*mag))
+    parts.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="{rad:.2f}" fill="#aabed0" opacity=".78"/>')
   for path in entry["paths"]:
    for u,v in zip(path,path[1:]):
     x1,y1=xy(u);x2,y2=xy(v)
