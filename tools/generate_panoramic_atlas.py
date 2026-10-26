@@ -234,7 +234,7 @@ def overlay_asterisms(output, view, year, starts):
     paths, coords = load_asterisms()
     low, high, ra_start, ra_span, left, right, top, bottom, xy = chart_frame(view, year, starts)
     segments = []
-    names = set()
+    label_points = {}
 
     def clip(p0, p1):
         x0, y0 = p0
@@ -291,7 +291,27 @@ def overlay_asterisms(output, view, year, starts):
                         f'x2="{ex:.2f}" y2="{ey:.2f}" '
                         f'stroke="#4fc47b" stroke-width="2" '
                         f'stroke-dasharray="5 4" opacity=".9"/>')
-                    names.add(name)
+                    label_points.setdefault(name, []).append(((sx+ex)/2, (sy+ey)/2))
+    # Label each visible asterism in green, avoiding other asterism labels.
+    occupied = []
+    for name, points in sorted(label_points.items()):
+        display = "Winter Hexagon" if name.startswith("Winter Hexagon") else name
+        width = 7.3*len(display) + 12
+        if width > right-left-8:
+            continue
+        candidates = sorted(points, key=lambda p: abs(p[0]-(left+right)/2)+abs(p[1]-(top+bottom)/2))
+        for px, py in candidates:
+            x = min(max(px-width/2, left+4), right-width-4)
+            y = min(max(py-12, top+18), bottom-8)
+            box = (x-4, y-16, x+width+4, y+5)
+            if any(not (box[2]<q[0] or q[2]<box[0] or box[3]<q[1] or q[3]<box[1]) for q in occupied):
+                continue
+            occupied.append(box)
+            segments.append(f'<text x="{x:.1f}" y="{y:.1f}" fill="#69dc94" '
+                            f'font-size="12" font-weight="600" '
+                            f'paint-order="stroke" stroke="#071527" stroke-width="3">'
+                            f'{html.escape(display)}</text>')
+            break
     svg = output.read_text(encoding="utf-8")
     svg = svg.replace("</svg>", "\n".join(segments)+"\n</svg>")
     output.write_text(svg, encoding="utf-8")
