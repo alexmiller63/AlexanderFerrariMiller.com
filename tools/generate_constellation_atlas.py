@@ -159,6 +159,17 @@ if __name__=="__main__":
     targets=available if args.constellation=="all" else [args.constellation]
     for abbr in targets:
         render(abbr)
-    links="".join(f'<li><a href="{abbr.lower()}.html">{html.escape(geometry[abbr]["name"])}</a></li>' for abbr in targets)
-    (OUT/"index.html").write_text('---\\nlayout: null\\n---\\n<!doctype html><html lang="en"><meta charset="utf-8"><title>Constellation Atlas</title><body><h1>Constellation Atlas</h1><ul>'+links+'</ul><a href="../">Chart Library</a></body></html>\\n',encoding="utf-8")
+    # A single-constellation pilot must not replace the complete atlas index.
+    if args.constellation == "all":
+        links = "".join(
+            f'<li><a href="{abbr.lower()}.html">{html.escape(geometry[abbr]["name"])}</a></li>'
+            for abbr in available
+        )
+        index = ('---\\nlayout: null\\n---\\n'
+                 '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+                 '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                 '<title>Constellation Atlas</title></head><body>'
+                 '<h1>Constellation Atlas</h1><ul>' + links +
+                 '</ul><a href="../">Chart Library</a></body></html>\\n')
+        (OUT / "index.html").write_text(index, encoding="utf-8")
     print(f"Generated {len(targets)} constellation portraits")
