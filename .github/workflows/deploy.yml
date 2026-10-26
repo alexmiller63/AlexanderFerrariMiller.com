@@ -8,6 +8,7 @@ on:
   # Generator commits use GITHUB_TOKEN, so their pushes do not trigger this workflow.
   workflow_run:
     workflows:
+      - Generate asterism atlas
       - Calendar Generator
       - Ephemeris Generator
       - Weekly Planet Finder

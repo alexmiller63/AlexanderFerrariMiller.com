@@ -1,5 +1,10 @@
 name: Generate asterism atlas
 on:
+  push:
+    branches: [main]
+    paths:
+      - tools/generate_asterism_atlas.py
+      - .github/workflows/generate-asterism-atlas.yml
   workflow_dispatch:
 permissions:
   contents: write
