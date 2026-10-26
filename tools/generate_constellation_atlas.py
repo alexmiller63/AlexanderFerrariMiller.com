@@ -82,16 +82,46 @@ def render(abbr="Ori"):
             mx,my=xy(*pts[len(pts)//2])
             overlays.append(f'<text x="{mx+10:.1f}" y="{my+22:.1f}" font-size="15" fill="#69dc94">{html.escape(name)}</text>')
     out.append(group("asterisms",overlays))
-    # Messier objects in Orion's Sword (J2000); visibility controlled by Catalog objects.
-    catalog = [("M42", 5 + 35/60 + 17.3/3600, -(5 + 23/60 + 28/3600)),
-               ("M43", 5 + 35/60 + 31/3600, -(5 + 16/60 + 3/3600))]
-    objects=[]
-    for name,ra,dec in catalog:
-        x,y=xy(ra,dec)
-        objects.append(f'<circle cx="{x:.2f}" cy="{y:.2f}" r="5" fill="none" stroke="#ffcc77" stroke-width="1.8"/>')
-        objects.append(f'<text x="{x+9:.1f}" y="{y-7:.1f}" font-size="13" fill="#ffcc77">{name}</text>')
-    out.append(group("catalog",objects))
-
+    # Catalog-driven layer, deduplicated by NGC identity where available.
+    catalogs = [
+        ("generated/messier-visibility-2026.csv", "id"),
+        ("caldwell-catalog.csv", "caldwell"),
+        ("finest-ngc-catalog.csv", "catalog"),
+    ]
+    entries = {}
+    for filename, label_field in catalogs:
+        with (ROOT / filename).open(newline="") as stream:
+            for row in csv.DictReader(stream):
+                if row.get("con") != abbr:
+                    continue
+                try:
+                    ra, dec = float(row["ra_h"]), float(row["dec_deg"])
+                except (KeyError, ValueError, TypeError):
+                    continue
+                label = row[label_field].strip()
+                ngc = (row.get("ngc") or "").strip().upper()
+                if ngc.isdigit():
+                    ngc = "NGC " + ngc
+                identity = ngc or label.upper()
+                entry = entries.setdefault(identity, {"ra": ra, "dec": dec, "labels": set()})
+                entry["labels"].add(label)
+                if ngc:
+                    entry["labels"].add(ngc)
+    def priority(label):
+        return (0 if label.startswith("M") and label[1:].isdigit() else
+                1 if label.startswith("C") and label[1:].isdigit() else 2, label)
+    objects = []
+    for entry in entries.values():
+        x, y = xy(entry["ra"], entry["dec"])
+        labels = sorted(entry["labels"], key=priority)
+        primary = labels[0]
+        aliases = ", ".join(labels)
+        objects.append(
+            f'<g><title>{html.escape(aliases)}</title>'
+            f'<circle cx="{x:.2f}" cy="{y:.2f}" r="5" fill="none" stroke="#ffcc77" stroke-width="1.8"/>'
+            f'<text x="{x+9:.1f}" y="{y-7:.1f}" font-size="13" fill="#ffcc77">{html.escape(primary)}</text></g>'
+        )
+    out.append(group("catalog", objects))
     out.append('</svg>')
     OUT.mkdir(parents=True,exist_ok=True)
     (OUT/"orion.svg").write_text("\n".join(out)+"\n",encoding="utf-8")
