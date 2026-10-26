@@ -204,7 +204,9 @@ def main():
     starts=boundaries(args.year)
     with (ROOT/"bright-stars-2mag.csv").open(encoding="utf-8",newline="") as f:
         catalog=list(csv.DictReader(f))
-    extra_stars, figures = load_figure_geometry()\n    catalog.extend(extra_stars)\n    rows=[]
+    extra_stars, figures = load_figure_geometry()
+    catalog.extend(extra_stars)
+    rows=[]
     for star in catalog:
         try:
             ra=float(star["ra_h"]); dec=float(star["dec_deg"])
@@ -224,7 +226,8 @@ def main():
         key="-".join(x.lower() for x in (region,season) if x)
         name=f"{key}-{args.year}.svg"
         selected=[r for r in rows if r["band"]==region and (season is None or r["season"]==season)]
-        render((region,season),rows,args.output/name,args.year,starts)\n        segments=overlay_figures(args.output/name,(region,season),figures,args.year,starts)
+        render((region,season),rows,args.output/name,args.year,starts)
+        segments=overlay_figures(args.output/name,(region,season),figures,args.year,starts)
         manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected),"figure_segments":segments})
     (args.output/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n",encoding="utf-8")
     print("Generated",len(manifest["views"]),"regional charts;",len(rows),"catalog stars")
