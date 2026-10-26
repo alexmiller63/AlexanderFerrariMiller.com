@@ -127,6 +127,74 @@ def render(view, rows, output, year, starts):
     s += ['<text x="600" y="696" text-anchor="middle" fill="#9bb8cc" font-size="13">Gold: ecliptic · Cyan: celestial equator · Star Almanack</text>','</svg>']
     output.write_text("\n".join(s)+"\n",encoding="utf-8")
 
+def load_figure_geometry():
+    """Reuse Star Almanack's adopted constellation paths and their catalog stars."""
+    source = ROOT / "finder-geometry/martz-macrobert.json"
+    geometry = json.loads(source.read_text(encoding="utf-8"))
+    figures = []
+    stars = {}
+    for abbr, entry in geometry["constellations"].items():
+        for path in entry.get("paths", []):
+            vertices = []
+            for point in path:
+                try:
+                    ra = float(point["ra_h"])
+                    dec = float(point["dec_deg"])
+                    mag = float(point.get("magnitude") or 6.5)
+                except (KeyError, ValueError, TypeError):
+                    continue
+                key = (round(ra, 5), round(dec, 5))
+                stars[key] = dict(name="", ra_h=ra, dec_deg=dec, mag=mag)
+                vertices.append((ra, dec))
+            if len(vertices) > 1:
+                figures.append((abbr, vertices))
+    return list(stars.values()), figures
+
+
+def overlay_figures(output, view, figures, year, starts):
+    """Insert clipped blue constellation segments in the SVG below the stars."""
+    region, season = view
+    limits = {"Arctic":(90-OBLIQUITY,90),"Northern":(OBLIQUITY,90-OBLIQUITY),
+              "Tropical":(-OBLIQUITY,OBLIQUITY),
+              "Southern":(-(90-OBLIQUITY),-OBLIQUITY),
+              "Antarctic":(-90,-(90-OBLIQUITY))}
+    low, high = limits[region]
+    left,right,top,bottom = 76,WIDTH-34,92,HEIGHT-75
+    # Liang-Barsky clipping in chart coordinates. Only draw segments whose
+    # midpoint belongs to the chart's season; preserve unclipped geometry.
+    def clip(a,b):
+        x0,y0=a; x1,y1=b
+        dx=x1-x0; dy=y1-y0
+        t0,t1=0.,1.
+        for p,q in ((-dx,x0-left),(dx,right-x0),(-dy,y0-top),(dy,bottom-y0)):
+            if abs(p)<1e-12:
+                if q<0:return None
+                continue
+            t=q/p
+            if p<0:t0=max(t0,t)
+            else:t1=min(t1,t)
+            if t0>t1:return None
+        return ((x0+t0*dx,y0+t0*dy),(x0+t1*dx,y0+t1*dy))
+    strokes=[]
+    for abbr, vertices in figures:
+        for (ra0,dec0),(ra1,dec1) in zip(vertices,vertices[1:]):
+            if abs(ra1-ra0)>12:continue
+            mid_ra=(ra0+ra1)/2
+            if season and season_for_date(transit_day(mid_ra,year),starts)!=season:continue
+            a=(left+ra0/24*(right-left),bottom-(dec0-low)/(high-low)*(bottom-top))
+            b=(left+ra1/24*(right-left),bottom-(dec1-low)/(high-low)*(bottom-top))
+            segment=clip(a,b)
+            if segment:
+                (x0,y0),(x1,y1)=segment
+                strokes.append(f'<line x1="{x0:.2f}" y1="{y0:.2f}" x2="{x1:.2f}" y2="{y1:.2f}" stroke="#5c8fe8" stroke-width="1.8" opacity=".85"/>')
+    svg=output.read_text(encoding="utf-8")
+    # Place lines behind stars but in front of the coordinate grid.
+    marker='<text x="600" y="696"'
+    svg=svg.replace(marker, "\\n".join(strokes)+"\\n"+marker)
+    output.write_text(svg,encoding="utf-8")
+    return len(strokes)
+
+
 def main():
     p=argparse.ArgumentParser()
     p.add_argument("--year",type=int,default=2026)
@@ -136,11 +204,11 @@ def main():
     starts=boundaries(args.year)
     with (ROOT/"bright-stars-2mag.csv").open(encoding="utf-8",newline="") as f:
         catalog=list(csv.DictReader(f))
-    rows=[]
+    extra_stars, figures = load_figure_geometry()\n    catalog.extend(extra_stars)\n    rows=[]
     for star in catalog:
         try:
             ra=float(star["ra_h"]); dec=float(star["dec_deg"])
-            mag=float(star["representative_vmax"])
+            mag=float(star.get("representative_vmax",star.get("mag")))
         except (KeyError,ValueError,TypeError):continue
         day=transit_day(ra,args.year)
         rows.append(dict(name=star.get("proper",""),ra_h=ra,dec_deg=dec,mag=mag,
@@ -156,8 +224,8 @@ def main():
         key="-".join(x.lower() for x in (region,season) if x)
         name=f"{key}-{args.year}.svg"
         selected=[r for r in rows if r["band"]==region and (season is None or r["season"]==season)]
-        render((region,season),rows,args.output/name,args.year,starts)
-        manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected)})
+        render((region,season),rows,args.output/name,args.year,starts)\n        segments=overlay_figures(args.output/name,(region,season),figures,args.year,starts)
+        manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected),"figure_segments":segments})
     (args.output/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n",encoding="utf-8")
     print("Generated",len(manifest["views"]),"regional charts;",len(rows),"catalog stars")
 
