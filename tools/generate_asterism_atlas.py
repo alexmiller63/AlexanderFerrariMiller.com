@@ -34,6 +34,16 @@ def segment_hits_box(a, b, box):
     return True
 
 
+def chart_navigation(index, total):
+    """Keep navigation within the page so optional layer settings survive."""
+    previous = (index - 1) % total
+    following = (index + 1) % total
+    return (f'<nav class="chart-nav" aria-label="Asterism navigation">'
+            f'<a href="#view-{previous}" rel="prev">← Previous</a>'
+            f'<span>{index + 1} / {total}</span>'
+            f'<a href="#view-{following}" rel="next">Next →</a></nav>')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, default=ROOT/'star-almanack/chart-library/asterisms')
@@ -322,12 +332,13 @@ def main():
         svg='\n'.join(parts)
         # Unique clip IDs keep inline charts isolated.
         svg=svg.replace('sky-window', f'sky-window-{entry["id"]}').replace('detail-window',f'detail-window-{entry["id"]}')
-        chart_html.append(f'<figure id="view-{len(manifest)}"><h2>{html.escape(name)}</h2>'+svg+'</figure>')
+        navigation = chart_navigation(len(manifest), len(paths))
+        chart_html.append(f'<figure id="view-{len(manifest)}">'+navigation+f'<h2>{html.escape(name)}</h2>'+svg+navigation+'</figure>')
         (output/filename).write_text('\n'.join(parts)+'\n',encoding='utf-8')
         manifest.append({'name':name,'file':filename,'members':len(pts)})
     (output/'manifest.json').write_text(json.dumps({'epoch':'J2000.0','views':manifest},indent=2)+'\n')
     controls='<label><input aria-controls="asterism-charts" id="catalog-toggle" type="checkbox"> Show catalog objects</label> <label><input aria-controls="asterism-charts" id="boundaries-toggle" type="checkbox"> Show constellation boundaries</label>'
-    css='body{background:#071527;color:#d9efff;font:16px system-ui;margin:0}main{padding:20px}a{color:#d9efff}label{display:inline-block;padding:12px}svg{width:100%;height:auto}.catalog-objects,.constellation-boundaries{display:none}body:has(#catalog-toggle:checked) .catalog-objects,body:has(#boundaries-toggle:checked) .constellation-boundaries{display:inline}figure{display:none;margin:0}figure:target{display:block}body:not(:has(figure:target)) #view-0{display:block}.chart-list{display:flex;flex-wrap:wrap;gap:12px;padding:16px 0}'
+    css='body{background:#071527;color:#d9efff;font:16px system-ui;margin:0}main{padding:20px}a{color:#d9efff}label{display:inline-block;padding:12px}svg{width:100%;height:auto}.catalog-objects,.constellation-boundaries{display:none}body:has(#catalog-toggle:checked) .catalog-objects,body:has(#boundaries-toggle:checked) .constellation-boundaries{display:inline}figure{display:none;margin:0}figure:target{display:block}body:not(:has(figure:target)) #view-0{display:block}.chart-nav{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 0}.chart-nav a{display:inline-block;padding:12px;border:1px solid #7290ac;border-radius:5px;text-decoration:none}.chart-list{display:flex;flex-wrap:wrap;gap:12px;padding:16px 0}'
     links=''.join(f'<a href="#view-{i}">{html.escape(v["name"])}</a>' for i,v in enumerate(manifest))
     (output/'index.html').write_text('---\nlayout: null\n---\n<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Asterism Atlas · Star Almanack</title><link rel="stylesheet" href="../../css/star-almanack-nav-20261022.css"><style>'+css+'</style><body>{% include star-almanack-nav.html %}<main id="asterism-charts"><a href="../">← Chart Library</a><h1>Asterism Atlas</h1><p>Green: target asterism · Blue: surrounding constellations · Amber: optional catalog objects · Muted white: optional IAU boundaries · J2000.0</p>'+controls+'<details><summary>Choose an asterism</summary><nav class="chart-list">'+links+'</nav></details>'+''.join(chart_html)+'</main>{% include star-almanack-footer.html %}</body></html>')
     print(f'Generated {len(manifest)} charts in {output}')
