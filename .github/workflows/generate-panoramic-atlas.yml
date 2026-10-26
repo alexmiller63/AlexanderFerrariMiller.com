@@ -52,6 +52,12 @@ jobs:
             git commit -m "Publish seasonal atlas charts for ${{ inputs.year }}"
             git push
           fi
+      - name: Upload atlas charts
+        uses: actions/upload-artifact@v4
+        with:
+          name: star-almanack-seasonal-atlas
+          path: /tmp/seasonal-atlas/
+          if-no-files-found: error
       - name: Verify published SVG paths on GitHub Pages
         env:
           ATLAS_BASE: https://alexanderferrarimiller.com/star-almanack/chart-library/panoramic
@@ -75,14 +81,8 @@ jobs:
               if not failures:
                   print(f"PASS: all {len(names)} SVG charts accessible on published site")
                   break
-              print(f"Attempt {attempt}/12: {len(failures)} failed: " + "; ".join(failures))
+              print(f"Attempt {attempt}/12 at {base}: {len(failures)} failed: " + "; ".join(failures), flush=True)
               if attempt == 12:
-                  raise SystemExit("Published atlas verification failed; inspect Pages deployment and domain configuration")
+                  raise SystemExit("Published atlas verification failed; charts are preserved in the uploaded artifact. Inspect Pages deployment, domain, and HTTP status.")
               time.sleep(30)
           PY
-      - name: Upload atlas charts
-        uses: actions/upload-artifact@v4
-        with:
-          name: star-almanack-seasonal-atlas
-          path: /tmp/seasonal-atlas/
-          if-no-files-found: error
