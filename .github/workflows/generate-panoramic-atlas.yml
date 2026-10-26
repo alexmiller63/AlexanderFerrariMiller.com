@@ -1,0 +1,47 @@
+name: Generate panoramic sky atlas (pilot)
+
+on:
+  workflow_dispatch:
+    inputs:
+      year:
+        description: "Year of March equinox"
+        required: true
+        default: "2026"
+
+permissions:
+  contents: read
+
+jobs:
+  panoramas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile panoramic generator
+        run: python -m py_compile tools/generate_panoramic_atlas.py
+      - name: Generate six March equinox panoramas
+        run: python tools/generate_panoramic_atlas.py --year "${{ inputs.year }}" --output /tmp/panoramic-pilot
+      - name: Validate six SVG files and manifest
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import xml.etree.ElementTree as ET
+          root = pathlib.Path('/tmp/panoramic-pilot')
+          manifest = json.loads((root/'manifest.json').read_text())
+          assert len(manifest['views']) == 6, manifest
+          assert {v['latitude'] for v in manifest['views']} == {-75,-45,-15,15,45,75}
+          for view in manifest['views']:
+              path = root/view['file']
+              assert path.is_file() and path.stat().st_size > 1000, path
+              assert ET.parse(path).getroot().tag.endswith('svg'), path
+          print('PASS: six SVGs parse, six latitudes covered')
+          PY
+      - name: Upload pilot charts for review
+        uses: actions/upload-artifact@v4
+        with:
+          name: panoramic-march-equinox-pilot
+          path: /tmp/panoramic-pilot/
+          if-no-files-found: error
