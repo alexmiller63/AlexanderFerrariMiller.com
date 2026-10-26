@@ -229,23 +229,72 @@ def load_asterisms():
     return paths,coords
 
 
-def overlay_asterisms(output,view,year,starts):
-    paths,coords = load_asterisms()
-    low,high,ra_start,ra_span,left,right,top,bottom,xy = chart_frame(view,year,starts)
-    segments=[]
-    for name,entry in paths.items():
-        for path in entry.get("paths",[]):
-            for u,v in zip(path,path[1:]):
-                a=coords.get((name,u)); b=coords.get((name,v))
-                if not a or not b:continue
-                if abs(a[0]-b[0])>12:continue
-                if not (low<=a[1]<=high and low<=b[1]<=high):continue
-                if view[1] and (any((q[0]-ra_start)%24>ra_span for q in (a,b))):continue
-                x0,y0=xy(*a);x1,y1=xy(*b)
-                segments.append(f'<line x1="{x0:.2f}" y1="{y0:.2f}" x2="{x1:.2f}" y2="{y1:.2f}" stroke="#f6bb62" stroke-width="2" stroke-dasharray="5 4" opacity=".85"/>')
-    svg=output.read_text(encoding="utf-8")
-    svg=svg.replace("</svg>","\n".join(segments)+"\n</svg>")
-    output.write_text(svg,encoding="utf-8")
+def overlay_asterisms(output, view, year, starts):
+    """Draw accepted asterisms in green, clipped to the chart boundaries."""
+    paths, coords = load_asterisms()
+    low, high, ra_start, ra_span, left, right, top, bottom, xy = chart_frame(view, year, starts)
+    segments = []
+    names = set()
+
+    def clip(p0, p1):
+        x0, y0 = p0
+        x1, y1 = p1
+        dx, dy = x1-x0, y1-y0
+        t0, t1 = 0.0, 1.0
+        for p, q in ((-dx, x0-left), (dx, right-x0),
+                     (-dy, y0-top), (dy, bottom-y0)):
+            if abs(p) < 1e-12:
+                if q < 0:
+                    return None
+                continue
+            t = q/p
+            if p < 0:
+                t0 = max(t0, t)
+            else:
+                t1 = min(t1, t)
+            if t0 > t1:
+                return None
+        return ((x0+t0*dx, y0+t0*dy), (x0+t1*dx, y0+t1*dy))
+
+    def point(ra, dec):
+        # Unwrap RA near the chart's starting meridian, preserving segments
+        # that cross the 0h seam or a seasonal edge.
+        offset = (ra-ra_start) % 24
+        return (left + offset/ra_span*(right-left),
+                bottom - (dec-low)/(high-low)*(bottom-top))
+
+    for name, entry in paths.items():
+        for path in entry.get("paths", []):
+            for u, v in zip(path, path[1:]):
+                a = coords.get((name, u))
+                b = coords.get((name, v))
+                if a is None or b is None:
+                    continue
+                x0, y0 = point(*a)
+                x1, y1 = point(*b)
+                # Choose the shortest RA arc, even across 0h.
+                period = (right-left)*24/ra_span
+                if x1-x0 > period/2:
+                    x1 -= period
+                elif x0-x1 > period/2:
+                    x1 += period
+                # Try the adjacent unwrapped copies for charts near the seam.
+                for shift in (-period, 0, period):
+                    clipped = clip((x0+shift, y0), (x1+shift, y1))
+                    if clipped is None:
+                        continue
+                    (sx, sy), (ex, ey) = clipped
+                    if math.hypot(ex-sx, ey-sy) < 0.5:
+                        continue
+                    segments.append(
+                        f'<line x1="{sx:.2f}" y1="{sy:.2f}" '
+                        f'x2="{ex:.2f}" y2="{ey:.2f}" '
+                        f'stroke="#4fc47b" stroke-width="2" '
+                        f'stroke-dasharray="5 4" opacity=".9"/>')
+                    names.add(name)
+    svg = output.read_text(encoding="utf-8")
+    svg = svg.replace("</svg>", "\n".join(segments)+"\n</svg>")
+    output.write_text(svg, encoding="utf-8")
     return len(segments)
 
 def main():
