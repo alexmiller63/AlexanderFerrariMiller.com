@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Star Almanack 14-region seasonal atlas. Deterministic, offline SVG generation.
+"""Star Almanack J2000 reference seasonal atlas. Deterministic, offline SVG generation.
 
 Season membership is assigned by each star's 21:00 local apparent solar-time
 meridian-transit DATE, not by equal right-ascension quadrants.
@@ -111,7 +111,7 @@ def render(view, rows, output, year, starts):
     canvas_width = math.ceil(right+50)
     s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {canvas_width} {HEIGHT}" role="img" aria-label="{html.escape(title)} celestial chart">',
          f'<rect width="{canvas_width}" height="{HEIGHT}" fill="#071527"/>',
-         f'<text x="{canvas_width/2}" y="39" text-anchor="middle" fill="white" font-size="27">{html.escape(title)} · {year}</text>',
+         f'<text x="{canvas_width/2}" y="39" text-anchor="middle" fill="white" font-size="27">{html.escape(title)} · J2000.0</text>',
          f'<text x="{canvas_width/2}" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Season by 21:00 apparent-solar transit date · RA/declination chart</text>']
     for hour in range(25):
         offset=(hour-ra_start)%24
@@ -378,8 +378,8 @@ def render_polar(view, rows, output, year, figures):
     clip_id = "polar-cap"
     s = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-label="{title} polar celestial chart">',
          '<rect width="1200" height="720" fill="#071527"/>',
-         f'<title>{title} polar celestial chart · {year}</title>',
-         f'<text x="600" y="39" text-anchor="middle" fill="white" font-size="27">{title} · {year}</text>',
+         f'<title>{title} polar celestial chart · J2000.0</title>',
+         f'<text x="600" y="39" text-anchor="middle" fill="white" font-size="27">{title} · J2000.0</text>',
          '<text x="600" y="66" text-anchor="middle" fill="#b9d5e6" font-size="15">Azimuthal equidistant polar projection · right ascension / declination</text>',
          f'<defs><clipPath id="{clip_id}"><circle cx="{cx}" cy="{cy}" r="{radius}"/></clipPath></defs>',
          f'<circle cx="{cx}" cy="{cy}" r="{radius}" fill="none" stroke="#9bb8cc" stroke-width="2"/>']
@@ -436,11 +436,12 @@ def render_polar(view, rows, output, year, figures):
 
 def main():
     p=argparse.ArgumentParser()
-    p.add_argument("--year",type=int,default=2026)
+    p.add_argument("--year",type=int,default=2000,help="Deprecated; fixed J2000 reference is always used")
+    reference_year=2000
     p.add_argument("--output",type=Path,default=ROOT/"star-almanack/chart-library/panoramic")
     args=p.parse_args()
     args.output.mkdir(parents=True,exist_ok=True)
-    starts=boundaries(args.year)
+    starts=boundaries(reference_year)  # fixed J2000 reference, independent of build year
     with (ROOT/"bright-stars-2mag.csv").open(encoding="utf-8",newline="") as f:
         catalog=list(csv.DictReader(f))
     extra_stars, figures = load_figure_geometry()
@@ -451,28 +452,28 @@ def main():
             ra=float(star["ra_h"]); dec=float(star["dec_deg"])
             mag=float(star.get("representative_vmax",star.get("mag")))
         except (KeyError,ValueError,TypeError):continue
-        day=transit_day(ra,args.year)
+        day=transit_day(ra,reference_year)
         rows.append(dict(name=star.get("proper",""),ra_h=ra,dec_deg=dec,mag=mag,
                          transit_date=day.isoformat(),band=band(dec),season=season_for_date(day,starts)))
-    manifest={"year":args.year,"model":"season-by-21h-transit-date",
+    manifest={"epoch":"J2000.0","model":"season-by-21h-transit-date",
               "catalog":"bright-stars-2mag.csv",
-              "season_ingresses_utc":[x.isoformat()+"Z" for x in starts],
-              "season_start_dates":[x.date().isoformat() for x in starts],
+              "reference_ingresses_utc":[x.isoformat()+"Z" for x in starts],
+              "reference_season_start_dates":[x.date().isoformat() for x in starts],
               "projection":"equatorial rectangular for seasonal views; azimuthal equidistant for polar caps",
               "note":"Seasonal membership is date-based; horizontal RA extent is not forced to match season duration.",
               "views":[]}
     for region,season in views():
         key="-".join(x.lower() for x in (region,season) if x)
-        name=f"{key}-{args.year}.svg"
+        name=f"{key}.svg"
         selected=[r for r in rows if r["band"]==region and (season is None or r["season"]==season)]
         if season is None:
-            render_polar((region,season),rows,args.output/name,args.year,figures)
+            render_polar((region,season),rows,args.output/name,reference_year,figures)
             segments = 0
             asterism_segments = 0
         else:
-            render((region,season),rows,args.output/name,args.year,starts)
-            segments=overlay_figures(args.output/name,(region,season),figures,args.year,starts)
-            asterism_segments=overlay_asterisms(args.output/name,(region,season),args.year,starts)
+            render((region,season),rows,args.output/name,reference_year,starts)
+            segments=overlay_figures(args.output/name,(region,season),figures,reference_year,starts)
+            asterism_segments=overlay_asterisms(args.output/name,(region,season),reference_year,starts)
         manifest["views"].append({"region":region,"season":season,"file":name,"stars":len(selected),"figure_segments":segments,"asterism_segments":asterism_segments})
     (args.output/"manifest.json").write_text(json.dumps(manifest,indent=2)+"\n",encoding="utf-8")
     print("Generated",len(manifest["views"]),"regional charts;",len(rows),"catalog stars")
