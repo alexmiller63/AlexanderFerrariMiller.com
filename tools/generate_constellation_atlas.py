@@ -86,12 +86,19 @@ def render(abbr="Ori"):
     overlays=[]
     for name,entry in asterisms.items():
         if not any(an == name and xmin <= unwrap(pt[0])*scale_ra <= xmax and ymin <= pt[1] <= ymax for (an,member),pt in coords.items()): continue
+        label_points = []
         for p in entry["paths"]:
             pts=[coords.get((name,member)) for member in p]
             if any(pt is None for pt in pts): continue
             overlays.append(f'<polyline points="{poly(pts)}" fill="none" stroke="#69dc94" stroke-width="3.5"/>')
-            mx,my=xy(*pts[len(pts)//2])
-            overlays.append(f'<text x="{mx+10:.1f}" y="{my+22:.1f}" font-size="15" fill="#69dc94">{html.escape(name)}</text>')
+            label_points.extend(pts)
+        if label_points:
+            mx,my=xy(*label_points[len(label_points)//2])
+            label_width = len(name) * 8.5
+            lx = mx - label_width - 18 if name == "Winter Hexagon" else mx + 10
+            lx = max(12, min(W - label_width - 12, lx))
+            ly = max(60, min(H - 12, my + 22))
+            overlays.append(f'<text x="{lx:.1f}" y="{ly:.1f}" font-size="15" fill="#69dc94">{html.escape(name)}</text>')
     out.append(group("asterisms",overlays))
     # Catalog-driven layer, deduplicated by NGC identity where available.
     catalogs = [
