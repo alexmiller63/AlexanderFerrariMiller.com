@@ -220,7 +220,7 @@
           downloadWrap.hidden = false;
           result.hidden = false;
           progress.finish('Chart generated.', true);
-          status.textContent = 'Planet Finder generated for ' + completedTitle + '. UTC instant: ' + request.instant_utc + '.';
+          status.textContent = 'Planet Finder generated for ' + completedTitle + '.';
         } catch (error) {
           progress.finish('Calculation unsuccessful.');
           status.textContent = error.message;
