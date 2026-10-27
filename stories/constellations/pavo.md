@@ -1,0 +1,37 @@
+---
+constellation: Pav
+name: Pavo
+status: pending
+author: Alexander Ferrari Miller
+hed: "A peacock on the southern map"
+dek: "Voyagers and mapmakers gave this splendid bird a place in the sky, where an ancient cluster adds its own display."
+---
+
+# A peacock on the southern map
+
+*Voyagers and mapmakers gave this splendid bird a place in the sky, where an ancient cluster adds its own display.*
+
+A peacock seems made for a star atlas. The long neck and extravagant tail give an artist plenty to draw, even when the actual lights of the constellation do not reproduce every feather. Pavo brings that spectacular bird to the southern sky.
+
+Its arrival on European celestial maps followed the late-sixteenth-century voyages associated with Pieter Dirkszoon Keyser and Frederick de Houtman. Their observations helped Petrus Plancius and fellow mapmakers construct a group of new southern figures. Pavo appeared on Plancius’ 1598 globe.
+
+The bird has a much older mythological life than the constellation. In Greek tradition, Hera entrusted the transformed Io to the many-eyed guard Argus. Zeus sent Hermes to free her. Hermes put the guard to sleep and killed him, ending his watch.
+
+Hera preserved Argus’ eyes in the tail of her sacred peacock. The story explained the eye-like markings of its plumage, turning the bird’s display into a memorial for a defeated servant.
+
+That tale is a natural companion to Pavo, but it should not be treated as proof that the Dutch mapmakers created the constellation to illustrate it. The constellation’s documented history belongs to early modern ocean travel and celestial mapping. The Greek story explains the bird’s feathers, not securely the motives behind its much later placement on a globe.
+
+Pavo’s brightest star is named Peacock, giving the whole creature a second, English-language presence on the chart. Its most rewarding deep-sky spectacle, however, is a gathering of stars rather than a single light.
+
+NGC 6752, also cataloged as Caldwell 93, is a globular cluster. More than 100,000 stars are held together by gravity in this old stellar system, about 13,000 light-years from Earth. Under a dark sky it can be detected without optical aid, but a telescope reveals far more of its crowded beauty.
+
+Hubble observations of the cluster produced another surprise: the much more distant dwarf galaxy Bedin 1 appeared in the background. A field chosen to study one stellar system contained light from another far behind it.
+
+The peacock’s tail offers an apt invitation to look closely, but the astronomical display has its own depth and history. A figure introduced by voyagers now guides observers toward ancient stars—and toward a galaxy found beyond the field they first intended to examine.
+
+## Sources
+
+- [SkyEye: Pavo](https://www.obliquity.org/skyeye/88const/Pav.html)
+- [Tour the Southern Constellation Pavo, the Peacock - Sky & Telescope](https://skyandtelescope.org/astronomy-news/tour-the-southern-constellation-pavo-the-peacock/)
+- [ARGUS PANOPTES (Argos) - Hundred-Eyed Giant of Greek Mythology](https://www.theoi.com/Gigante/GiganteArgosPanoptes.html)
+- [Caldwell 93 - NASA Science](https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-93/)
