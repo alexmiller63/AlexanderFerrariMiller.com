@@ -1,0 +1,39 @@
+---
+constellation: Peg
+name: Pegasus
+status: pending
+author: Alexander Ferrari Miller
+hed: "The horse that flew beyond its rider"
+dek: "Pegasus carried Bellerophon against a monster, then continued toward heaven when the hero could go no farther."
+---
+
+# The horse that flew beyond its rider
+
+*Pegasus carried Bellerophon against a monster, then continued toward heaven when the hero could go no farther.*
+
+The Great Square of Pegasus looks more like a vast frame than an animal. Four moderately bright stars enclose a broad space, giving observers an easy foothold in the autumn sky. The winged horse emerges when the larger figure is drawn around that frame.
+
+Even the square crosses a modern boundary. Three of its corner stars belong to Pegasus; the fourth, Alpheratz, belongs to Andromeda. The familiar pattern is an asterism, which need not remain inside one official constellation.
+
+Pegasus entered Greek mythology through a far stranger birth than the square suggests. The horse sprang from Medusa when Perseus beheaded her. From there, its most famous adventures belonged to another hero, Bellerophon.
+
+With divine help, Bellerophon mastered the winged horse and rode it against the Chimera. The fire-breathing creature combined terrifying animal forms, making an attack from the air a decisive advantage. Pegasus gave the hero access to a battlefield that ordinary horsemanship could never reach.
+
+Success did not make the partnership limitless. In a later episode, Bellerophon attempted to ascend to the gods’ dwelling. He fell from the horse, while Pegasus continued onward. The creature entered the service of Zeus, associated with the carrying of his thunderbolts.
+
+The separation is the story’s sharpest turn. Horse and rider had shared an extraordinary feat, but only the horse completed the ascent. Bellerophon’s ambition exceeded the place allowed to him. Pegasus’ celestial identity preserves the animal rather than granting its rider the same destination.
+
+The horse is also associated with springs, especially the water said to have appeared where its hoof struck the ground. These traditions helped connect Pegasus with poetic inspiration. The flying animal could consequently suggest both heroic action and the sudden release of an artistic gift.
+
+Within the modern constellation, Messier 15 offers another reason to explore beyond the square. It is an exceptionally dense globular cluster, roughly 34,000 light-years away. Binoculars can disclose its glow; a telescope begins to show the concentrated stellar population.
+
+M15 also contains the planetary nebula Pease 1, an unusual find within a globular cluster. The field holds the light of an old stellar system alongside gas expelled by one of its dying stars.
+
+Begin with the great frame in the sky, then follow the horse outward. Pegasus’ story is about flight, but its memorable moment is the one when the rider falls away and the animal keeps going.
+
+## Sources
+
+- [Andromeda Constellation Map](https://astro4edu.org/resources/diagram/6P43LB422a75/)
+- [PEGASUS (Pegasos) - Winged Horse of Greek Mythology](https://www.theoi.com/Ther/HipposPegasos.html)
+- [BELLEROPHON (Bellerophontes) - Hero of Greek Mythology](https://www.theoi.com/Heros/Bellerophontes.html)
+- [Messier 15 - NASA Science](https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-15/)
