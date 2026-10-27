@@ -355,9 +355,19 @@ class StarAlmanackEphemeris:
         )
         return math.degrees(altitude) > SUN_HORIZON_DEG
 
-    def sample(self, key: str, day: date) -> EphemerisSample:
-        """Return a Monday-00:00-UTC publication snapshot for one body."""
-        t = self.ts.utc(day.year, day.month, day.day, 0, 0, 0)
+    def sample(self, key: str, day: date | datetime) -> EphemerisSample:
+        """Sample one body at a UTC instant; date inputs retain midnight-UTC behavior.
+
+        Datetime inputs must be timezone-aware. Naive local times are rejected
+        rather than silently interpreted as UTC.
+        """
+        if isinstance(day, datetime):
+            if day.tzinfo is None or day.utcoffset() is None:
+                raise ValueError("Ephemeris datetime must be timezone-aware")
+            instant = day.astimezone(timezone.utc)
+            t = self.ts.from_datetime(instant)
+        else:
+            t = self.ts.utc(day.year, day.month, day.day, 0, 0, 0)
         body = self._body(key)
         earth_at = self.earth.at(t)
         sun_at = self.sun.at(t)
