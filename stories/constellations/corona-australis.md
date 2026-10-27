@@ -1,0 +1,55 @@
+---
+constellation: CrA
+name: Corona Australis
+status: pending
+author: Alexander Ferrari Miller
+hed: "A small wreath beneath the Archer"
+dek: "Corona Australis keeps a modest southern curve of stars distinct from Ariadne's northern crown, with dusty stellar nurseries nearby."
+---
+
+# A small wreath beneath the Archer
+
+*Corona Australis keeps a modest southern curve of stars distinct from Ariadne's northern crown, with dusty stellar nurseries nearby.*
+
+## Look below Sagittarius
+
+Corona Australis, the Southern Crown, forms a small curved pattern beside Sagittarius. Compared with the crowded richness of that neighboring region, its outline is quiet and compact.
+
+The traditional object can be understood as a wreath rather than a tall jeweled crown. Historical illustrations sometimes show it as a ring of leaves beneath the Archer's forefeet.
+
+The shape is helpful to an observer, but the name also requires care. This is not Corona Borealis, the Northern Crown associated with Ariadne. Similar names and related shapes do not require identical myths.
+
+## A curve before a settled title
+
+Ancient descriptions recognized a circlet near Sagittarius before its identity as a separate named crown was fully established. The later Southern Crown belongs to the classical constellation tradition, but the history of its recognition is less straightforward than a single inventor and date.
+
+The IAU Working Group on Star Names describes the wreath designation as developing in Roman antiquity. Ian Ridpath's history similarly distinguishes an early anonymous ring from the named constellation that emerged in later accounts.
+
+That distinction is worth retaining. People may recognize a memorable pattern before giving it the stable title that later readers expect.
+
+The image's location also encourages a relationship with Sagittarius. An atlas can show the wreath beside the Archer without supplying a detailed surviving biography of who made it, wore it, or lost it.
+
+## A story should match the evidence
+
+Not every constellation has an equally elaborate or securely attested personal myth. The temptation is to borrow the neighboring figure's story or transplant the better-known explanation of the Northern Crown.
+
+Doing so would make the account more confident at the expense of its history. Corona Australis is interesting partly because the pattern and its place in the atlas are clearer than an exclusive narrative explaining every star.
+
+A useful reading begins with what can be established: a southern curve, ancient recognition, a wreath image, and a continuing relationship to the Archer's neighborhood. Uncertainty is part of the subject, rather than a gap that must be filled by invention.
+
+## Light scattered through dust
+
+Modern images reveal a different kind of structure in the region around R Coronae Australis. Dust clouds share the field with reflection nebulae and young stellar objects.
+
+A reflection nebula shines by scattering light from nearby stars. Its brightness and color therefore depend on both the illuminating source and the intervening material. Dark regions can mark dust blocking a view rather than a true absence of matter.
+
+The star-forming environment is physically related in ways that the broad crown outline is not. Its gas, dust, and young stars belong to an astronomical investigation rather than a remembered human object.
+
+The two views can nevertheless guide the same observer. Find the little wreath to establish the region, then use a more detailed chart to investigate what lies around its young stars. A simple curve in the atlas becomes a reliable entry into a much less simple environment.
+
+## Sources
+
+- [IAU Working Group on Star Names — Corona Australis: ancient recognition and the wreath designation](https://exopla.net/corona-australis)
+- [Ian Ridpath, Star Tales — Corona Australis: the circlet beneath Sagittarius](https://www.ianridpath.com/startales/coronaaustralis.html)
+- [ESO — R Coronae Australis: A Cosmic Watercolour](https://www.hq.eso.org/public/news/eso1027/)
+- [NASA Hubble — Caldwell 68: a reflection nebula illuminated by a young variable star](https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-68/)
