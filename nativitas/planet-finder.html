@@ -32,10 +32,13 @@ layout: null
       <div class="finder-grid">
         <label>Date <input id="finder-date" type="date" min="1900-01-01" max="2099-12-31"></label>
         <label>Local time <input id="finder-time" type="time" value="12:00"></label>
+        <label>City <input id="finder-city" type="text" list="finder-cities" placeholder="Search city, state or country" autocomplete="off"></label>
         <label>Time zone <input id="finder-zone" type="text" value="UTC" list="finder-zones"></label>
         <label>Labels <select id="finder-mode"><option value="greek">Greek / Symbols</option><option value="latin">English</option><option value="mixed">Mixed / Learner</option></select></label>
       </div>
       <datalist id="finder-zones"></datalist>
+      <datalist id="finder-cities"></datalist>
+      <p id="finder-city-help"><small>Select a suggested city to set its time zone automatically, or enter an IANA time zone directly for other locations. The city does not affect geocentric positions.</small></p>
       <p><small>Dates are currently limited to 1900–2099. A time zone determines which UTC instant your local clock represents. Geographic coordinates are unnecessary for a geocentric chart.</small></p>
       <p id="finder-availability" role="status">Ready. The first calculation downloads the astronomy engine and source data (about 60 MB). Complex charts may take several minutes.</p>
       <button id="finder-generate" type="button">Generate Planet Finder</button>
@@ -57,6 +60,6 @@ layout: null
   </main>
   {% include nativitas-footer.html %}
   <script src="{{ '/nativitas/planet-finder-progress.js' | relative_url }}?v=20261027"></script>
-  <script src="{{ '/nativitas/planet-finder-form.js' | relative_url }}?v=20261027"></script>
+  <script src="{{ '/nativitas/planet-finder-form.js' | relative_url }}?v=20261027-city-1"></script>
 </body>
 </html>
