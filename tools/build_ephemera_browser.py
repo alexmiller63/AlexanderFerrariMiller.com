@@ -75,7 +75,12 @@ def build():
             for entry in wheel.namelist():
                 if not entry.endswith('/'):
                     members['site-packages/' + entry] = wheel.read(entry)
-    for name in ['almanack_time.py', 'star_almanack_ephemeris.py', 'generate_observer_ephemera.py', 'generate_natal_chart.py']:
+    for name in ['almanack_time.py', 'star_almanack_ephemeris.py', 'generate_observer_ephemera.py', 'generate_natal_chart.py',
+                 'generate_planet_finder_at_instant.py', 'planet_finder_geometry.py',
+                 'planet_finder_rendering.py', 'planet_finder_search.py',
+                 'planet_finder_search_core.py', 'planet_finder_validation.py',
+                 'planet_finder_makeup.py', 'notation_modes.py',
+                 'populate_ephemeris.py', 'almanack_sections.py', 'almanack_paths.py']:
         members['tools/' + name] = (ROOT / 'tools' / name).read_bytes()
     with zipfile.ZipFile(OUTPUT / 'application.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for name, content in sorted(members.items()):
