@@ -1,0 +1,53 @@
+---
+constellation: Gru
+name: Grus
+status: pending
+author: Alexander Ferrari Miller
+hed: "A crane released from the Fish"
+dek: "Grus gives a long-necked bird its own southern outline, while an older star name remembers the larger constellation to which some of its stars once belonged."
+---
+
+# A crane released from the Fish
+
+*Grus gives a long-necked bird its own southern outline, while an older star name remembers the larger constellation to which some of its stars once belonged.*
+
+## A bird in the southern neighborhood
+
+Grus is the Crane, one of the birds introduced into European southern atlases around the end of the sixteenth century. Its extended neck and body make a different kind of figure from the compact patterns of the Dolphin or Little Horse.
+
+The subject is a real water bird. Historical pictures and names have not always agreed on its exact species, so the general bird image is firmer than a claim about one zoological identification.
+
+Its neighbors help tell the mapmaking story. Piscis Austrinus, the Southern Fish, lies nearby, and stars now assigned to the Crane were formerly associated with that older figure.
+
+## Observations acquire a new shape
+
+The constellation emerged from the southern observations associated with Pieter Dirkszoon Keyser and Frederick de Houtman, and the globes of Petrus Plancius and his collaborators.
+
+Bayer's atlas helped establish the Crane in the early seventeenth century. As with the other figures in this group, its European publication history should not be mistaken for the beginning of knowledge of these stars among southern peoples.
+
+A new constellation could reorganize material already partly known. Grus was not simply a bright bird suddenly noticed in an otherwise blank sky. The figure supplied a new way to join and name selected positions.
+
+## A tail remembers an earlier animal
+
+Gamma Gruis bears the name Aldhanab, associated with the tail. In its historical setting, that tail belonged to the Southern Fish.
+
+This creates a small linguistic fossil. A star can move into a newly defined figure while keeping a name inherited from its earlier placement.
+
+Such cases explain why an atlas sometimes seems inconsistent. The inconsistency may record a change rather than an error. The constellation label describes the current grouping; a particular star name can preserve an older one.
+
+The Crane and Fish therefore make a useful pair to inspect together. Their present separation becomes easier to understand when the earlier relationship is known.
+
+## A figure made useful by context
+
+From sufficiently southern locations, Grus can be followed as a distinctive long-bodied pattern. From many northern sites its low altitude or invisibility limits the view.
+
+Its story is chiefly one of observing and publishing, not an attested ancient Greek adventure. That is enough to give the figure a substantial history: ships gathered measurements, globe makers organized them, atlases circulated the shape, and a surviving tail-name retained evidence of what had changed.
+
+Learning Grus means seeing both the bird currently drawn and the older map still partly carried in its vocabulary.
+
+
+## Sources
+
+- [Get to Know the Southern Constellation Grus, the Crane - Sky & Telescope](https://skyandtelescope.org/astronomy-news/get-to-know-the-southern-constellation-grus-the-crane/)
+- [SkyEye: Grus](https://obliquity.net/skyeye/88const/Gru.html)
+- [Constellations of Grus and Piscis Austrinus](https://www.davidmalin.com/fujii/source/Gru.html)
