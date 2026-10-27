@@ -234,7 +234,7 @@ def build_year(year: int) -> None:
     for (_, _),items in groups:
         first_monday=items[0][1]
         links=''.join(
-            f'<li><a href="W{week:02d}/"><span class="week">ISO week {week:02d} {year}</span><span class="coming">coming soon</span></a></li>'
+            f'<li><a href="W{week:02d}/"><span class="week">ISO week {week:02d} {year}</span></a></li>'
             for week,_ in items
         )
         rendered.append(
