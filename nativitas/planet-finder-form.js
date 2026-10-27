@@ -87,7 +87,7 @@
     worker.onerror = event => {
       stop();
       progress.finish('Calculation unsuccessful.');
-      status.textContent = 'The calculation engine encountered an error; no chart was produced.';
+      status.textContent = 'The calculation worker failed to start or load: ' + (event.message || 'Unknown error') + (event.filename ? ' (' + event.filename.split('/').pop() + ':' + event.lineno + ')' : '') + '. No chart was produced.';
       event.preventDefault();
     };
     worker.postMessage({calculator:'planet-finder', instant_utc:instant, mode:byId('finder-mode').value});
