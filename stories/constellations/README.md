@@ -8,6 +8,6 @@ Each lower-case constellation-name Markdown file contains an IAU abbreviation, n
 
 The alphabetical drafting pass is complete. Each article was saved individually and the progress index updated after each save. A subsequent read of all 88 articles verified unique canonical identities, alphabetical ordering, required metadata, substantive bodies, and source sections.
 
-`status: pending` means the draft still requires its accuracy and plagiarism audits. The completeness check does not attest that a source-overlap review, finder check, publication check, or accuracy audit has passed. Do not publish these drafts until the agreed prepublication audit is complete.
+`status: pending` means the draft still requires its accuracy and plagiarism audits. The completeness check does not attest that a source-overlap review, finder check, publication check, or accuracy audit has passed. On October 27, 2026, Alexander explicitly authorized publication of the current stories as drafts before those audits are complete. Published pages must identify them as drafts; their accuracy and source-overlap review remains pending.
 
 This collection uses constellation identities, not fabricated fixed-object IDs.
