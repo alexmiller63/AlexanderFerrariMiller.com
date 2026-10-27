@@ -1,0 +1,56 @@
+---
+constellation: CMa
+name: Canis Major
+status: pending
+author: Alexander Ferrari Miller
+hed: "The dog with the brightest star"
+dek: "Canis Major follows Orion through the atlas, but Sirius opens a wider history of calendars, impossible hunts, and a hidden stellar companion."
+---
+
+# The dog with the brightest star
+
+*Canis Major follows Orion through the atlas, but Sirius opens a wider history of calendars, impossible hunts, and a hidden stellar companion.*
+
+## A light that needs little introduction
+
+Sirius is the brightest star in the night sky. Around it lies Canis Major, the Greater Dog, a constellation whose conspicuous landmark often becomes familiar before the rest of the animal.
+
+The three stars of Orion's Belt provide a useful neighboring reference. Once the Hunter is recognized, the Dog takes a place in a larger scene. In familiar Greek and Roman atlas imagery, Canis Major is one of Orion's hunting companions.
+
+That arrangement is only one layer of the region's history. The importance of Sirius reaches well beyond the story of a dog.
+
+## A sign at daybreak
+
+In ancient Egypt, the reappearance of Sirius near dawn after a period of invisibility was associated with the season of the Nile's inundation. The river's flood mattered profoundly to agriculture, so the star could function as part of an environmental and calendrical framework.
+
+Sirius was personified in the deity Sopdet, known in Greek as Sothis. The association describes a particular cultural and geographical setting. It should not be turned into a claim that the same rising has one fixed meaning at every latitude or in every historical period.
+
+A familiar star can become important through its timing as much as its brightness. For an observer watching the horizon at dawn, an annual return belongs to the experience of the year.
+
+## The hound that could not lose
+
+Another Greek identification connects the celestial Dog with Laelaps, a hound destined to catch whatever it pursued. Trouble came when it was set against the Teumessian Fox, which was destined never to be caught.
+
+The two promises could not both be fulfilled in an ordinary chase. No increase in speed could resolve the contradiction. In the tradition preserved by ancient writers, divine intervention turns the animals to stone.
+
+Accounts vary in the transfer of the remarkable hound between owners and in the celestial associations that follow. The important feature of this story is the collision of two incompatible destinies. Canis Major can therefore recall not just successful hunting but the impossibility of deciding a particular hunt by pursuit alone.
+
+That is a different story from Orion's household of hunting dogs. Both have been attached to the constellation; they need not be combined.
+
+## A companion inferred before it was seen
+
+Sirius itself provided a later detective story. Friedrich Wilhelm Bessel found irregularities in its motion and inferred the gravitational influence of an unseen companion. Alvan Graham Clark observed that companion in 1862 while testing a large telescope.
+
+The faint companion, Sirius B, is a white dwarf: a compact stellar remnant. Its difficulty was not simply faintness in isolation, but faintness beside the glare of Sirius A.
+
+The discovery separates what the unaided eye sees from what a stellar system contains. One brilliant point can conceal two very different objects.
+
+For an observer, the Dog is thus both a straightforward landmark and an invitation to look beyond first impressions. The animal belongs to a remembered sky picture; the calendar belongs to a historical community's watching; the white dwarf belongs to a physical relationship established by measurement. Their stories meet at Sirius without becoming the same explanation.
+
+## Sources
+
+- [Chandra X-ray Observatory — Canis Major: Orion, Sirius, and Laelaps](https://www.chandra.cfa.harvard.edu/photo/constellations/canismajor.html)
+- [Smithsonian National Museum of African Art — African Cosmos: Sopdet and Sirius](https://africa.si.edu/exhibitions/african-cosmos-stellar-arts)
+- [Theoi — Laelaps: classical accounts of the hound and the fox](https://www.theoi.com/Ther/KuonLailaps.html)
+- [American Astronomical Society — January 2024 astronomical history: the discovery of Sirius B](https://aas.org/posts/news/2024/01/month-astronomical-history-january-2024)
+- [NASA Astronomy Picture of the Day — X-Rays from Sirius B](https://science.nasa.gov/image-article/apod-2000-october-06-x-rays-from-sirius-b/)
