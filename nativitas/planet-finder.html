@@ -1,0 +1,60 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Planet Finder | Nativitas</title>
+  <link rel="stylesheet" href="{{ '/nativitas/nativitas.css' | relative_url }}">
+  <style>
+    .finder-panel{max-width:780px;margin:2rem 0;padding:1.5rem;background:#1a2940;border:1px solid #39506d;border-radius:14px}
+    .finder-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem}
+    .finder-grid label{display:grid;gap:.4rem}
+    .finder-grid input,.finder-grid select{padding:.7rem;border-radius:6px;max-width:100%;font:inherit}
+    .finder-progress{margin-top:1.5rem;padding:1rem;border:1px solid #657b99;border-radius:8px}
+    .finder-progress progress{width:100%;height:1.25rem;accent-color:#f0c987}
+    .finder-progress button{padding:.6rem 1.2rem}
+    .finder-caveat{border-left:3px solid #f0c987;padding-left:1rem;margin-top:1.5rem}
+  </style>
+</head>
+<body>
+  {% include nativitas-nav.html %}
+  <main class="page-shell">
+    <section class="hero">
+      <p class="eyebrow">Nativitas · Astronomy tools</p>
+      <h1>Planet Finder — Date &amp; Time</h1>
+      <p class="tagline">Geocentric planetary longitudes, without houses or aspects.</p>
+    </section>
+    <section class="finder-panel">
+      <h2>Choose an instant</h2>
+      <div class="finder-grid">
+        <label>Date <input id="finder-date" type="date" min="1900-01-01" max="2099-12-31"></label>
+        <label>Local time <input id="finder-time" type="time" value="12:00"></label>
+        <label>Time zone <input id="finder-zone" type="text" value="UTC" list="finder-zones"></label>
+        <label>Labels <select id="finder-mode"><option value="greek">Greek / Symbols</option><option value="latin">English</option><option value="mixed">Mixed / Learner</option></select></label>
+      </div>
+      <datalist id="finder-zones"></datalist>
+      <p><small>Dates are currently limited to 1900–2099. A time zone determines which UTC instant your local clock represents. Geographic coordinates are unnecessary for a geocentric chart.</small></p>
+      <p id="finder-availability" role="status">The arbitrary-date calculation service is being connected. The form is not yet able to submit calculations.</p>
+      <button id="finder-generate" type="button" disabled>Generate Planet Finder (not yet available)</button>
+      <section id="finder-progress" class="finder-progress" hidden aria-live="polite" aria-label="Planet Finder calculation progress">
+        <h2>Calculating your chart</h2>
+        <progress id="finder-progress-bar" aria-label="Calculation in progress"></progress>
+        <p id="finder-stage">Preparing calculation…</p>
+        <p>Elapsed time: <output id="finder-elapsed">00:00</output></p>
+        <p id="finder-long-running" hidden>Still working — complex planetary alignments can take several minutes.</p>
+        <button type="button" id="finder-cancel">Cancel</button>
+      </section>
+      <section class="finder-caveat" aria-label="Known limitation">
+        <strong>Known limitation</strong>
+        <p>Certain planetary configurations are difficult to render because the labels are relatively large and must not overlap. Some dates and times may therefore fail to produce a chart. A failed layout will never be presented as a complete chart.</p>
+      </section>
+      <p><a href="{{ '/almanack/2026/W40/planet-finder/' | relative_url }}">View an existing weekly Planet Finder</a></p>
+    </section>
+  </main>
+  {% include nativitas-footer.html %}
+  <script src="{{ '/nativitas/planet-finder-progress.js' | relative_url }}"></script>
+</body>
+</html>
