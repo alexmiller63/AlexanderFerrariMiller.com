@@ -14,7 +14,7 @@ async function initialize() {
   importScripts(assets + 'pyodide/pyodide.js');
   const python = await loadPyodide({indexURL: assets + 'pyodide/',
     stdout: message => {
-      if (message.startsWith('COMPUTED ')) {
+      if (message.startsWith('COMPUTED ') && !message.startsWith('COMPUTED positions')) {
         completed += 1;
         const body = message.split(' ')[1];
         const name = body[0].toUpperCase() + body.slice(1);
@@ -25,7 +25,7 @@ async function initialize() {
   progress('Loading the local astronomy data…');
   python.FS.mkdirTree('/app/.cache/skyfield');
   for (const name of ['application.zip', 'de440s.bsp', 'ceres_1900_2100.bsp']) {
-    const data = await bytes(name === 'application.zip' ? 'application.zip?v=20261023-natal-1' : name);
+    const data = await bytes(name === 'application.zip' ? 'application.zip?v=20261027-planet-finder-1' : name);
     python.FS.writeFile(name.endsWith('.bsp') ? '/app/.cache/skyfield/' + name : '/app/' + name, data);
   }
   await python.runPythonAsync(`
@@ -47,6 +47,19 @@ self.onmessage = async event => {
     completed = 0;
     progress(event.data.calculator === 'natal' ? 'Calculating natal positions and houses — 0 of 11 bodies.' : 'Calculating positions and local-day rise/set times — 0 of 11 bodies.', 0);
     python.globals.set('request_json', JSON.stringify(event.data));
+    if (event.data.calculator === 'planet-finder') {
+      progress('Calculating all 11 geocentric longitudes…');
+      python.globals.set('request_json', JSON.stringify(event.data));
+      const svg = await python.runPythonAsync(`
+request = json.loads(request_json)
+from generate_planet_finder_at_instant import generate, parse_instant
+instant = parse_instant(request['instant_utc'])
+print('COMPUTED positions')
+generate(instant, request['mode'], engine)
+`);
+      self.postMessage({type: 'result', data: {svg, instant_utc: event.data.instant_utc}});
+      return;
+    }
     const result = await python.runPythonAsync(`
 request = json.loads(request_json)
 instant = datetime.fromisoformat(request['instant_utc'].replace('Z', '+00:00'))
