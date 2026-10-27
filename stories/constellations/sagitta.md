@@ -1,0 +1,39 @@
+---
+constellation: Sge
+name: Sagitta
+status: pending
+author: Alexander Ferrari Miller
+hed: "An arrow with more than one owner"
+dek: "Tiny Sagitta has been assigned to heroes and gods, each giving the same short shaft a different purpose."
+---
+
+# An arrow with more than one owner
+
+*Tiny Sagitta has been assigned to heroes and gods, each giving the same short shaft a different purpose.*
+
+Sagitta asks for very little imagination at first. Its compact pattern suggests an arrow: a short shaft with a point and a divided end. The uncertainty begins when someone asks who fired it.
+
+One tradition gave it to Heracles. Prometheus had brought fire to humanity and suffered Zeus’ punishment for his defiance. Bound in place, he endured an eagle feeding on his liver, which regenerated so that the torment could return.
+
+Heracles killed the eagle with an arrow and released the sufferer from that recurring assault. In this reading, Sagitta preserves an act of rescue. The weapon is remembered for ending an ordeal rather than beginning one.
+
+A different interpretation assigned the arrow to Apollo. When Zeus killed Apollo’s son Asclepius with a thunderbolt, the grieving god retaliated against the Cyclopes who had made the weapon. The celestial arrow became a memorial of that vengeance.
+
+The difference is substantial. One arrow frees a captive; the other strikes the makers of an instrument of death. The same small figure can carry relief or anger, depending on the story placed around it.
+
+These are competing identifications. Sagitta does not have to be the very same arrow passing from one adventure to another. Ancient explanations often began with an established image and offered different reasons for its presence in the sky.
+
+Nor should the Arrow be confused with Sagittarius, the Archer. The names share an idea, but they identify separate constellations. Sagitta occupies a small northern field near Aquila and within the wider neighborhood of the Summer Triangle.
+
+It also contains Messier 71, a cluster whose classification was once disputed. Its loose appearance made it resemble a rich open cluster, but studies established it as a comparatively sparse globular cluster. Its stars are old, and gravity binds them into a system much larger than the few points forming the arrow.
+
+About 13,000 light-years away, M71 can appear as a dim patch through binoculars. A telescope and a good sky reveal more of the population that a photograph renders as a crowded scattering of lights.
+
+Sagitta’s outline is brief enough to learn quickly. Its meanings take longer. A tiny mark in the Milky Way can recall the ending of Prometheus’ suffering, Apollo’s grief, or simply the long habit of turning a handful of stars into an object people know how to use.
+
+## Sources
+
+- [PROMETHEUS - Greek Titan God of Forethought, Creator of Mankind](https://www.theoi.com/Titan/TitanPrometheus.html)
+- [CYCLOPES (Kyklopes) - One-Eyed Thunder & Lightning Giants of Greek Mythology](https://www.theoi.com/Titan/Kyklopes.html)
+- [Hawaiian Astronomical Society Deepsky Atlas - Sagitta](https://hawastsoc.org/deepsky/sge/)
+- [Messier 71 - NASA Science](https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-71/)
