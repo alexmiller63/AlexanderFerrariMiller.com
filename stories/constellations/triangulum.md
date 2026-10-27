@@ -1,0 +1,36 @@
+---
+constellation: Tri
+name: Triangulum
+status: pending
+author: Alexander Ferrari Miller
+hed: "Three corners, many meanings"
+dek: "Triangulum’s simple shape has represented a letter, a landscape and a small sign beneath Andromeda."
+---
+
+# Three corners, many meanings
+
+*Triangulum’s simple shape has represented a letter, a landscape and a small sign beneath Andromeda.*
+
+Triangulum is one of the few constellations whose name makes almost no demand on imagination. A narrow triangle lies beneath Andromeda. There are no wings to supply or limbs to extend: three corners are enough.
+
+The simplicity did not prevent ancient writers from finding several meanings in it. Greek tradition called it both a triangle and Deltoton, after the capital letter delta. The same shape could therefore be a geometrical figure or a written sign.
+
+One explanation connected that letter with *Dios*, a form of the name Zeus. In the account, the heavenly triangle served as a kind of inscription associating the sky with the god. An abstract mark could be as religiously meaningful as a portrait of a deity.
+
+Another interpretation saw the Nile Delta, or the triangular outline of Egypt shaped by the river. The constellation became a small piece of terrestrial geography transferred to the heavens. The letter and the landscape were alternative readings of the figure, rather than episodes in one continuous myth.
+
+That variety is a reminder that celestial storytelling did not always require a character. A shape could recall a place, signify a name or simply guide attention to the neighboring stars. Triangulum’s spare outline made it open to several such uses.
+
+Within its modern boundaries lies Messier 33, the Triangulum Galaxy. It is a spiral system about three million light-years away and one of the major members of the Local Group, along with the Milky Way and Andromeda.
+
+M33 can be challenging to see despite its considerable total brightness, because its light is spread over a broad area. Dark skies and a wide field matter. A successful binocular view may offer a diffuse glow rather than the detailed spiral structure familiar from observatory photographs.
+
+Hubble’s mosaic reveals millions of stars, clusters and regions of star formation. Among the galaxy’s notable features is NGC 604, an enormous stellar nursery. The little triangle consequently supplies an address for a system far beyond anything its foreground stars suggest.
+
+There is a satisfying economy to the constellation. Its outline remains easy to describe even as its meanings multiply. Learn the three corners, then allow the figure to become a letter, a river-shaped land or a guide to a neighboring galaxy. The same small pattern can support them all.
+
+## Sources
+
+- [IAU: Triangulum – exopla.net](https://exopla.net/triangulum/)
+- [Triangulum - All Skies Encyclopaedia](https://ase.exopla.net/index.php/Triangulum)
+- [Messier 33 (The Triangulum Galaxy) - NASA Science](https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-messier-catalog/messier-33/)
