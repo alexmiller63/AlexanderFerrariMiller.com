@@ -1,0 +1,35 @@
+---
+constellation: Lyn
+name: Lynx
+status: pending
+author: Alexander Ferrari Miller
+hed: "A challenge for sharp eyes"
+dek: "Hevelius gave a faint northern constellation a name that asks observers to look more closely."
+---
+
+# A challenge for sharp eyes
+
+*Hevelius gave a faint northern constellation a name that asks observers to look more closely.*
+
+Lynx is a constellation with a challenge built into its name. Johannes Hevelius introduced it in the seventeenth century, saying that its faint stars called for the keen sight of a lynx. The animal was an invitation to the observer as much as a picture in the sky.
+
+The territory stretches between the more recognizable regions of Ursa Major and Auriga. In a city sky, much of it can vanish. Under darker conditions, the scattered points begin to connect. Even then, a convincing feline may require more imagination than the name first promises.
+
+Hevelius’ choice belongs to a period when European astronomers were adding figures between the inherited classical constellations. His animal gave a name to stars that the familiar pictures had left less conspicuously organized. Lynx appeared in his posthumous atlas of 1690 and eventually became one of the modern official constellations.
+
+There is something appealing about a mapmaker acknowledging the difficulty of his own figure. Instead of giving it a heroic pedigree, the name makes an observation about seeing. Learning Lynx means noticing the conditions under which the sky becomes richer: a transparent night, little moonlight, and time for eyes to adapt to darkness.
+
+Within its borders lies a much more demanding target, the globular cluster NGC 2419, also called Caldwell 25. William Herschel discovered it on the last day of 1788. It is so distant that even though it is intrinsically luminous, an amateur telescope generally shows a faint glow rather than an easily resolved swarm of stars.
+
+The cluster is roughly 300,000 light-years from Earth. Its distance helped earn it the nickname Intergalactic Wanderer. That evocative title should not be read as a precise statement that it is unattached to the Milky Way; it describes the sense of remoteness that made the object remarkable.
+
+Hubble observations have identified different populations of red giant stars in the cluster, including stars with unusually high helium abundances. Its history is consequently more complicated than the simple picture of one uniform group born together might suggest.
+
+A naked-eye search for Lynx and a telescopic search for NGC 2419 are very different tasks. Both reward patience, but neither requires pretending that all observers will see the same thing from every location. Hevelius’ joke remains useful: a faint constellation teaches us something about the sky, and about the circumstances in which we look at it.
+
+## Sources
+
+- [IAU: Lynx – exopla.net](https://exopla.net/lynx)
+- [Chandra :: Photo Album :: Constellation Lynx](https://chandra.cfa.harvard.edu/photo/constellations/lynx.html)
+- [Constellation of Lynx](https://www.davidmalin.com/fujii/source/Lyn.html)
+- [Caldwell 25 - NASA Science](https://science.nasa.gov/mission/hubble/science/explore-the-night-sky/hubble-caldwell-catalog/caldwell-25/)
