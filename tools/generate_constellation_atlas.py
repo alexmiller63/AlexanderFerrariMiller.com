@@ -7,6 +7,8 @@ import json
 import math
 from pathlib import Path
 
+from constellation_cards import card, document, generate_collection
+
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "star-almanack/chart-library/constellations"
 W, H = 1100, 800
@@ -26,9 +28,21 @@ def boundary(abbr):
         points.append((h + m/60 + s/3600, float(dec)))
     return points
 
+def portrait_figures():
+    figures = json.loads((ROOT/"finder-geometry/martz-macrobert.json").read_text())["constellations"]
+    serpent = figures.pop("Ser")
+    # Component paths carry identities; resolved coordinates live in the parent paths.
+    coordinates = {(v["catalog"], v["id"]): v for path in serpent["paths"] for v in path}
+    for index, component in enumerate(serpent["components"], 1):
+        figures[f"Ser{index}"] = {
+            "name": "Serpens " + component["name"],
+            "paths": [[coordinates[(v["catalog"], v["id"])] for v in path] for path in component["paths"]],
+        }
+    return {key: value for key, value in figures.items() if key not in {"Men", "Mic"}}
+
+
 def render(abbr="Ori"):
-    geometry = json.loads((ROOT/"finder-geometry/martz-macrobert.json").read_text())
-    figure = geometry["constellations"][abbr]
+    figure = portrait_figures()[abbr]
     border = boundary(abbr)
     paths = [[(float(v["ra_h"]),float(v["dec_deg"]),float(v.get("magnitude") or 6)) for v in p]
              for p in figure["paths"]]
@@ -63,7 +77,7 @@ def render(abbr="Ori"):
         for ra,dec,mag in p:
             stars[(round(ra,5),round(dec,5))] = (ra,dec,mag)
     with (ROOT/"bright-stars-2mag.csv").open(newline="") as f:
-        bright = [r for r in csv.DictReader(f) if r["con"]==abbr]
+        bright = [r for r in csv.DictReader(f) if r["con"] == ("Ser" if abbr.startswith("Ser") else abbr) and (not abbr.startswith("Ser") or xmin <= unwrap(float(r["ra_h"]))*scale_ra <= xmax and ymin <= float(r["dec_deg"]) <= ymax)]
     for r in bright:
         ra,dec = float(r["ra_h"]),float(r["dec_deg"])
         stars[(round(ra,5),round(dec,5))] = (ra,dec,float(r["representative_vmax"]))
@@ -110,11 +124,13 @@ def render(abbr="Ori"):
     for filename, label_field in catalogs:
         with (ROOT / filename).open(newline="") as stream:
             for row in csv.DictReader(stream):
-                if row.get("con") != abbr:
+                if row.get("con") != ("Ser" if abbr.startswith("Ser") else abbr):
                     continue
                 try:
                     ra, dec = float(row["ra_h"]), float(row["dec_deg"])
                 except (KeyError, ValueError, TypeError):
+                    continue
+                if abbr.startswith("Ser") and not (xmin <= unwrap(ra)*scale_ra <= xmax and ymin <= dec <= ymax):
                     continue
                 label = row[label_field].strip()
                 ngc = (row.get("ngc") or "").strip().upper()
@@ -149,11 +165,13 @@ def render(abbr="Ori"):
               ("figures","Stick figures",True),("names","Named stars",True),
               ("stars","Stars",True),("catalog","Catalog objects",False)]
     toggles=" ".join(f'<label><input type="checkbox" data-atlas-toggle="{key}" {"checked" if checked else ""}> {label}</label>' for key,label,checked in controls)
-    page=('---\nlayout: null\n---\n<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-          f'<title>{html.escape(figure["name"])} · Constellation Atlas</title><style>body{{margin:0;background:#071527;color:#e8f3ff;font:16px system-ui}}main{{max-width:1200px;margin:auto;padding:1rem}}nav{{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem}}svg{{width:100%;height:auto}}a{{color:#8fd5ff}}</style></head><body>'
-          f'<main><p><a href="../">← Constellation Atlas</a></p><h1>{html.escape(figure["name"])}</h1><nav aria-label="Chart layers">'+toggles+'</nav>'
-          '<div data-atlas-chart>'+svg+f'</div><p><a href="{abbr.lower()}.svg">Full-resolution SVG</a></p></main>'
-          '<script src="../atlas-toggles.js?v=8134e6a"></script></body></html>')
+    subject = "Ser" if abbr.startswith("Ser") else abbr
+    editorial = card(subject, [], collection="../../constellations/", show_portraits=False)
+    page = document(figure["name"] + " · Constellation Atlas",
+        '<p><a href="./">← Constellation Atlas</a></p>' + editorial +
+        '<nav aria-label="Chart layers">' + toggles + '</nav><div data-atlas-chart>' + svg +
+        f'</div><p><a href="{abbr.lower()}.svg">Full-resolution SVG</a></p>' +
+        '<script src="../atlas-toggles.js?v=8134e6a"></script>')
     (OUT/(abbr.lower()+".html")).write_text(page,encoding="utf-8")
     print(f"Generated {figure['name']} portrait")
 
@@ -161,24 +179,39 @@ if __name__=="__main__":
     parser=argparse.ArgumentParser()
     parser.add_argument("--constellation",default="all",help="IAU abbreviation or all")
     args=parser.parse_args()
-    geometry=json.loads((ROOT/"finder-geometry/martz-macrobert.json").read_text())["constellations"]
+    geometry=portrait_figures()
     available=[k for k in sorted(geometry) if (ROOT/"reference-data/iau-constellation-boundaries"/(k.lower()+".txt")).exists()]
     targets=available if args.constellation=="all" else [args.constellation]
     for abbr in targets:
         render(abbr)
     # A single-constellation pilot must not replace the complete atlas index.
     if args.constellation == "all":
-        links = "".join(
-            f'<li><a href="{abbr.lower()}.html">{html.escape(geometry[abbr]["name"])}</a></li>'
-            for abbr in available
-        )
-        index = ('---\nlayout: null\n---\n'
-                 '<!doctype html><html lang="en"><head><meta charset="utf-8">'
-                 '<meta name="viewport" content="width=device-width,initial-scale=1">'
-                 '<title>Constellation Atlas</title></head><body>'
-                 '<h1>Constellation Atlas</h1><ul>' + links +
-                 '</ul><a href="../">Chart Library</a></body></html>\n')
+        portraits = [(key, geometry[key]["name"]) for key in available]
+        links = ''.join(card("Ser" if key.startswith("Ser") else key,
+                             [(key, name)], collection="../../constellations/").replace('id="ser"', f'id="{key.lower()}"')
+                        for key, name in portraits)
+        index = document("Constellation Atlas", '<p><a href="../">Chart Library</a> · '
+            '<a href="../../constellations/">All 88 constellations</a></p>'
+            '<p>87 stick-figure portraits of 86 constellations, with separate views of Serpens Caput and Cauda. '
+            'Mensa and Microscopium have no adopted stick figures.</p><div class="card-grid">' + links + '</div>')
         (OUT / "index.html").write_text(index, encoding="utf-8")
+        generate_collection(portraits)
+        library = OUT.parent / "index.html"
+        library_text = library.read_text()
+        library_text = library_text.replace(
+            "86 of the 88 IAU constellations currently represented, with Serpens Caput and Serpens Cauda on separate charts: 87 views. Mensa and Microscopium remain to be completed.",
+            "87 portraits of 86 constellations, with separate charts for Serpens Caput and Serpens Cauda. Mensa and Microscopium have no adopted stick figures.")
+        if 'href="../constellations/"' not in library_text:
+            library_text = library_text.replace('<section class="library-grid" aria-label="Chart Library collections">',
+                '<section class="library-grid" aria-label="Chart Library collections">\n'
+                '<article><h2><a href="../constellations/">Constellations</a></h2>'
+                '<p>Individual Heds and Deks for all 88 constellations, with links to their portraits.</p></article>')
+        library.write_text(library_text)
+
+        # Retire the two formerly generated empty portraits.
+        for excluded in ("men", "mic"):
+            for extension in (".html", ".svg"):
+                (OUT / (excluded + extension)).unlink(missing_ok=True)
     if args.constellation == "all":
         if len(targets) != 87:
             raise RuntimeError(f"Expected 87 constellation portraits, generated {len(targets)}")

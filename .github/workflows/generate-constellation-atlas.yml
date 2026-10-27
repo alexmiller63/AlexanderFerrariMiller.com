@@ -1,9 +1,11 @@
-name: Generate Constellation Atlas pilot
+name: Generate Constellation Atlas
 on:
   workflow_dispatch:
   push:
     paths:
       - 'tools/generate_constellation_atlas.py'
+      - 'tools/constellation_cards.py'
+      - 'constellation-cards.json'
       - 'finder-geometry/martz-macrobert.json'
       - 'reference-data/iau-constellation-boundaries/**'
       - 'asterism-figure-paths.json'
@@ -25,15 +27,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Generate Orion pilot
+      - name: Generate constellation portraits and cards
         run: python tools/generate_constellation_atlas.py
       - name: Commit generated atlas
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add star-almanack/chart-library/constellations/
+          git add star-almanack/chart-library/constellations/ star-almanack/constellations/ star-almanack/chart-library/index.html
           if ! git diff --cached --quiet; then
-            git commit -m "Publish generated Orion constellation portrait"
+            git commit -m "Publish constellation portraits and shared cards"
             for attempt in 1 2 3 4 5; do
               git fetch origin main
               git rebase origin/main || { echo 'Rebase conflict; refusing to overwrite changes'; git rebase --abort; exit 1; }
