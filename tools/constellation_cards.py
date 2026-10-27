@@ -32,7 +32,8 @@ def page(title, introduction, cards, stylesheet):
     return ('---\nlayout: null\n---\n<!doctype html><html lang="en"><head>'
             '<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             f'<title>{html.escape(title)} · Star Almanack</title>'
-            f'<link rel="stylesheet" href="{stylesheet}">'
+            # Keep card presentation available when a separate CSS request fails.
+            '<style>' + (ROOT / stylesheet.lstrip('/')).read_text(encoding='utf-8') + '</style>'
             '<style>.constellation-preview{display:block;width:100%;height:auto;aspect-ratio:11/8;object-fit:contain;background:#071527}'
             '.constellation-hed{font-size:1.2rem}.card h2{margin-top:0}.card p{line-height:1.6}</style>'
             '</head><body>{% include star-almanack-nav.html %}<main class="page-shell">'
@@ -56,7 +57,7 @@ def atlas_index(geometry, available, root=ROOT):
                      f'<a class="button" href="../../constellations/{row["slug"]}.html">Read the story</a> '
                      f'<a href="{slug}.html">Open the chart</a></article>')
     return page('Constellation Atlas', 'Explore the constellation portraits and their chart layers.', cards,
-                '../../css/star-almanack-nav-20261022.css')
+                '/star-almanack/css/star-almanack-nav-20261022.css')
 
 
 def collection(root=ROOT):
@@ -70,7 +71,7 @@ def collection(root=ROOT):
                      ('<p><a href="../front-matter.html#whats-up-with-mensa-microscopium-and-serpens">About the figure convention</a></p>'
                       if abbr in ('Men', 'Mic') else '') + '</article>')
     return page('Constellations', 'Names, meanings, and histories of all 88 constellations, with Serpens treated as one.', cards,
-                '../css/star-almanack-nav-20261022.css')
+                '/star-almanack/css/star-almanack-nav-20261022.css')
 
 
 def write_collection(root=ROOT):
