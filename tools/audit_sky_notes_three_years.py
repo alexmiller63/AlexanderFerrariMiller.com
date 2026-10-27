@@ -54,7 +54,7 @@ def inspect(year, week, minimum):
         if not resolved.is_file():
             broken.add(href)
     # Check for Sky Notes as an identifiable section, not merely a navigation link.
-    sky_notes_present = bool(re.search(r'id=["\'](?:sky-notes|almanack-section-[^"\']+)["\']|<h[1-6][^>]*>\s*Sky Notes', source, re.I))
+    sky_notes_present = ("data-almanack-section-name=\"sky-notes\"" in source or bool(re.search(r"<h[1-6][^>]*>\\s*Sky Notes", source, re.I)))
     issues = []
     if len(stories) < minimum:
         issues.append("fewer than target story links")
