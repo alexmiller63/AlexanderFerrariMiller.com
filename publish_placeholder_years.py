@@ -245,7 +245,7 @@ def build_year(year: int) -> None:
 
     body=(year_nav(year)
           + f'<h1>{year} Weekly Almanack</h1>'
-          + f'<p class="intro">The {year} edition is in preparation. The calendar below shows the complete ISO week-year, grouped by the civil month containing each week’s Monday. Each week will be replaced by the completed Almanack entry as it is published.</p>'
+          + f'<p class="intro">The calendar below shows the complete ISO week-year, grouped by the civil month containing each week’s Monday. Each week will be replaced by the completed Almanack entry as it is published.</p>'
           + ''.join(rendered)
           + year_nav(year))
     (out/'index.html').write_text(shell(f'{year} Weekly Almanack',body),encoding='utf-8')
