@@ -183,7 +183,7 @@ if __name__=="__main__":
         if len(targets) != 87:
             raise RuntimeError(f"Expected 87 constellation portraits, generated {len(targets)}")
         index_text = (OUT / "index.html").read_text(encoding="utf-8")
-        if not index_text.startswith("---\\nlayout: null\\n---\\n"):
+        if not index_text.startswith("---\nlayout: null\n---\n"):
             raise RuntimeError("Atlas index has invalid Jekyll front matter")
         for abbr in targets:
             html_path = OUT / (abbr.lower() + ".html")
