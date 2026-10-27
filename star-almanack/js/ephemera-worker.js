@@ -50,14 +50,23 @@ self.onmessage = async event => {
     if (event.data.calculator === 'planet-finder') {
       progress('Calculating all 11 geocentric longitudes…');
       python.globals.set('request_json', JSON.stringify(event.data));
-      const svg = await python.runPythonAsync(`
+      const payload = await python.runPythonAsync(`
 request = json.loads(request_json)
 from generate_planet_finder_at_instant import generate, parse_instant
 instant = parse_instant(request['instant_utc'])
 print('COMPUTED positions')
-generate(instant, request['mode'], engine)
+modes = ['greek', 'latin', 'mixed'] if request['mode'] == 'all' else [request['mode']]
+charts = {}
+for mode in modes:
+    charts[mode] = generate(instant, mode, engine)
+from zoneinfo import ZoneInfo
+local = instant.astimezone(ZoneInfo(request.get('timezone', 'UTC')))
+clock = f"{local.hour % 12 or 12}:{local.minute:02d} {'AM' if local.hour < 12 else 'PM'} {local.tzname()}"
+place = request.get('city') or request.get('timezone', 'UTC')
+local_title = f"{local.strftime('%B')} {local.day}, {local.year} · {clock} · {place}"
+json.dumps({'charts': charts, 'local_title': local_title})
 `);
-      self.postMessage({type: 'result', data: {svg, instant_utc: event.data.instant_utc}});
+      self.postMessage({type: 'result', data: {...JSON.parse(payload), instant_utc: event.data.instant_utc}});
       return;
     }
     const result = await python.runPythonAsync(`

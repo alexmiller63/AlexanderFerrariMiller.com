@@ -1,11 +1,11 @@
-/* Progress UI contract for the future asynchronous Planet Finder runner.
- * No simulated percentages or fake server requests. The backend will call
- * window.PlanetFinderProgress.start/update/finish when connected.
+/* Progress UI for the asynchronous Planet Finder worker.
+ * Keep progress indeterminate until actual completion is known.
  */
 (() => {
   'use strict';
   const panel = document.getElementById('finder-progress');
   if (!panel) return;
+  const heading = document.getElementById('finder-progress-heading');
   const bar = document.getElementById('finder-progress-bar');
   const stage = document.getElementById('finder-stage');
   const elapsed = document.getElementById('finder-elapsed');
@@ -29,6 +29,9 @@
     start(onCancel) {
       stop();
       cancelHandler = onCancel;
+      cancel.disabled = false;
+      heading.textContent = 'Calculating your chart';
+      bar.setAttribute('aria-label', 'Calculation in progress');
       started = performance.now();
       panel.hidden = false;
       bar.removeAttribute('value'); // Indeterminate until actual solver progress is known.
@@ -44,9 +47,15 @@
         bar.value = fraction;
       } else bar.removeAttribute('value');
     },
-    finish(message) {
+    finish(message, successful = false) {
       stop();
+      heading.textContent = successful ? 'Chart ready' : 'Calculation stopped';
       stage.textContent = String(message);
+      longRunning.hidden = true;
+      if (successful) { bar.max = 1; bar.value = 1; }
+      else bar.removeAttribute('value');
+      bar.setAttribute('aria-label', successful ? 'Calculation complete' : 'Calculation stopped');
+      cancelHandler = null;
       cancel.disabled = true;
     },
     reset() {

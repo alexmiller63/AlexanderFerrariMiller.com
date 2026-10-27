@@ -6,6 +6,52 @@
   const result = byId('finder-result');
   const progress = window.PlanetFinderProgress;
   let worker = null;
+  let downloadURL = null;
+  const toggles = byId('finder-toggles');
+  const download = byId('finder-download');
+  const downloadWrap = byId('finder-download-wrap');
+  const modeKeys = {'1': 'greek', '2': 'latin', '3': 'mixed'};
+  const modeLabels = {greek: 'Greek/Symbols', latin: 'English', mixed: 'Mixed Learner'};
+  let charts = new Map();
+  function showMode(mode) {
+    const active = charts.get(mode);
+    if (!active) return;
+    for (const [key, svg] of charts) svg.style.display = key === mode ? '' : 'none';
+    toggles.querySelectorAll('[data-bayer-mode]').forEach(button => {
+      button.setAttribute('aria-pressed', String(modeKeys[button.dataset.bayerMode] === mode));
+    });
+    if (downloadURL) URL.revokeObjectURL(downloadURL);
+    downloadURL = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(active)], {type: 'image/svg+xml'}));
+    download.href = downloadURL;
+    download.download = 'planet-finder-' + mode + '.svg';
+  }
+  toggles.querySelectorAll('[data-bayer-mode]').forEach(button => {
+    button.addEventListener('click', () => showMode(modeKeys[button.dataset.bayerMode]));
+  });
+  function prepareChart(source, title, mode, instant) {
+    const doc = new DOMParser().parseFromString(source, 'image/svg+xml');
+    if (doc.querySelector('parsererror') || doc.documentElement.localName !== 'svg')
+      throw Error('Chart returned invalid SVG; no chart was displayed.');
+    const svg = document.importNode(doc.documentElement, true);
+    // Replace the renderer's UTC subtitle inside the SVG, including exported charts.
+    const subtitle = svg.querySelector('text[y="110"]');
+    if (!subtitle) throw Error('Chart title is missing; no chart was displayed.');
+    subtitle.textContent = title;
+    subtitle.setAttribute('font-size', '20');
+    // Keep long city names inside the chart without changing the layout solver.
+    if (title.length > 110) {
+      subtitle.setAttribute('textLength', '1280');
+      subtitle.setAttribute('lengthAdjust', 'spacingAndGlyphs');
+    }
+    const metadata = document.createElementNS('http://www.w3.org/2000/svg', 'desc');
+    metadata.textContent = modeLabels[mode] + ' · UTC instant: ' + instant;
+    svg.prepend(metadata);
+    svg.setAttribute('role', 'img');
+    svg.setAttribute('aria-label', 'Planet Finder · ' + title + ' · ' + modeLabels[mode]);
+    svg.style.width = '100%';
+    svg.style.height = 'auto';
+    return svg;
+  }
 
   // City choices resolve to IANA zones; the chart remains geocentric.
   const cities = [
@@ -134,7 +180,14 @@
     let instant;
     try { instant = utcInstant(); }
     catch (error) { status.textContent = error.message; return; }
+    const request = {calculator:'planet-finder', instant_utc:instant, mode:byId('finder-mode').value,
+      timezone:zoneInput.value.trim(), city:cityInput.value.trim()};
     stop();
+    charts = new Map();
+    toggles.hidden = true;
+    downloadWrap.hidden = true;
+    if (downloadURL) URL.revokeObjectURL(downloadURL);
+    downloadURL = null;
     result.hidden = true;
     result.replaceChildren();
     generate.disabled = true;
@@ -144,25 +197,34 @@
       progress.finish('Cancelled.');
       status.textContent = 'Calculation cancelled.';
     });
-    worker = new Worker(new URL('../star-almanack/js/ephemera-worker.js?v=20261027-planet-finder-1', location.href));
+    worker = new Worker(new URL('../star-almanack/js/ephemera-worker.js?v=20261027-issue40', location.href));
     worker.onmessage = ({data}) => {
       if (data.type === 'progress') {
         progress.update(data.message);
         status.textContent = data.message;
       } else if (data.type === 'result') {
         stop();
-        progress.finish('Chart generated.');
-        const doc = new DOMParser().parseFromString(data.data.svg, 'image/svg+xml');
-        if (doc.querySelector('parsererror') || doc.documentElement.localName !== 'svg') {
-          status.textContent = 'Chart returned invalid SVG; no chart was displayed.';
-          return;
+        try {
+          const completedTitle = data.data.local_title;
+          if (!completedTitle) throw Error('Local chart title is missing; no chart was displayed.');
+          const modes = request.mode === 'all' ? ['greek', 'latin', 'mixed'] : [request.mode];
+          const prepared = new Map(modes.map(mode => {
+            const source = data.data.charts?.[mode];
+            if (!source) throw Error('A requested notation mode is missing; no chart was displayed.');
+            return [mode, prepareChart(source, completedTitle, mode, request.instant_utc)];
+          }));
+          charts = prepared;
+          result.replaceChildren(...charts.values());
+          showMode(modes[0]);
+          toggles.hidden = request.mode !== 'all';
+          downloadWrap.hidden = false;
+          result.hidden = false;
+          progress.finish('Chart generated.', true);
+          status.textContent = 'Planet Finder generated for ' + completedTitle + '. UTC instant: ' + request.instant_utc + '.';
+        } catch (error) {
+          progress.finish('Calculation unsuccessful.');
+          status.textContent = error.message;
         }
-        const svg = document.importNode(doc.documentElement, true);
-        svg.style.width = '100%';
-        svg.style.height = 'auto';
-        result.append(svg);
-        result.hidden = false;
-        status.textContent = 'Planet Finder generated for ' + byId('finder-date').value + ' ' + byId('finder-time').value + ' (' + zoneInput.value + '), corresponding to ' + data.data.instant_utc + ' UTC.';
       } else if (data.type === 'error') {
         stop();
         progress.finish('Calculation unsuccessful.');
@@ -176,6 +238,6 @@
       status.textContent = 'The calculation worker failed to start or load: ' + (event.message || 'Unknown error') + (event.filename ? ' (' + event.filename.split('/').pop() + ':' + event.lineno + ')' : '') + '. No chart was produced.';
       event.preventDefault();
     };
-    worker.postMessage({calculator:'planet-finder', instant_utc:instant, mode:byId('finder-mode').value});
+    worker.postMessage(request);
   });
 })();
