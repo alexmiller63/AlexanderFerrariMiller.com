@@ -1,0 +1,39 @@
+---
+constellation: Sgr
+name: Sagittarius
+status: pending
+author: Alexander Ferrari Miller
+hed: "The archer at the galaxy’s heart"
+dek: "Sagittarius joins a many-layered celestial figure to one of the richest directions in the Milky Way."
+---
+
+# The archer at the galaxy’s heart
+
+*Sagittarius joins a many-layered celestial figure to one of the richest directions in the Milky Way.*
+
+Sagittarius is easier for many observers to recognize as a teapot than as an archer. The bright stars supply a lid, handle and spout, while the Milky Way seems to rise nearby like steam. A domestic object becomes the entrance to a much older figure.
+
+The archer’s ancestry reaches into Mesopotamian astronomy, where Pabilsag was represented as a composite being. The imagery could combine human and horse forms with wings and a scorpion’s tail. Greek celestial interpretation simplified the figure toward the familiar centaur drawing.
+
+The identity nevertheless remained open to discussion. One ancient explanation made the archer Crotus, a companion of the Muses on Mount Helicon. He was praised for hunting and artistic skill, and the Muses asked Zeus to honor him among the stars.
+
+In the account preserved by Hyginus, the celestial body displayed those abilities symbolically. Horse features recalled his riding, arrows his skill and speed, and a satyr’s tail his association with pleasure in the Muses’ company. The image was a collection of attributes, not simply a portrait of an ordinary creature.
+
+This is a useful alternative to identifying every heavenly centaur as Chiron. Centaurus has its own traditions, while Sagittarius gathered a different set of explanations. Similar bodies on a chart do not require identical mythological identities.
+
+For modern astronomy, Sagittarius marks an extraordinary direction. Looking here means looking toward the central regions of our galaxy. The visible Milky Way grows rich with star clouds and dark lanes, although dust prevents an ordinary optical view straight into the center itself.
+
+At that center lies the supermassive black hole Sagittarius A*. Its name identifies its direction on the sky; it is not one of the points outlining the Archer or Teapot. Studies of stellar orbits and observations at wavelengths that penetrate the dust have revealed the region’s nature.
+
+The Event Horizon Telescope collaboration produced an image of the emission surrounding the black hole’s shadow. That achievement required radio observatories working together across Earth, a very different kind of seeing from tracing a naked-eye pattern.
+
+Both views can begin in the same patch of sky. The Teapot gives a beginner a shape to find; the Archer carries a long history of changing interpretation; the galactic center supplies a physical depth that neither drawing could suggest by itself.
+
+Sagittarius is thus a place where looking becomes progressively less simple—and more rewarding—the longer one stays.
+
+## Sources
+
+- [Sagittarius - All Skies Encyclopaedia](https://ase.exopla.net/index.php/Sagittarius)
+- [CROTUS (Krotos) - Boeotian Satyr of Greek Mythology](https://www.theoi.com/Georgikos/SatyrosKrotos.html)
+- [The Teapot in the Milky Way > Naval Meteorology and Oceanography Command > The Sky This Week](https://www.cnmoc.usff.navy.mil/Our-Commands/United-States-Naval-Observatory/The-Sky-This-Week/Article/2744311/the-teapot-in-the-milky-way/)
+- [Astronomers Reveal First Image of the Black Hole at the Heart of Our Galaxy | Event Horizon Telescope](https://eventhorizontelescope.org/blog/astronomers-reveal-first-image-black-hole-heart-our-galaxy)
