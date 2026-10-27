@@ -1,0 +1,34 @@
+---
+constellation: Men
+name: Mensa
+status: pending
+author: Alexander Ferrari Miller
+hed: "A mountain remembered in the sky"
+dek: "Lacaille named this faint southern constellation for Table Mountain, with a neighboring galaxy as its cloud."
+---
+
+# A mountain remembered in the sky
+
+*Lacaille named this faint southern constellation for Table Mountain, with a neighboring galaxy as its cloud.*
+
+Most of Nicolas-Louis de Lacaille’s new constellations honored things a person could build: a clock, a microscope, an air pump, a furnace. Mensa remembered something he could see from the place where he worked. It was Table Mountain, the great landmark above Cape Town.
+
+Lacaille came to the Cape in 1751 to undertake an ambitious program of observation. Among his tasks was a survey of southern stars. He recorded thousands of positions, helping make this part of the sky more systematically available to European astronomy. The mountain belonged to the landscape of that work.
+
+He called the celestial figure Mons Mensae, the Mountain of the Table. The modern name shortens this to Mensa. It is a place-name transported into the heavens, carrying a connection between an observing site on Earth and a region of the sky studied from there.
+
+The image had an additional attraction. Table Mountain is known for the cloud that can spread across its summit like a cloth. In the sky, the Large Magellanic Cloud could supply a celestial counterpart. Part of that luminous patch falls within Mensa’s modern boundaries, with much of the rest in neighboring Dorado.
+
+To the unaided eye under a dark southern sky, the Large Magellanic Cloud can look like a detached piece of the Milky Way. It is actually a neighboring dwarf galaxy, about 160,000 light-years away. The resemblance to a terrestrial cloud belongs to human perception; the light comes from a vast stellar system.
+
+That pairing gives Mensa an unusual composition. The individual stars outlining the imagined mountain are faint, while the apparent cloud associated with it contains an enormous population of stars. The background of the picture is physically far larger than the foreground landmarks used to frame it.
+
+The Almanack does not draw a stick figure for Mensa. This follows its adopted figure convention and does not remove Mensa from the official list of constellations. The distinction is explained in [“What’s up with Mensa, Microscopium, and Serpens?”](../../front-matter.md#whats-up-with-mensa-microscopium-and-serpens).
+
+A missing line drawing is especially fitting to remember here, where the story is anchored in a real landscape. Mensa does not need a bold outline to keep its meaning. Its faint stars preserve the name of a mountain, while the neighboring light recalls the cloud above a summit on Earth.
+
+## Sources
+
+- [IAU: Mensa – exopla.net](https://exopla.net/mensa/)
+- [Lacaille | ASSA](https://assa.saao.ac.za/sections/history/astronomers/lacaille/)
+- [Hubble Surveys Cloudy Cluster - NASA Science](https://science.nasa.gov/missions/hubble/hubble-surveys-cloudy-cluster/)
