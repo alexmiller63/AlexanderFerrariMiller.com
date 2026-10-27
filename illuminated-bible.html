@@ -1,0 +1,58 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Illuminated Bible by Alexander Ferrari Miller. Explore the Genesis 1 prototype, with original-language illumination, transliteration, pronunciation, and notes.">
+  <title>The Illuminated Bible · Alexander Ferrari Miller</title>
+  {% include site-styles.html %}
+  <style>
+    main{padding:2rem 0 4rem}.bible-hero{max-width:760px;margin:1rem auto 2.5rem;text-align:center}
+    h1{font-family:Georgia,"Times New Roman",serif;font-size:clamp(2.2rem,7vw,4rem);line-height:1.15;margin:.6rem 0}
+    .bible-motto{font-family:Georgia,"Times New Roman",serif;font-size:1.35rem;color:var(--accent)}
+    .bible-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:1.5rem;margin:2rem 0}
+    .bible-panel{padding:1.5rem;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+    .bible-panel h2{margin-top:0;font-family:Georgia,"Times New Roman",serif}.bible-panel a{overflow-wrap:anywhere}
+    .bible-button{display:inline-block;border:1px solid var(--accent);border-radius:6px;padding:.65rem 1rem;font-weight:600}
+    .bible-preface{max-width:75ch;margin:2.5rem auto;font-family:Georgia,"Times New Roman",serif;font-size:1.15rem;line-height:1.75}
+    .bible-status{color:var(--muted)}:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+  </style>
+</head>
+<body>
+{% include header.html %}
+<main class="container">
+  <p><a href="/projects.html">← All Projects</a></p>
+  <header class="bible-hero">
+    <p>Alexander Ferrari Miller</p>
+    <h1>The Illuminated Bible</h1>
+    <p class="bible-motto">Restrained Art. Eternal Truth.</p>
+    <p>Readable English Scripture illuminated by the languages beneath it.</p>
+    <p class="bible-status">Genesis 1 prototype · A work in progress</p>
+  </header>
+  <div class="bible-grid">
+    <section class="bible-panel" aria-labelledby="proof-heading">
+      <h2 id="proof-heading">Read the prototype</h2>
+      <p>The saved PDF proof presents Genesis 1:1–10. Explore the illuminated text, original-language forms, transliteration, pronunciation, and notes.</p>
+      <a class="bible-button" href="https://github.com/alexmiller63/illuminated-bible-project/blob/main/genesis_1_1-10_illuminated_proof_v5.pdf">View the Genesis 1:1–10 PDF proof</a>
+      <p class="bible-status">This is an earlier proof. The full chapter source contains later editorial and presentation decisions.</p>
+    </section>
+    <section class="bible-panel" aria-labelledby="chapter-heading">
+      <h2 id="chapter-heading">The complete chapter source</h2>
+      <p>The canonical Genesis 1 manuscript records the illumination for all 31 verses, along with explanatory notes and presentation rules. The complete chapter has not yet been published as a finished reading edition.</p>
+      <a class="bible-button" href="https://github.com/alexmiller63/illuminated-bible-project/blob/main/genesis-chapter-1.yaml">Explore the Genesis 1 chapter source</a>
+      <p><a href="https://github.com/alexmiller63/illuminated-bible-project">Visit the project repository</a></p>
+    </section>
+  </div>
+  <section class="bible-preface" aria-labelledby="preface-heading">
+    <h2 id="preface-heading">Preface</h2>
+    {% capture bible_preface %}{% include illuminated-bible-preface.md %}{% endcapture %}
+    {{ bible_preface | markdownify }}
+  </section>
+  <p><a href="/projects.html">← Back to Projects</a></p>
+</main>
+{% include footer.html %}
+</body>
+</html>
