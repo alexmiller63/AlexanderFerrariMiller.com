@@ -1,0 +1,22 @@
+name: Audit Sky Notes 2025–2027
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit all 156 weeks
+        run: python tools/audit_sky_notes_three_years.py --minimum 5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sky-notes-coverage-2025-2027
+          path: |
+            generated/sky-notes-coverage-2025-2027.csv
+            generated/sky-notes-coverage-2025-2027.json
+          retention-days: 30
