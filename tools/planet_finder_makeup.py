@@ -13,6 +13,7 @@ from collections import Counter
 
 from planet_finder_geometry import (
     CX, CY, RI, Box, LABEL_LENGTH,
+    PREFERRED_LABEL_RADII, EXPANDED_LABEL_RADII,
     label_size, legal_candidate_positions, reserved_boxes, route, xy,
 )
 from planet_finder_validation import validate_layout
@@ -210,6 +211,53 @@ def _is_straight_radial(path, tolerance_degrees: float = 0.5):
     return _radial_deviation(path) <= tolerance_degrees
 
 
+def straighten_shared_labels(modes, result):
+    """Prefer radial leaders without shrinking the shared planning envelopes.
+
+    Keep an existing valid layout as fallback. Each accepted move makes one
+    more leader radial and must pass independent validation in every mode.
+    Revisit blocked labels after their neighbors move; already radial labels
+    stay fixed, so the process is finite and cannot oscillate.
+    """
+    modes = tuple(modes)
+    current = list(result)
+    if not modes or not all(validate_layout(mode, current)[0] for mode in modes):
+        return result
+    reserved = []
+    escape_indices = set()
+    for mode in modes:
+        offset = len(reserved)
+        reserved.extend(reserved_boxes(mode))
+        escape_indices.update(range(offset, offset + 3))
+    while True:
+        changed = False
+        for index, row in enumerate(current):
+            symbol, name, longitude, old_box, old_path = row
+            if _is_straight_radial(old_path):
+                continue
+            others = [other for i, other in enumerate(current) if i != index]
+            trials = []
+            radii = dict.fromkeys((math.hypot(old_box.x - CX, old_box.y - CY),
+                                   *PREFERRED_LABEL_RADII, *EXPANDED_LABEL_RADII))
+            for radius in radii:
+                x, y = xy(longitude, radius)
+                box = Box(x, y, old_box.w, old_box.h)
+                path = route(old_path[0], (x, y), reserved + [r[3] for r in others],
+                             target_box=box, existing_paths=[r[4] for r in others],
+                             allow_initial_escape_indices=escape_indices)
+                if path is None or not _is_straight_radial(path):
+                    continue
+                trial = list(current)
+                trial[index] = (symbol, name, longitude, box, path)
+                if all(validate_layout(mode, trial)[0] for mode in modes):
+                    trials.append(trial)
+            if trials:
+                current = min(trials, key=aesthetic_score)
+                changed = True
+        if not changed:
+            return current
+
+
 def refine_candidate(mode, result, passes: int = 50):
     """Apply deterministic local makeup to one complete valid candidate."""
     current = list(result)
@@ -363,3 +411,4 @@ def refine_candidate(mode, result, passes: int = 50):
             break
     _trace(1, f"END mode={mode} score={aesthetic_score(current)}")
     return current
+

@@ -20,7 +20,7 @@ from planet_finder_geometry import (
     segment_hits_box, universal_label_size, xy,
 )
 from planet_finder_validation import validate_layout
-from planet_finder_makeup import uncross_labels
+from planet_finder_makeup import uncross_labels, straighten_shared_labels
 
 MODES = (FinderMode.GREEK, FinderMode.ENGLISH, FinderMode.MIXED)
 # Successful plans only. Store immutable paths and return fresh copies so
@@ -208,6 +208,7 @@ def plan_universal_layout(bodies, deadline):
     if result is None:
         return None
     result = uncross_labels(MODES, result)
+    result = straighten_shared_labels(MODES, result)
     for mode in MODES:
         valid, errors = validate_layout(mode, result)
         if not valid:
@@ -219,3 +220,4 @@ def plan_universal_layout(bodies, deadline):
         _PLAN_CACHE.popitem(last=False)
     by_name = {row[1]: row for row in _copy_plan(frozen)}
     return [by_name[name] for _, name, _ in bodies]
+
