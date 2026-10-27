@@ -2,13 +2,17 @@ name: Build Ephemera Browser Runtime
 
 on:
   push:
-    branches: [ephemera-browser-release-20261022]
+    branches: [main, ephemera-browser-release-20261022]
     paths:
       - '.github/workflows/build-ephemera-browser.yml'
       - 'tools/build_ephemera_browser.py'
       - 'tools/generate_observer_ephemera.py'
       - 'tools/star_almanack_ephemeris.py'
       - 'tools/almanack_time.py'
+      - 'tools/generate_planet_finder_at_instant.py'
+      - 'tools/planet_finder_*.py'
+      - 'tools/notation_modes.py'
+      - 'tools/populate_ephemeris.py'
   workflow_dispatch:
 
 permissions:
