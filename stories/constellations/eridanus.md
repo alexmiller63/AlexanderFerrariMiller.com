@@ -1,0 +1,53 @@
+---
+constellation: Eri
+name: Eridanus
+status: pending
+author: Alexander Ferrari Miller
+hed: "A river reaching beyond the horizon"
+dek: "Eridanus winds away from Orion toward the southern star Achernar, carrying a story of a disastrous journey and a changing celestial shoreline."
+---
+
+# A river reaching beyond the horizon
+
+*Eridanus winds away from Orion toward the southern star Achernar, carrying a story of a disastrous journey and a changing celestial shoreline.*
+
+## Follow the bends
+
+Eridanus is the River, an extended constellation whose course begins near Orion and winds far south. Its length makes it difficult to learn from an isolated detail. Neighboring figures provide the banks by which the route becomes recognizable.
+
+Northern observers may see the beginning while losing the southern reaches below the horizon. Achernar, the brightest modern endpoint, is therefore absent from many otherwise familiar views of the River.
+
+A complete portrait restores that missing extent. It also reminds us that a constellation's official region is not limited to what one particular observing location can see.
+
+## The fall of Phaethon
+
+In a familiar Greek identification, Eridanus is the river into which Phaethon falls after attempting to drive the Sun's chariot. Unable to control the horses, he endangers the world; Zeus intervenes, and the failed driver plunges from the sky.
+
+The river receives what remains of an ambition that exceeded its holder's ability. Stories of mourning along its banks connect Phaethon with his sisters and with Cycnus, whose transformation supplies a link to the Swan.
+
+Other identifications connect the celestial stream with earthly rivers or a more general encircling waterway. A remembered river in a myth does not settle its geographical equivalent for every ancient reader.
+
+The winding pattern can accommodate several associations precisely because it presents a form rather than an unmistakable terrestrial map.
+
+## Where the River ends
+
+The southern extent of the constellation developed as European observers gained better access to southern stars. Historical endpoints and names require attention to the epoch and catalog being discussed.
+
+The modern Achernar gives the River a brilliant terminus, but it was not equally available to every earlier astronomer. Treating today's complete chart as the view always seen from the Mediterranean obscures that history.
+
+At the telescope, Achernar adds another surprise. Its rapid rotation makes the star markedly flattened, with a wider equatorial region than polar diameter. Interferometric observations revealed a shape that a naked-eye point cannot suggest.
+
+## A course on paper
+
+The River's bends are an Earth-based interpretation of stars at different distances. They do not trace a physical channel through space.
+
+That does not diminish their usefulness. The course links widely separated parts of the sky into a route that can be learned, checked, and followed. The myth supplies an event; the atlas supplies a path; observation establishes which reaches are visible from home.
+
+Eridanus is especially rewarding when all three are kept in view, including the stretch that may lie beyond the observer's own horizon.
+
+## Sources
+
+- [Chandra X-ray Observatory — Eridanus: the River and its interpretations](https://www.chandra.cfa.harvard.edu/photo/constellations/eridanus.html)
+- [Theoi — Phaethon and the River Eridanus](https://www.theoi.com/Titan/Phaethon.html)
+- [IAU and Sky & Telescope — Eridanus chart](https://iauarchive.eso.org/static/public/constellations/pdf/ERI.pdf)
+- [ESO — Achernar's measured flattened shape](https://www.eso.org/public/news/eso0316/)
