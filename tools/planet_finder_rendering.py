@@ -40,6 +40,7 @@ def render(
     bodies: list[tuple[str, str, float]],
     budget: dict | None = None,
     context_label: str | None = None,
+    instant_utc: str | None = None,
 ) -> str:
     mode = FinderMode(mode)
     labels = {
@@ -53,8 +54,8 @@ def render(
         f'<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1400" viewBox="0 0 {W} {H}">',
         '<rect width="100%" height="100%" fill="white"/>',
         '<style>text{font-family:Georgia,"Times New Roman",serif;fill:#111!important;color:#111!important;-webkit-text-fill-color:#111!important}.sans{font-family:Arial,Helvetica,sans-serif}</style>',
-        f'<text x="{CX}" y="72" text-anchor="middle" font-size="38" font-weight="700">ISO {year}-W{week:02d} Planet Finder</text>',
-        f'<text x="{CX}" y="110" text-anchor="middle" font-size="23">{title} · Monday, {monday.strftime("%B")} {monday.day}, {year} · 00:00 UTC</text>',
+        f'<text x="{CX}" y="72" text-anchor="middle" font-size="38" font-weight="700">{html.escape("Planet Finder" if instant_utc else f"ISO {year}-W{week:02d} Planet Finder")}</text>',
+        f'<text x="{CX}" y="110" text-anchor="middle" font-size="23">{html.escape(title + " · " + instant_utc if instant_utc else f"{title} · Monday, {monday.strftime("%B")} {monday.day}, {year} · 00:00 UTC")}</text>',
         f'<circle cx="{CX}" cy="{CY}" r="{RO}" fill="none" stroke="#111" stroke-width="4"/>',
         f'<circle cx="{CX}" cy="{CY}" r="{RI}" fill="none" stroke="#111" stroke-width="2"/>',
     ]
