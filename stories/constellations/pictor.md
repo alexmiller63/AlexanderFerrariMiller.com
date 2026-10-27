@@ -1,0 +1,36 @@
+---
+constellation: Pic
+name: Pictor
+status: pending
+author: Alexander Ferrari Miller
+hed: "An easel beside the great ship"
+dek: "Pictor gives the artist’s work a place among Lacaille’s instruments of science and craft."
+---
+
+# An easel beside the great ship
+
+*Pictor gives the artist’s work a place among Lacaille’s instruments of science and craft.*
+
+Close to brilliant Canopus, the faint stars of Pictor can be easy to pass over. The name now suggests a painter, but the historical figure was more specific: an easel supporting a canvas.
+
+Nicolas-Louis de Lacaille introduced it in the eighteenth century while filling spaces between established southern constellations. His French name, *Le Chevalet du Peintre*, described the painter’s easel. Later usage shortened the Latin name to Pictor.
+
+The choice placed artistic work beside scientific instruments. Lacaille’s new sky contained tools for observing, measuring, making and representing things. An easel belonged to that company. It honored the equipment behind an image, much as a celestial telescope honored the equipment behind an observation.
+
+There is a pleasing connection with star atlases themselves. Someone had to decide how to depict the sky’s animals, heroes and devices, then translate those decisions into a printed page. Pictor puts an artist’s support into a map that depends on the work of artists.
+
+No particular painter has to be imagined at the canvas. The constellation’s meaning rests on the practice rather than on a mythological owner. It can call attention to the labor of looking carefully, arranging a view and making it legible to another person.
+
+Modern observations have made one of its stars, Beta Pictoris, particularly important. The young star is surrounded by a disk of debris, seen almost edge-on from Earth. Images reveal structure in material that would otherwise be lost in the glare of the central light.
+
+Hubble observations showed a main dust disk and a fainter, tilted component. Webb later disclosed a curved dusty feature nicknamed the cat’s tail. Researchers have investigated whether a relatively recent collision could explain that structure; the interpretation is a scientific model rather than something the image alone proves.
+
+The system also contains known giant planets. Studies of the planets and dust let astronomers examine how orbiting bodies shape their surroundings, turning a modest point in the constellation into a laboratory for understanding other planetary systems.
+
+There is no literal canvas around Beta Pictoris, but the history and the astronomy meet in an interesting act of representation. Its intricate images require instruments, processing and interpretation before they can be read. Pictor reminds us that showing what has been seen is itself skilled work.
+
+## Sources
+
+- [Pictor - All Skies Encyclopaedia](https://ase.exopla.net/index.php/Pictor)
+- [Hubble Sees Two Dust Disks Around Beta Pictoris - NASA Science](https://science.nasa.gov/asset/hubble/hubble-sees-two-dust-disks-around-beta-pictoris/)
+- [NASA's Webb Discovers Dusty 'Cat's Tail' in Beta Pictoris System - NASA Science](https://science.nasa.gov/missions/webb/nasas-webb-discovers-dusty-cats-tail-in-beta-pictoris-system/)
