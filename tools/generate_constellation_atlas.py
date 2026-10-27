@@ -179,4 +179,22 @@ if __name__=="__main__":
                  '<h1>Constellation Atlas</h1><ul>' + links +
                  '</ul><a href="../">Chart Library</a></body></html>\n')
         (OUT / "index.html").write_text(index, encoding="utf-8")
+    if args.constellation == "all":
+        if len(targets) != 87:
+            raise RuntimeError(f"Expected 87 constellation portraits, generated {len(targets)}")
+        index_text = (OUT / "index.html").read_text(encoding="utf-8")
+        if not index_text.startswith("---\\nlayout: null\\n---\\n"):
+            raise RuntimeError("Atlas index has invalid Jekyll front matter")
+        for abbr in targets:
+            html_path = OUT / (abbr.lower() + ".html")
+            svg_path = OUT / (abbr.lower() + ".svg")
+            if not html_path.is_file() or not svg_path.is_file():
+                raise RuntimeError(f"Missing atlas output for {abbr}")
+            page_text = html_path.read_text(encoding="utf-8")
+            if '{html.escape(' in page_text or '{abbr.lower()}' in page_text:
+                raise RuntimeError(f"Unexpanded template placeholder in {html_path}")
+            if f'href="{abbr.lower()}.svg"' not in page_text:
+                raise RuntimeError(f"Incorrect SVG link in {html_path}")
+            if f'href="{abbr.lower()}.html"' not in index_text:
+                raise RuntimeError(f"Missing index link for {abbr}")
     print(f"Generated {len(targets)} constellation portraits")
