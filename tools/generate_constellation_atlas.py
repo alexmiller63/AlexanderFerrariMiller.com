@@ -150,9 +150,9 @@ def render(abbr="Ori"):
               ("stars","Stars",True),("catalog","Catalog objects",False)]
     toggles=" ".join(f'<label><input type="checkbox" data-atlas-toggle="{key}" {"checked" if checked else ""}> {label}</label>' for key,label,checked in controls)
     page=('---\nlayout: null\n---\n<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
-          '<title>{html.escape(figure["name"])} · Constellation Atlas</title><style>body{margin:0;background:#071527;color:#e8f3ff;font:16px system-ui}main{max-width:1200px;margin:auto;padding:1rem}nav{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem}svg{width:100%;height:auto}a{color:#8fd5ff}</style></head><body>'
-          '<main><p><a href="../">← Constellation Atlas</a></p><h1>{html.escape(figure["name"])}</h1><nav aria-label="Chart layers">'+toggles+'</nav>'
-          '<div data-atlas-chart>'+svg+'</div><p><a href="{abbr.lower()}.svg">Full-resolution SVG</a></p></main>'
+          f'<title>{html.escape(figure["name"])} · Constellation Atlas</title><style>body{margin:0;background:#071527;color:#e8f3ff;font:16px system-ui}main{max-width:1200px;margin:auto;padding:1rem}nav{display:flex;flex-wrap:wrap;gap:1rem;padding:1rem}svg{width:100%;height:auto}a{color:#8fd5ff}</style></head><body>'
+          f'<main><p><a href="../">← Constellation Atlas</a></p><h1>{html.escape(figure["name"])}</h1><nav aria-label="Chart layers">'+toggles+'</nav>'
+          '<div data-atlas-chart>'+svg+f'</div><p><a href="{abbr.lower()}.svg">Full-resolution SVG</a></p></main>'
           '<script src="../atlas-toggles.js?v=8134e6a"></script></body></html>')
     (OUT/(abbr.lower()+".html")).write_text(page,encoding="utf-8")
     print(f"Generated {figure['name']} portrait")
