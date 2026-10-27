@@ -18,7 +18,7 @@ layout: null
     .bible-panel h2{margin-top:0;font-family:Georgia,"Times New Roman",serif}.bible-panel a{overflow-wrap:anywhere}
     .bible-button{display:inline-block;border:1px solid var(--accent);border-radius:6px;padding:.65rem 1rem;font-weight:600}
     .bible-preface{max-width:75ch;margin:2.5rem auto;font-family:Georgia,"Times New Roman",serif;font-size:1.15rem;line-height:1.75}
-    .bible-status{color:var(--muted)}:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+    .bible-pdf{width:100%;height:85vh;min-height:480px;border:1px solid var(--border);background:white}\n    .bible-status{color:var(--muted)}:focus-visible{outline:3px solid var(--accent);outline-offset:4px}
   </style>
 </head>
 <body>
@@ -32,20 +32,14 @@ layout: null
     <p>Readable English Scripture illuminated by the languages beneath it.</p>
     <p class="bible-status">Genesis 1 prototype · A work in progress</p>
   </header>
-  <div class="bible-grid">
-    <section class="bible-panel" aria-labelledby="proof-heading">
-      <h2 id="proof-heading">Read the prototype</h2>
-      <p>The saved PDF proof presents Genesis 1:1–10. Explore the illuminated text, original-language forms, transliteration, pronunciation, and notes.</p>
-      <a class="bible-button" href="https://github.com/alexmiller63/illuminated-bible-project/blob/main/genesis_1_1-10_illuminated_proof_v5.pdf">View the Genesis 1:1–10 PDF proof</a>
-      <p class="bible-status">This is an earlier proof. The full chapter source contains later editorial and presentation decisions.</p>
-    </section>
-    <section class="bible-panel" aria-labelledby="chapter-heading">
-      <h2 id="chapter-heading">The complete chapter source</h2>
-      <p>The canonical Genesis 1 manuscript records the illumination for all 31 verses, along with explanatory notes and presentation rules. The complete chapter has not yet been published as a finished reading edition.</p>
-      <a class="bible-button" href="https://github.com/alexmiller63/illuminated-bible-project/blob/main/genesis-chapter-1.yaml">Explore the Genesis 1 chapter source</a>
-      <p><a href="https://github.com/alexmiller63/illuminated-bible-project">Visit the project repository</a></p>
-    </section>
-  </div>
+  <section class="bible-panel" aria-labelledby="proof-heading">
+    <h2 id="proof-heading">Genesis 1:1–10</h2>
+    <p>The saved prototype proof presents the illuminated text with original-language forms, transliteration, pronunciation, and notes.</p>
+    <p><a class="bible-button" href="/illuminated-bible-assets/genesis-1-proof.pdf">Open the PDF</a>
+       <a class="bible-button" href="/illuminated-bible-assets/genesis-1-proof.pdf" download>Download the PDF</a></p>
+    <p class="bible-status">An earlier proof of the first ten verses; the complete chapter reading edition is still in preparation.</p>
+    <iframe class="bible-pdf" src="/illuminated-bible-assets/genesis-1-proof.pdf" title="Illuminated Bible — Genesis 1:1–10 PDF proof" loading="lazy"></iframe>
+  </section>
   <section class="bible-preface" aria-labelledby="preface-heading">
     <h2 id="preface-heading">Preface</h2>
     {% capture bible_preface %}{% include illuminated-bible-preface.md %}{% endcapture %}

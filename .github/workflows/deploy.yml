@@ -61,3 +61,7 @@ jobs:
             # can survive indefinitely even after they are removed from the repository.
             git clean -fd
             ~/build-alex.sh
+            # The binary stays in a persistent cache outside the cleaned Git checkout.
+            bash tools/install-illuminated-bible-proof.sh \
+              "$HOME/.local/share/illuminated-bible" \
+              "/var/www/AlexanderFerrariMiller/_site/illuminated-bible-assets"
