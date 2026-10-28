@@ -77,6 +77,8 @@
     async function text(value, size = 11, bold = false) {
       ctx.font = `${bold ? 'bold ' : ''}${size}px system-ui, sans-serif`;
       const wrapped = lines(value, WIDTH);
+      // Keep a short paragraph together rather than orphaning its final line.
+      if (wrapped.length * size * 1.5 <= H - 2 * M) await room(wrapped.length * size * 1.5);
       for (const line of wrapped) {
         await room(size * 1.5);
         ctx.font = `${bold ? 'bold ' : ''}${size}px system-ui, sans-serif`;
@@ -107,7 +109,7 @@
       async function row(element, header) {
         ctx.font = `${header ? 'bold ' : ''}11px system-ui, sans-serif`;
         const cells = [...element.cells].map((cell, i) => lines(cell.textContent.trim(), widths[i] - 12));
-        const height = Math.max(...cells.map(cell => cell.length)) * 16 + 12;
+        const height = Math.max(...cells.map(cell => cell.length)) * 16 + 10;
         if (y + height > H - M) {
           await flush(); newPage();
           await text(`${heading} (continued)`, 15, true);
@@ -118,7 +120,7 @@
         let x = M;
         cells.forEach((cell, i) => {
           ctx.strokeRect(x, y, widths[i], height);
-          cell.forEach((line, j) => ctx.fillText(line, x + 6, y + 6 + j * 16));
+          cell.forEach((line, j) => ctx.fillText(line, x + 6, y + 5 + j * 16));
           x += widths[i];
         });
         y += height;

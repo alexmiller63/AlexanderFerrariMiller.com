@@ -240,7 +240,7 @@ HOUSE_TABLE
 <p class="chart-note">Geocentric apparent ecliptic longitudes of date, calculated with our stored DE440s and Ceres source kernels through Skyfield. Placidus houses, when shown, use the selected coordinates and local apparent sidereal time. Planet positions remain provisional pending independent validation.</p>
 </main>
 {% include nativitas-footer.html %}
-<script src="natal-pdf.js?v=20261028-pdf-1"></script>
+<script src="natal-pdf.js?v=20261028-pdf-2"></script>
 <script src="natal-print.js?v=20261028-pdf-1"></script>
 </body>
 </html>
