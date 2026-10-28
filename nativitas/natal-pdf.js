@@ -85,11 +85,11 @@
       }
       return result;
     }
-    async function text(value, size = 11, bold = false) {
+    async function text(value, size = 11, bold = false, keepTogether = true) {
       ctx.font = `${bold ? 'bold ' : ''}${size}px system-ui, sans-serif`;
       const wrapped = lines(value, WIDTH);
       // Keep a short paragraph together rather than orphaning its final line.
-      if (wrapped.length * size * 1.5 <= H - 2 * M) await room(wrapped.length * size * 1.5);
+      if (keepTogether && wrapped.length * size * 1.5 <= H - 2 * M) await room(wrapped.length * size * 1.5);
       for (const line of wrapped) {
         await room(size * 1.5);
         ctx.font = `${bold ? 'bold ' : ''}${size}px system-ui, sans-serif`;
@@ -154,7 +154,9 @@
       if (y > M && (include.wheel || include.positions || include.aspects || include.houses)) { await flush(); newPage(); }
       await text('Interpretations', 21, true);
       // Preserve document order, closed details, source notes and inline text.
-      for (const block of interpretations.querySelectorAll('h2,h3,h4,summary,p,li')) {
+      const blocks = [...interpretations.querySelectorAll('h2,h3,h4,summary,p,li')];
+      for (let i = 0; i < blocks.length; i++) {
+        const block = blocks[i];
         if (block.tagName === 'LI' && block.querySelector('p')) continue;
         let value = block.textContent.trim();
         for (const link of block.querySelectorAll('a')) {
@@ -163,8 +165,14 @@
         }
         if (!value) continue;
         const heading = /^(H[234]|SUMMARY)$/.test(block.tagName);
-        if (heading) await room(70);
-        await text(value, heading ? 14 : 11, heading);
+        if (heading) {
+          // Keep consecutive headings with the start of their paragraph.
+          let reserve = 33;
+          ctx.font = 'bold 14px system-ui, sans-serif';
+          for (let j = i; j < blocks.length && /^(H[234]|SUMMARY)$/.test(blocks[j].tagName); j++) reserve += lines(blocks[j].textContent.trim(), WIDTH).length * 21 + 6;
+          await room(Math.min(reserve, H - 2 * M));
+        }
+        await text(value, heading ? 14 : 11, heading, false);
       }
     }
     await flush();

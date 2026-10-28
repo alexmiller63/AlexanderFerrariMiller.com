@@ -49,11 +49,11 @@ function chart(rowCount=11){
  return {body,main,button};
 }
 function environment(fixture,{exporter,share,standalone=false,loadError=false}={}){
- const events={},drawn=[],serialized=[],urlEvents=[];
+ const events={},drawn=[],serialized=[],urlEvents=[];let canvases=0;
  const document={currentScript:{src:'https://example.test/nativitas/natal-pdf.js'},head:element('head'),getElementById:id=>id==='natal-interpretations'?(fixture.interpretations||null):fixture.main,querySelector:()=>fixture.main,
   addEventListener:(n,fn)=>events[n]=fn,dispatchEvent:e=>events[e.type]?.(e),createTextNode:t=>element('text',t),createElement:tag=>{
-   const el=element(tag);if(tag==='canvas'){
-    const ctx={scale(){},fillRect(){},drawImage(){},strokeRect(){},measureText:t=>({width:t.length*6}),fillText(t,x,y){drawn.push({t,x,y,color:this.fillStyle});}};
+   const el=element(tag);if(tag==='canvas'){const page=++canvases;
+    const ctx={scale(){},fillRect(){},drawImage(){},strokeRect(){},measureText:t=>({width:t.length*6}),fillText(t,x,y){drawn.push({t,x,y,page,color:this.fillStyle});}};
     el.getContext=()=>ctx;
     el.toDataURL=()=> 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=';
    }return el;
@@ -185,4 +185,14 @@ test('Home Screen without file sharing downloads rather than opening a blob view
  env.window.open=()=>{opened++;};env.run('nativitas/natal-print.js');await f.button.events.click({target:f.button});
  const save=f.main.querySelectorAll('a')[0];save.click=()=>{saved++;};
  await f.button.events.click({target:f.button});assert.equal(opened,0);assert.equal(saved,1);assert.match(f.main.textContent,/Files/);
+});
+
+test('interpretation headings stay on the same page as their first paragraph lines',async()=>{
+ const f=chart(),env=environment(f);ready(f,env);
+ for(let i=0;i<80;i++)f.interpretations.append(element('h4',`Heading ${i}`),element('p',`Paragraph ${i}: `+'Long interpretation prose. '.repeat(12)));
+ env.run('nativitas/natal-pdf.js');await env.window.NativitasPDF(f.main,{...emptySelection,interpretations:true});
+ for(let i=0;i<80;i++){
+  const heading=env.drawn.find(x=>x.t===`Heading ${i}`),paragraph=env.drawn.find(x=>x.t.startsWith(`Paragraph ${i}:`));
+  assert.equal(heading.page,paragraph.page,`Heading ${i} was orphaned`);
+ }
 });
