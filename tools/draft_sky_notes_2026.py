@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """Draft reusable fixed-ID Sky Notes without scientific verification."""
+if __package__:
+    from .story_editorial import EDITORIAL_RULE
+else:
+    from story_editorial import EDITORIAL_RULE
 import json, os, re, subprocess, time, urllib.request, urllib.error
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
@@ -65,7 +69,7 @@ def main():
         if obj is None:
             raise RuntimeError("Missing registry ID "+ident)
         facts={k:v for k,v in obj.items() if k in ("fixed_object_id","name","object_type","constellation","designation","aliases","source_records")}
-        prompt=("Write a compelling evergreen Star Almanack draft for this fixed astronomical object. "
+        prompt=(EDITORIAL_RULE+"\n\n"+"Write a compelling evergreen Star Almanack draft for this fixed astronomical object. "
                 "Return JSON with exactly hed, dek, body. Hed evocative and accurate; dek illuminating; "
                 "body 250-400 words in developed paragraphs. Do not assert specific changing observing conditions. "
                 "Use only reliable widely-known facts or supplied metadata; avoid unsupported distances, dates, "

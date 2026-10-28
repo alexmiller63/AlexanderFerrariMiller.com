@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """Populate descriptor-first Sky Notes and story presentations from Calendar IDs."""
 from __future__ import annotations
+if __package__:
+    from .story_editorial import render_markdown
+else:
+    from story_editorial import render_markdown
 
 import csv
 import html
@@ -355,10 +359,7 @@ def render_inline_stories(stories: list[dict]) -> str:
         hed = html.escape(story["hed"])
         dek = html.escape(story["dek"])
         url = html.escape(reader_story_url(story["url"]), quote=True)
-        body_html = "".join(
-            f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
-            for part in re.split(r"\n\s*\n", story["body"].strip()) if part.strip()
-        )
+        body_html = render_markdown(story["body"])
         blocks.append(
             '<article class="sky-note-story sky-note-story-inline" '
             f'data-fixed-object-id="{story["fixed_object_id"]}" data-story-collection="{html.escape(story["collection"], quote=True)}">'
@@ -381,10 +382,7 @@ def render_linked_stories(stories: list[dict], elaborate: bool = False) -> str:
         url = html.escape(reader_story_url(story["url"]), quote=True)
         body_html = ""
         if elaborate:
-            body_html = "".join(
-                f'<p>{html.escape(" ".join(part.splitlines()))}</p>'
-                for part in re.split(r"\n\s*\n", story["body"].strip()) if part.strip()
-            )
+            body_html = render_markdown(story["body"])
         items.append(
             f'<li data-fixed-object-id="{story["fixed_object_id"]}" '
             f'data-story-collection="{html.escape(story["collection"], quote=True)}">'
