@@ -98,10 +98,19 @@ test('a failed local library load rejects rather than leaving the UI waiting',as
 
 test('button handles its own click without any document-level event',async()=>{
  const f=chart();let calls=0;const env=environment(f,{exporter:async()=>{calls++;return new Blob(['%PDF-test']);}});env.run('nativitas/natal-print.js');
- assert.equal(f.button.textContent,'Prepare printable PDF');
+ assert.equal(f.button.textContent,'Print / Save as PDF');
  const event={target:f.button};await f.button.events.click(event);
  assert.match(f.main.textContent,/Your PDF is ready/);
  await env.events.click(event);assert.equal(calls,1,'bubbling must not export twice');
  const holder=element('p'),next=element('button','Old label');next.setAttribute('data-natal-print','');holder.append(next);f.main.append(holder);env.window.NativitasPrint.bind(f.main);
- assert.equal(next.textContent,'Prepare printable PDF');assert.equal(typeof next.events.click,'function');
+ assert.equal(next.textContent,'Print / Save as PDF');assert.equal(typeof next.events.click,'function');
+});
+
+
+test('first click prints synchronously even when PDF preparation never finishes',()=>{
+ const f=chart();let printed=0;const env=environment(f,{exporter:()=>new Promise(()=>{})});
+ env.window.print=()=>{printed++;};env.run('nativitas/natal-print.js');
+ const event={target:f.button};f.button.events.click(event);
+ assert.equal(printed,1,'the first click must open printing without waiting for a PDF');
+ env.events.click(event);assert.equal(printed,1,'bubbling must not print twice');
 });

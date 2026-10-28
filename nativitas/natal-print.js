@@ -17,6 +17,10 @@
     const button = event.target.closest?.('[data-natal-print]');
     if (!button || button.disabled) return;
     handled.add(event);
+    // Keep native printing in the user's click: PDF loading/rendering may stall
+    // or fail, and must never be a prerequisite for opening the print dialog.
+    // Continue preparing a PDF for browsers that ignore or block window.print().
+    try { window.print(); } catch { /* PDF controls below provide a fallback. */ }
     const chart = output();
     chart.querySelector('.natal-print-actions')?.remove();
     if (pdfURL) { URL.revokeObjectURL(pdfURL); pdfURL = null; }
@@ -70,7 +74,7 @@
     for (const button of root?.querySelectorAll('[data-natal-print]') || []) {
       if (bound.has(button)) continue;
       bound.add(button);
-      button.textContent = 'Prepare printable PDF';
+      button.textContent = 'Print / Save as PDF';
       button.addEventListener('click', handlePrint);
     }
   }
@@ -78,3 +82,4 @@
   bind(output());
   document.addEventListener('click', handlePrint);
 })();
+
