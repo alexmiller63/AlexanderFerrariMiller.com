@@ -5,3 +5,42 @@
 #natal-chart-output details{margin:1rem 0}
 .ephemera-panel .unknown-time{display:flex;align-items:center;gap:.65rem;margin:1rem 0}
 .ephemera-panel .unknown-time input{display:inline-block;width:auto;margin:0;accent-color:var(--accent)}
+
+/* Keep labels readable without changing the chart geometry. */
+.wheel{overflow-x:auto}
+.wheel-hint{display:none}
+@media(max-width:600px){
+  .wheel svg{min-width:52rem}
+  .wheel-hint{display:block;color:var(--muted)}
+}
+
+.chart-print-location{display:none}
+@media print{
+  @page{margin:12mm}
+  :root{color-scheme:light;--text:#111;--muted:#333;--accent:#333}
+  body{background:#fff!important;color:#111!important;font-size:10pt;line-height:1.4}
+  .nativitas-nav,.nativitas-footer,.hero,#natal-interpretations,
+  .ephemera-panel>:not(#ephemera-results),#ephemera-download,#ephemera-summary,
+  [data-natal-print],.wheel-hint{display:none!important}
+  .page-shell,.ephemera-panel,#ephemera-results{padding:0!important;margin:0!important;background:none!important;border:0!important;max-width:none!important}
+  .chart-print-location{display:block}
+  .wheel{overflow:visible;max-width:165mm;margin:5mm auto;break-inside:avoid}
+  .wheel svg{min-width:0!important;width:100%;height:auto;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  table{width:100%;border-collapse:collapse}th,td{color:#111;border:1px solid #777;padding:2mm}
+  .wheel + .chart-note{break-after:page}
+  tr{break-inside:avoid}thead{display:table-header-group}
+  summary{font-weight:bold;break-after:avoid}
+  h1{font-size:24pt}h2{font-size:18pt}.chart-intro,.chart-note,.tagline{color:#333}
+}
+
+.print-aspect-key{display:none}
+
+@media print{
+  .wheel svg circle{fill:none;stroke:#000}
+  .wheel svg rect{fill:#fff}
+  .wheel svg text{fill:#000}
+  .wheel svg path,.wheel svg line{stroke:#000}
+  .aspect-color-key{display:none}
+  .print-aspect-key{display:block;color:#000}
+  body,th,td,.chart-intro,.chart-note,.tagline{color:#000!important}
+}

@@ -11,7 +11,7 @@ calculator: natal
   <title>Natal Chart Generator | Nativitas</title>
   <link rel="stylesheet" href="{{ '/nativitas/nativitas.css' | relative_url }}">
   {% include ephemera-style.html %}
-  <link rel="stylesheet" href="{{ '/nativitas/natal-chart.css' | relative_url }}?v=20261023-natal-1">
+  <link rel="stylesheet" href="{{ '/nativitas/natal-chart.css' | relative_url }}?v=20261028-natal-readable-1">
   <link rel="stylesheet" href="{{ '/nativitas/profiles.css' | relative_url }}?v=20261028-1">
 </head>
 <body>
@@ -26,9 +26,10 @@ calculator: natal
     <section id="natal-interpretations" aria-live="polite"></section>
   </main>
   {% include nativitas-footer.html %}
+  <script src="{{ '/nativitas/natal-print.js' | relative_url }}?v=20261028-natal-readable-1"></script>
   <script src="{{ '/nativitas/profiles.js' | relative_url }}?v=20261028-1"></script>
   <script src="{{ '/nativitas/draft-library.js' | relative_url }}?v=20261024-release-1"></script>
   <script src="{{ '/nativitas/interpretations.js' | relative_url }}?v=20261023-interpretations-1"></script>
-  <script src="{{ '/star-almanack/js/ephemera-form.js' | relative_url }}?v=20261028-profiles-1"></script>
+  <script src="{{ '/star-almanack/js/ephemera-form.js' | relative_url }}?v=20261028-natal-readable-1"></script>
 </body>
 </html>

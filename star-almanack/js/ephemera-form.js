@@ -293,7 +293,7 @@
       status.textContent = 'Starting the calculation engine…';
       showProgress('Preparing calculation…');
       if (!worker) {
-        worker = new Worker(new URL('js/ephemera-worker.js?v=20261023-natal-1', calculatorBase));
+        worker = new Worker(new URL('js/ephemera-worker.js?v=20261028-natal-readable-1', calculatorBase));
         worker.onmessage = ({data}) => {
           if (data.type === 'progress') {
             status.textContent = data.message;

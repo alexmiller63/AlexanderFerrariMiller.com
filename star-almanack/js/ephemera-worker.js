@@ -25,7 +25,7 @@ async function initialize() {
   progress('Loading the local astronomy data…');
   python.FS.mkdirTree('/app/.cache/skyfield');
   for (const name of ['application.zip', 'de440s.bsp', 'ceres_1900_2100.bsp']) {
-    const data = await bytes(name === 'application.zip' ? 'application.zip?v=20261027-radial-makeup-1' : name);
+    const data = await bytes(name === 'application.zip' ? 'application.zip?v=20261028-natal-readable-1' : name);
     python.FS.writeFile(name.endsWith('.bsp') ? '/app/.cache/skyfield/' + name : '/app/' + name, data);
   }
   await python.runPythonAsync(`

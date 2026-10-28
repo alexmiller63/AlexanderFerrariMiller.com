@@ -164,7 +164,8 @@ def render(rows, instant, zone, houses, latitude, longitude, *, fragment=False):
     # Verify symbol blocks remain separate while retaining true longitudes.
     assert all(abs(x-px)>=70 or abs(y-py)>=54 for i,(x,y) in enumerate(centers) for px,py in centers[:i])
     local=instant.astimezone(ZoneInfo(zone))
-    label=local.strftime('%B %d, %Y · %-I:%M %p %Z')
+    clock = f"{local.hour % 12 or 12}:{local.minute:02d} {'AM' if local.hour < 12 else 'PM'} {local.tzname()}"
+    label = local.strftime('%B %d, %Y') + ' · ' + clock
     wheel='\n'.join(svg)
     cusp_rows = ''.join(f'<tr><th scope="row">{i+1}</th><td>{sign_position(cusp)}&#xfe0e;</td></tr>' for i,cusp in enumerate(houses or []))
     position_rows = ''.join(f'<tr><th scope="row">{row["symbol"]}&#xfe0e; {row["body"].title()}</th><td>{sign_position(row["longitude"])}&#xfe0e;</td></tr>' for row in rows)
@@ -182,28 +183,67 @@ layout: null
 <style>
 .chart-intro,.chart-note{max-width:44rem;color:var(--muted)}
 .wheel{max-width:46rem;margin:2rem auto}
+.wheel{overflow-x:auto}
+.wheel-hint{display:none}
+@media(max-width:600px){.wheel svg{min-width:52rem}.wheel-hint{display:block;color:var(--muted)}}
 .wheel svg{display:block;width:100%;height:auto;font-family:"DejaVu Sans","Segoe UI Symbol","Apple Symbols",sans-serif;text-anchor:middle;dominant-baseline:central}
 table{border-collapse:collapse;max-width:28rem;width:100%}th,td{border:1px solid #64768c;padding:.35rem .75rem;text-align:left}
+
+.chart-print-location{display:none}
+@media print{
+  @page{margin:12mm}
+  :root{color-scheme:light;--text:#111;--muted:#333;--accent:#333}
+  body{background:#fff!important;color:#111!important;font-size:10pt;line-height:1.4}
+  .nativitas-nav,.nativitas-footer,.hero,#natal-interpretations,
+  .ephemera-panel>:not(#ephemera-results),#ephemera-download,#ephemera-summary,
+  [data-natal-print],.wheel-hint{display:none!important}
+  .page-shell,.ephemera-panel,#ephemera-results{padding:0!important;margin:0!important;background:none!important;border:0!important;max-width:none!important}
+  .chart-print-location{display:block}
+  .wheel{overflow:visible;max-width:165mm;margin:5mm auto;break-inside:avoid}
+  .wheel svg{min-width:0!important;width:100%;height:auto;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  table{width:100%;border-collapse:collapse}th,td{color:#111;border:1px solid #777;padding:2mm}
+  .wheel + .chart-note{break-after:page}
+  tr{break-inside:avoid}thead{display:table-header-group}
+  summary{font-weight:bold;break-after:avoid}
+  h1{font-size:24pt}h2{font-size:18pt}.chart-intro,.chart-note,.tagline{color:#333}
+}
+
+.print-aspect-key{display:none}
+
+@media print{
+  .wheel svg circle{fill:none;stroke:#000}
+  .wheel svg rect{fill:#fff}
+  .wheel svg text{fill:#000}
+  .wheel svg path,.wheel svg line{stroke:#000}
+  .aspect-color-key{display:none}
+  .print-aspect-key{display:block;color:#000}
+  body,th,td,.chart-intro,.chart-note,.tagline{color:#000!important}
+}
 </style>
 </head>
 <body>
 {% include nativitas-nav.html %}
 <main class="page-shell">
 <h1>Natal Chart</h1>
+<p><button type="button" data-natal-print>Print / Save as PDF</button></p>
 <p class="tagline">Your selected sky</p>
 <p class="chart-intro">LABEL<br><time datetime="STAMP">UTCSTAMP</time></p>
-<figure class="wheel">WHEEL</figure>
+<p class="wheel-hint">Swipe across the chart to read the planet labels.</p>
+<p class="chart-print-location">PRINTLOCATION</p>
+<figure class="wheel" tabindex="0" aria-label="Natal chart; scroll horizontally on small screens">WHEEL</figure>
 <p class="chart-note">HOUSE_DESCRIPTION</p>
 <details open><summary>Planet positions</summary><table><caption>Geocentric apparent positions in the tropical zodiac</caption><thead><tr><th>Body</th><th>Position</th></tr></thead><tbody>POSITIONS</tbody></table></details>
-<p class="chart-note"><span style="color:#75b9f4">Blue: △ trine, dashed ⚹ sextile.</span> <span style="color:#ef7e83">Red: □ square, ☍ opposition.</span> Conjunctions ☌ are listed below without a line.</p>
+<p class="chart-note print-aspect-key">Aspect lines are printed in black; dashed lines show sextiles. See the major aspects table for each pair, type and orb.</p>
+<p class="chart-note aspect-color-key"><span style="color:#75b9f4">Blue: △ trine, dashed ⚹ sextile.</span> <span style="color:#ef7e83">Red: □ square, ☍ opposition.</span> Conjunctions ☌ are listed below without a line.</p>
 <details><summary>Major aspects (ASPECTCOUNT)</summary><table><caption>Planet pairs and departure from an exact aspect</caption><thead><tr><th>Planets</th><th>Aspect</th><th>Orb</th></tr></thead><tbody>ASPECTROWS</tbody></table><p class="chart-note">Orbs: 10° for conjunctions, squares, trines and oppositions; 6° for sextiles. All eleven displayed bodies are included; aspects to house cusps and chart angles are omitted. Orb choices are astrological conventions.</p></details>
 HOUSE_TABLE
 <p class="chart-note">Geocentric apparent ecliptic longitudes of date, calculated with our stored DE440s and Ceres source kernels through Skyfield. Placidus houses, when shown, use the selected coordinates and local apparent sidereal time. Planet positions remain provisional pending independent validation.</p>
 </main>
 {% include nativitas-footer.html %}
+<script src="natal-print.js?v=20261028-natal-readable-1"></script>
 </body>
 </html>
-'''.replace('LABEL',html.escape(label)).replace('UTCSTAMP',instant.strftime('%Y-%m-%d %H:%M UTC')).replace('STAMP',instant.isoformat()).replace('WHEEL',wheel).replace('POSITIONS',position_rows).replace('HOUSE_DESCRIPTION', 'Tropical zodiac with twelve Placidus houses. AS is the Ascendant, DS the Descendant, MC the Midheaven, and IC the lower meridian. The Ascendant sits at the left.' if houses else 'Birth time unknown. Positions and aspects are a noon snapshot in the selected timezone, not exact birth positions. The Moon can move substantially during the day. Houses and chart angles are omitted.').replace('HOUSE_TABLE', f'<details><summary>House cusp positions</summary><table><caption>Placidus · {latitude:.4f}°, {longitude:.4f}°</caption><thead><tr><th>House</th><th>Position</th></tr></thead><tbody>{cusp_rows}</tbody></table></details>' if houses else '').replace('ASPECTROWS',aspect_rows).replace('ASPECTCOUNT',str(len(aspects)))
+'''.replace('PRINTLOCATION', html.escape(f'Location: {latitude:.5f}°, {longitude:.5f}°. Time zone: {zone}.')).replace('LABEL',html.escape(label)).replace('UTCSTAMP',instant.strftime('%Y-%m-%d %H:%M UTC')).replace('STAMP',instant.isoformat()).replace('WHEEL',wheel).replace('POSITIONS',position_rows).replace('HOUSE_DESCRIPTION', 'Tropical zodiac with twelve Placidus houses. AS is the Ascendant, DS the Descendant, MC the Midheaven, and IC the lower meridian. The Ascendant sits at the left.' if houses else 'Birth time unknown. Positions and aspects are a noon snapshot in the selected timezone, not exact birth positions. The Moon can move substantially during the day. Houses and chart angles are omitted.').replace('HOUSE_TABLE', f'<details><summary>House cusp positions</summary><table><caption>Placidus · {latitude:.4f}°, {longitude:.4f}°</caption><thead><tr><th>House</th><th>Position</th></tr></thead><tbody>{cusp_rows}</tbody></table></details>' if houses else '').replace('ASPECTROWS',aspect_rows).replace('ASPECTCOUNT',str(len(aspects)))
     return page.split('<main class="page-shell">', 1)[1].split('</main>', 1)[0].replace('<h1>Natal Chart</h1>', '') if fragment else page
 
 
