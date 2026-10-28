@@ -32,14 +32,34 @@
     opposition:'The planets face one another across a divide, highlighting contrasts that call for awareness and balance.'
   };
   const title = s => s[0].toUpperCase()+s.slice(1);
-  function render(data) {
-    if (window.NativitasDraftLibrary) {
-      const target = document.getElementById('natal-interpretations');
-      if (target) window.NativitasDraftLibrary.natal(data, target).catch(e => { target.textContent = e.message; });
-      return;
-    }
+  let renderRevision = 0;
+  function notify() { document.dispatchEvent(new Event('nativitas-interpretations-ready')); }
+  function pending(target) {
+    target.setAttribute('data-print-ready', 'false');
+    target.setAttribute('aria-busy', 'true');
+    target.replaceChildren();
+    notify();
+  }
+  async function render(data) {
+    const revision = ++renderRevision;
     const target = document.getElementById('natal-interpretations');
     if (!target) return;
+    pending(target);
+    const snapshot = document.createElement('div');
+    try {
+      if (window.NativitasDraftLibrary) await window.NativitasDraftLibrary.natal(data, snapshot);
+      else renderTraditional(data, snapshot);
+      if (revision !== renderRevision) return;
+      target.replaceChildren(...snapshot.childNodes);
+      target.setAttribute('data-print-ready', 'true');
+    } catch (error) {
+      if (revision !== renderRevision) return;
+      target.textContent = 'Interpretations are unavailable for this chart.';
+    }
+    target.setAttribute('aria-busy', 'false');
+    notify();
+  }
+  function renderTraditional(data, target) {
     target.replaceChildren();
     const heading = document.createElement('h2');
     heading.textContent = 'Traditional interpretations';
@@ -93,6 +113,9 @@
     let revision = 0;
     const observer = new MutationObserver(async () => {
       const current = ++revision;
+      ++renderRevision;
+      const interpretationTarget = document.getElementById('natal-interpretations');
+      if (interpretationTarget) pending(interpretationTarget);
       // The form finishes setting the download URL in the same JS task.
       await new Promise(resolve => setTimeout(resolve, 0));
       if (current !== revision || !download.href.startsWith('blob:')) return;
@@ -100,14 +123,19 @@
         const response = await fetch(download.href);
         const report = await response.json();
         if (current === revision && report.calculator !== 'ephemera' && Array.isArray(report.bodies) && Array.isArray(report.aspects)) {
-          render(report);
+          await render(report);
         }
       } catch (error) {
         const target = document.getElementById('natal-interpretations');
-        if (target) target.textContent = 'Interpretations are unavailable for this chart.';
+        if (current === revision && target) {
+          target.textContent = 'Interpretations are unavailable for this chart.';
+          target.setAttribute('aria-busy', 'false');
+          notify();
+        }
       }
     });
     observer.observe(chart, {childList: true});
   }
   window.NativitasInterpretations = {render};
 })();
+

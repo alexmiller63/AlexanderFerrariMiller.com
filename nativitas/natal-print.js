@@ -1,8 +1,7 @@
 (() => {
   'use strict';
-  let folded = null, pdfURL = null;
+  let folded = null, current = null;
   const output = () => document.getElementById('natal-chart-output') || document.querySelector('main');
-  const standalone = () => navigator.standalone === true || window.matchMedia?.('(display-mode: standalone)').matches === true;
   window.addEventListener('beforeprint', () => {
     if (folded !== null) return;
     folded = [...(output()?.querySelectorAll('details:not([open])') || [])];
@@ -12,87 +11,131 @@
     folded?.forEach(section => { section.open = false; });
     folded = null;
   });
-  const handled = new WeakSet();
+  const choices = [
+    ['wheel', 'Chart wheel'], ['positions', 'Planet positions'],
+    ['aspects', 'Major aspects'], ['houses', 'House cusps'],
+    ['interpretations', 'Interpretations']
+  ];
+  const bound = new WeakMap(), handled = new WeakSet();
+  function clearPDF(state) {
+    state.revision++;
+    state.file = null;
+    if (state.url) URL.revokeObjectURL(state.url);
+    state.url = null;
+    state.panel.replaceChildren();
+    state.panel.append(state.status);
+    state.status.textContent = 'Choose what to include, then tap Print or save PDF.';
+  }
+  function interpretationReady(state) {
+    const ready = document.getElementById('natal-interpretations')?.getAttribute('data-print-ready') === 'true';
+    const input = state.inputs.interpretations;
+    if (input.disabled === !ready) return;
+    input.disabled = !ready;
+    state.interpretationLabel.textContent = ready ? 'Interpretations' : 'Interpretations (loading or unavailable)';
+    clearPDF(state);
+  }
+  document.addEventListener('nativitas-interpretations-ready', () => {
+    if (current?.button.isConnected) interpretationReady(current);
+  });
   async function handlePrint(event) {
     if (handled.has(event)) return;
     const button = event.target.closest?.('[data-natal-print]');
     if (!button || button.disabled) return;
     handled.add(event);
-    // Keep native printing in the user's click: PDF loading/rendering may stall
-    // or fail, and must never be a prerequisite for opening the print dialog.
-    // Continue preparing a PDF for browsers that ignore or block window.print().
-    const homeScreen = standalone();
-    if (!homeScreen) {
-      try { window.print(); } catch { /* PDF controls below provide a fallback. */ }
-    }
-    const chart = output();
-    chart.querySelector('.natal-print-actions')?.remove();
-    if (pdfURL) { URL.revokeObjectURL(pdfURL); pdfURL = null; }
-    const panel = document.createElement('section');
-    panel.className = 'natal-print-actions';
-    panel.setAttribute('aria-label', 'Print or save your chart');
-    const status = document.createElement('p');
-    status.setAttribute('role', 'status');
-    status.textContent = 'Preparing your black-on-white PDF…';
-    panel.append(status);
-    button.parentElement.after(panel);
-    button.disabled = true;
-    try {
-      const blob = await window.NativitasPDF(chart);
-      // A replacement chart discards its old export rather than showing mixed data.
-      if (!panel.isConnected) return;
-      pdfURL = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = pdfURL;
-      link.target = '_blank'; link.rel = 'noopener';
-      link.textContent = 'Open PDF';
-      // The standalone iPhone PDF viewer shares a temporary URL rather than
-      // reliably handing off the document. Use file sharing in that mode.
-      if (!homeScreen) panel.append(link);
-      const download = document.createElement('a');
-      download.href = pdfURL; download.download = 'Nativitas-Natal-Chart.pdf';
-      download.textContent = 'Save PDF'; panel.append(download);
-      const file = new File([blob], 'Nativitas-Natal-Chart.pdf', {type: 'application/pdf'});
-      let canShareFile = false;
-      try { canShareFile = typeof navigator.share === 'function' && !!navigator.canShare?.({files: [file]}); } catch { /* Keep download available. */ }
-      const fileInstructions = 'Choose Print in the share sheet. If Print is missing, choose Save to Files, then open Nativitas-Natal-Chart.pdf in Files and choose Share → Print.';
-      if (canShareFile) {
-        const share = document.createElement('button');
-        share.type = 'button'; share.textContent = homeScreen ? 'Print or save PDF' : 'Share PDF';
-        share.addEventListener('click', async () => {
-          status.textContent = fileInstructions;
-          // No asynchronous work before share(): this tap supplies activation.
-          try { await navigator.share({files: [file]}); }
-          catch (error) { if (error.name !== 'AbortError') status.textContent = 'Sharing is unavailable. Choose Save PDF, then open the downloaded PDF in Files and choose Share → Print.'; }
-        });
-        panel.append(share);
+    const state = bound.get(button);
+    if (!state) return;
+    const {status} = state;
+    if (state.file) {
+      // This click supplies activation; do not load or render before sharing.
+      if (state.canShare) {
+        status.textContent = 'Choose Print in the share sheet. If Print is missing, choose Save to Files, then open Nativitas-Natal-Chart.pdf in Files and choose Share → Print.';
+        try { await navigator.share({files: [state.file]}); }
+        catch (error) {
+          if (error.name !== 'AbortError') status.textContent = 'Sharing is unavailable. Choose Save PDF, then open the downloaded PDF in Files and choose Share → Print.';
+        }
+      } else if (state.homeScreen) {
+        status.textContent = 'Open the saved PDF in Files and choose Share → Print.';
+        state.save.click();
+      } else {
+        status.textContent = 'Open the PDF to print it, or choose Save PDF to keep a copy.';
+        try { window.open(state.url, '_blank', 'noopener'); }
+        catch { status.textContent = 'Choose Open PDF or Save PDF below to print or keep your PDF.'; }
       }
-      const print = document.createElement('button');
-      print.type = 'button'; print.textContent = 'Print this page';
-      print.addEventListener('click', () => {
-        status.textContent = 'If no print dialog opens, choose Open PDF and print or share the PDF.';
-        try { window.print(); }
-        catch { status.textContent = 'Printing is unavailable here. Choose Open PDF to print or share the PDF.'; }
-      });
-      if (!homeScreen) panel.append(print);
-      status.textContent = homeScreen
-        ? (canShareFile ? 'Your PDF is ready. Tap Print or save PDF. ' + fileInstructions : 'Your PDF is ready. Choose Save PDF, then open the downloaded PDF in Files and choose Share → Print.')
-        : 'Your PDF is ready. Open it to view, print or share, or save a copy.';
+      return;
+    }
+    const selection = Object.fromEntries(Object.entries(state.inputs).map(([key, input]) => [key, input.checked && !input.disabled]));
+    if (!Object.values(selection).some(Boolean)) {
+      status.textContent = 'Choose at least one section to print.';
+      return;
+    }
+    const revision = state.revision;
+    button.disabled = true;
+    status.textContent = 'Preparing your selected sections as a black-on-white PDF…';
+    try {
+      const blob = await window.NativitasPDF(state.chart, selection);
+      if (!button.isConnected || state.revision !== revision) return;
+      state.file = new File([blob], 'Nativitas-Natal-Chart.pdf', {type: 'application/pdf'});
+      state.url = URL.createObjectURL(blob);
+      state.canShare = false;
+      try { state.canShare = typeof navigator.share === 'function' && !!navigator.canShare?.({files: [state.file]}); } catch { /* Download remains available. */ }
+      // Keep the working iPhone file handoff, rather than a standalone blob viewer.
+      const homeScreen = navigator.standalone === true || window.matchMedia?.('(display-mode: standalone)').matches === true;
+      state.homeScreen = homeScreen;
+      if (!homeScreen) {
+        const open = document.createElement('a');
+        open.href = state.url; open.target = '_blank'; open.rel = 'noopener';
+        open.textContent = 'Open PDF'; state.panel.append(open);
+      }
+      const save = document.createElement('a');
+      save.href = state.url; save.download = state.file.name;
+      save.textContent = 'Save PDF'; state.panel.append(save);
+      state.save = save;
+      status.textContent = state.canShare
+        ? 'Your selected PDF is ready. Tap Print or save PDF again to choose Print or Save to Files.'
+        : homeScreen
+          ? 'Your selected PDF is ready. Tap Print or save PDF again to save it, then open it in Files and choose Share → Print.'
+          : 'Your selected PDF is ready. Tap Print or save PDF again to open it, or choose Save PDF below.';
     } catch (error) {
-      status.textContent = `Could not prepare the PDF. ${error.message || 'Please try again.'}`;
+      if (state.revision === revision && button.isConnected) status.textContent = `Could not prepare the PDF. ${error.message || 'Please try again.'}`;
     } finally { button.disabled = false; }
   }
-  const bound = new WeakSet();
   function bind(root) {
     for (const button of root?.querySelectorAll('[data-natal-print]') || []) {
       if (bound.has(button)) continue;
-      bound.add(button);
-      button.textContent = standalone() ? 'Prepare PDF for printing' : 'Print / Save as PDF';
+      if (current) clearPDF(current);
+      const interpretations = document.getElementById('natal-interpretations');
+      interpretations?.setAttribute('data-print-ready', 'false');
+      const fieldset = document.createElement('fieldset');
+      fieldset.className = 'natal-print-options';
+      const legend = document.createElement('legend');
+      legend.textContent = 'Include in your PDF'; fieldset.append(legend);
+      const state = {button, chart: root, inputs: {}, revision: 0};
+      for (const [key, title] of choices) {
+        const label = document.createElement('label');
+        const input = document.createElement('input');
+        input.type = 'checkbox'; input.checked = true;
+        input.setAttribute('data-print-section', key);
+        if (key === 'houses' && ![...root.querySelectorAll('summary')].some(el => el.textContent.startsWith('House cusp'))) { input.checked = false; input.disabled = true; }
+        const text = document.createElement('span'); text.textContent = title;
+        label.append(input, text); fieldset.append(label);
+        state.inputs[key] = input;
+        if (key === 'interpretations') state.interpretationLabel = text;
+        input.addEventListener('change', () => clearPDF(state));
+      }
+      button.parentElement.before(fieldset);
+      state.panel = document.createElement('section');
+      state.panel.className = 'natal-print-actions';
+      state.panel.setAttribute('aria-label', 'Printable PDF');
+      state.status = document.createElement('p'); state.status.setAttribute('role', 'status');
+      button.parentElement.after(state.panel);
+      bound.set(button, state); current = state;
+      button.textContent = 'Print or save PDF';
       button.addEventListener('click', handlePrint);
+      clearPDF(state);
+      interpretationReady(state);
     }
   }
   window.NativitasPrint = {bind};
   bind(output());
   document.addEventListener('click', handlePrint);
 })();
-

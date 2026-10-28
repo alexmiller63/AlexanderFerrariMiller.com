@@ -48,3 +48,10 @@
 .natal-print-actions{border:1px solid #64768c;border-radius:8px;padding:1rem;margin:1rem 0}
 .natal-print-actions a,.natal-print-actions button{display:inline-block;margin:.25rem .75rem .25rem 0}
 @media print{.natal-print-actions{display:none!important}}
+
+
+.natal-print-options{border:1px solid #64768c;border-radius:8px;padding:1rem;margin:1rem 0;display:flex;flex-wrap:wrap;gap:.6rem 1.2rem}
+.natal-print-options legend{padding:0 .4rem;font-weight:600}
+.ephemera-panel .natal-print-options label{display:flex;align-items:center;gap:.5rem;margin:0}
+.ephemera-panel .natal-print-options input{width:auto;margin:0;accent-color:var(--accent)}
+@media print{.natal-print-options{display:none!important}}

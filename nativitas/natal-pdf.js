@@ -36,14 +36,19 @@
       return image;
     } finally { URL.revokeObjectURL(url); }
   }
-  window.NativitasPDF = async source => {
+  window.NativitasPDF = async (source, selection = {}) => {
+    const include = {wheel: true, positions: true, aspects: true, houses: true, interpretations: false, ...selection};
+    if (!['wheel', 'positions', 'aspects', 'houses', 'interpretations'].some(key => include[key])) throw Error('Choose at least one section to print.');
     if (!source?.querySelector('.wheel svg')) throw Error('Generate a chart first.');
     // Snapshot before asynchronous loading; a new calculation must not mix charts.
     const chart = source.cloneNode(true);
+    const interpretationSource = include.interpretations ? document.getElementById('natal-interpretations') : null;
+    if (include.interpretations && interpretationSource?.getAttribute('data-print-ready') !== 'true') throw Error('Interpretations are still loading or unavailable. Choose other sections or try again shortly.');
+    const interpretations = interpretationSource?.cloneNode(true);
     chart.querySelectorAll('br').forEach(el => el.replaceWith(document.createTextNode('\n')));
-    const [{PDFDocument}, wheel] = await Promise.all([loadLibrary(), wheelImage(chart.querySelector('.wheel svg'))]);
+    const [{PDFDocument}, wheel] = await Promise.all([loadLibrary(), include.wheel ? wheelImage(chart.querySelector('.wheel svg')) : Promise.resolve(null)]);
     const pdf = await PDFDocument.create();
-    pdf.setTitle('Nativitas Natal Chart');
+    pdf.setTitle('Nativitas Natal Report');
     const W = 595, H = 842, M = 36, WIDTH = W - M * 2;
     let canvas, ctx, y;
     function newPage() {
@@ -67,8 +72,14 @@
         let line = '';
         for (const word of paragraph.split(/\s+/)) {
           const next = line ? `${line} ${word}` : word;
-          if (line && ctx.measureText(next).width > width) { result.push(line); line = word; }
-          else line = next;
+          if (ctx.measureText(next).width <= width) { line = next; continue; }
+          if (line) result.push(line);
+          line = '';
+          // Long citation URLs must wrap within the page margins too.
+          for (const character of word) {
+            if (line && ctx.measureText(line + character).width > width) { result.push(line); line = ''; }
+            line += character;
+          }
         }
         result.push(line);
       }
@@ -87,19 +98,25 @@
       y += 6;
     }
     newPage();
-    await text('Nativitas · Natal Chart', 21, true);
+    await text('Nativitas · Natal Report', 21, true);
     const intro = chart.querySelector('.chart-intro');
     if (intro) await text(intro.textContent);
     const location = chart.querySelector('.chart-print-location');
     if (location) await text(location.textContent);
-    await room(WIDTH);
-    ctx.drawImage(wheel, M, y, WIDTH, WIDTH); y += WIDTH + 12;
-    const note = chart.querySelector('.wheel + .chart-note');
-    if (note) await text(note.textContent);
-    await flush(); newPage();
+    const chartNote = chart.querySelector('.wheel + .chart-note');
+    if (!wheel && chartNote) await text(chartNote.textContent, 10);
+    if (wheel) {
+      await room(WIDTH);
+      ctx.drawImage(wheel, M, y, WIDTH, WIDTH); y += WIDTH + 12;
+      const note = chart.querySelector('.wheel + .chart-note');
+      if (note) await text(note.textContent);
+      if (include.positions || include.aspects || include.houses || include.interpretations) { await flush(); newPage(); }
+    }
     for (const table of chart.querySelectorAll('table')) {
       const detail = table.closest('details');
       const heading = detail?.querySelector('summary')?.textContent || table.caption?.textContent || 'Chart positions';
+      const category = heading.startsWith('Major aspects') ? 'aspects' : heading.startsWith('House cusp') ? 'houses' : 'positions';
+      if (!include[category]) continue;
       await room(90); await text(heading, 15, true);
       if (table.caption) await text(table.caption.textContent, 10);
       const rows = [...table.rows];
@@ -130,10 +147,28 @@
       for (const note of detail?.querySelectorAll('.chart-note') || []) await text(note.textContent, 10);
     }
     const key = chart.querySelector('.print-aspect-key');
-    if (key) await text(key.textContent, 10);
+    if (key && include.wheel) await text(key.textContent, 10);
     const sourceNote = [...chart.querySelectorAll('.chart-note')].find(el => el.textContent.includes('DE440s'));
     if (sourceNote) await text(sourceNote.textContent, 10);
+    if (interpretations) {
+      if (y > M && (include.wheel || include.positions || include.aspects || include.houses)) { await flush(); newPage(); }
+      await text('Interpretations', 21, true);
+      // Preserve document order, closed details, source notes and inline text.
+      for (const block of interpretations.querySelectorAll('h2,h3,h4,summary,p,li')) {
+        if (block.tagName === 'LI' && block.querySelector('p')) continue;
+        let value = block.textContent.trim();
+        for (const link of block.querySelectorAll('a')) {
+          const href = link.getAttribute('href');
+          if (/^https?:\/\//.test(href || '') && !value.includes(href)) value += ` (${href})`;
+        }
+        if (!value) continue;
+        const heading = /^(H[234]|SUMMARY)$/.test(block.tagName);
+        if (heading) await room(70);
+        await text(value, heading ? 14 : 11, heading);
+      }
+    }
     await flush();
     return new Blob([await pdf.save()], {type: 'application/pdf'});
   };
 })();
+
