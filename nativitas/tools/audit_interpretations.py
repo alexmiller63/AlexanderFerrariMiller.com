@@ -11,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOG = ROOT / "data" / "aspect-interpretations.json"
-REVIEWED = {"reviewed-against-online-reference", "approved"}
+REVIEWED = {"approved"}  # Historical-source approval only; online references are drafts
 EXCLUDED = {"astronomically-unavailable"}
 
 def main():
@@ -52,7 +52,7 @@ def main():
     args.out.mkdir(parents=True, exist_ok=True)
     summary = {"total": len(data["entries"]), "status_counts": dict(sorted(counts.items())),
                "remaining_for_review": len(queue), "errors": errors,
-               "note": "Automated structural audit only; source accuracy requires human editorial review."}
+               "note": "Automated structural audit only; legacy online-reference status is not historical verification. Source accuracy requires passage-level editorial review."}
     (args.out / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     (args.out / "next-batch.json").write_text(json.dumps(queue[:args.batch_size], indent=2) + "\n")
     lines = ["# Nativitas interpretation audit", "",
