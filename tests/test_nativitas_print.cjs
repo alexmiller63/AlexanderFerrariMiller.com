@@ -68,7 +68,7 @@ function environment(fixture,{exporter,share,standalone=false,loadError=false}={
  class URLs extends URL{static createObjectURL(blob){urlEvents.push(blob);return `blob:test-${urlEvents.length}`;}static revokeObjectURL(){}}
  const context={window,document,navigator,Image,XMLSerializer,URL:URLs,Blob,File,Event,MutationObserver:class{constructor(fn){this.callback=fn;}observe(){}},console,queueMicrotask,setTimeout,clearTimeout};
  const sandbox=vm.createContext(context);
- const run=file=>vm.runInContext(fs.readFileSync(file==='nativitas/natal-print.js' && process.env.NATIVITAS_PRINT_SOURCE ? process.env.NATIVITAS_PRINT_SOURCE : path.join(root,file),'utf8'),sandbox);
+ const run=file=>vm.runInContext(fs.readFileSync(file==='nativitas/natal-print.js' && process.env.NATIVITAS_PRINT_SOURCE ? process.env.NATIVITAS_PRINT_SOURCE : file==='nativitas/natal-pdf.js' && process.env.NATIVITAS_PDF_SOURCE ? process.env.NATIVITAS_PDF_SOURCE : path.join(root,file),'utf8'),sandbox);
  if (!loadError) { run('nativitas/vendor/pdf-lib/pdf-lib-1.17.1.min.js'); window.PDFLib=sandbox.PDFLib; }
  return {events,drawn,images,serialized,urlEvents,window,document,run};
 }
@@ -207,4 +207,11 @@ test('on-screen Small and Large resize the wheel without changing the PDF select
  small.checked=true;small.events.change();assert.equal(f.main.querySelector('.wheel').getAttribute('data-chart-view-size'),'small');
  assert.equal(captured.chartSize,undefined);await f.button.events.click({target:f.button});assert.equal(exports,1);assert.equal(shares,1);
  large.checked=true;large.events.change();assert.equal(f.main.querySelector('.wheel').getAttribute('data-chart-view-size'),'large');
+});
+
+test('Synastry PDF has its own title and classifies cross-chart aspects and house overlays',async()=>{
+ const f=chart(),env=environment(f);f.main.setAttribute('data-report-title','Nativitas Synastry Report');
+ const details=f.main.querySelectorAll('details');details[1].querySelector('table').setAttribute('data-print-heading','Cross-chart aspects');details[1].querySelector('table').setAttribute('data-print-section','aspects');details[2].querySelector('summary').textContent='House overlays (3)';
+ env.run('nativitas/natal-pdf.js');const blob=await env.window.NativitasPDF(f.main,{...emptySelection,aspects:true,houses:true});const pdf=await PDFDocument.load(await blob.arrayBuffer());
+ assert.equal(pdf.getTitle(),'Nativitas Synastry Report');assert.ok(env.drawn.some(x=>x.t==='Cross-chart aspects'));assert.ok(env.drawn.some(x=>x.t==='House overlays (3)'));assert.equal(env.drawn.some(x=>x.t==='Planet positions'),false);
 });

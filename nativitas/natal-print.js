@@ -27,7 +27,7 @@
     state.status.textContent = 'Choose what to include, then tap Print or save PDF.';
   }
   function interpretationReady(state) {
-    const ready = document.getElementById('natal-interpretations')?.getAttribute('data-print-ready') === 'true';
+    const ready = (state.chart.querySelector('.synastry-interpretations') || document.getElementById('natal-interpretations'))?.getAttribute('data-print-ready') === 'true';
     const input = state.inputs.interpretations;
     if (input.disabled === !ready) return;
     input.disabled = !ready;
@@ -48,7 +48,7 @@
     if (state.file) {
       // This click supplies activation; do not load or render before sharing.
       if (state.canShare) {
-        status.textContent = 'Choose Print in the share sheet. If Print is missing, choose Save to Files, then open Nativitas-Natal-Chart.pdf in Files and choose Share → Print.';
+        status.textContent = 'Choose Print in the share sheet. If Print is missing, choose Save to Files, then open the PDF in Files and choose Share → Print.';
         try { await navigator.share({files: [state.file]}); }
         catch (error) {
           if (error.name !== 'AbortError') status.textContent = 'Sharing is unavailable. Choose Save PDF, then open the downloaded PDF in Files and choose Share → Print.';
@@ -74,7 +74,7 @@
     try {
       const blob = await window.NativitasPDF(state.chart, selection);
       if (!button.isConnected || state.revision !== revision) return;
-      state.file = new File([blob], 'Nativitas-Natal-Chart.pdf', {type: 'application/pdf'});
+      state.file = new File([blob], state.chart.id === 'synastry-results' ? 'Nativitas-Synastry.pdf' : 'Nativitas-Natal-Chart.pdf', {type: 'application/pdf'});
       state.url = URL.createObjectURL(blob);
       state.canShare = false;
       try { state.canShare = typeof navigator.share === 'function' && !!navigator.canShare?.({files: [state.file]}); } catch { /* Download remains available. */ }
@@ -103,7 +103,7 @@
     for (const button of root?.querySelectorAll('[data-natal-print]') || []) {
       if (bound.has(button)) continue;
       if (current) clearPDF(current);
-      const interpretations = document.getElementById('natal-interpretations');
+      const interpretations = root.querySelector('.synastry-interpretations') || document.getElementById('natal-interpretations');
       interpretations?.setAttribute('data-print-ready', 'false');
       const fieldset = document.createElement('fieldset');
       fieldset.className = 'natal-print-options';
@@ -115,8 +115,8 @@
         const input = document.createElement('input');
         input.type = 'checkbox'; input.checked = true;
         input.setAttribute('data-print-section', key);
-        if (key === 'houses' && ![...root.querySelectorAll('summary')].some(el => el.textContent.startsWith('House cusp'))) { input.checked = false; input.disabled = true; }
-        const text = document.createElement('span'); text.textContent = title;
+        if (key === 'houses' && ![...root.querySelectorAll('summary')].some(el => el.textContent.startsWith('House'))) { input.checked = false; input.disabled = true; }
+        const text = document.createElement('span'); text.textContent = key === 'houses' && root.id === 'synastry-results' ? 'House overlays' : title;
         label.append(input, text); fieldset.append(label);
         state.inputs[key] = input;
         if (key === 'interpretations') state.interpretationLabel = text;
@@ -158,7 +158,8 @@
       interpretationReady(state);
     }
   }
-  window.NativitasPrint = {bind};
+  window.NativitasPrint = {bind, invalidate: () => { if (current) clearPDF(current); }};
   bind(output());
   document.addEventListener('click', handlePrint);
 })();
+

@@ -3,10 +3,11 @@
       <h2>Your birth details</h2>
       <p>Choose the date, local time and place of birth. Generate a tropical natal chart with Placidus houses, planet positions and major aspects.</p>
       {% else %}
-      <h2>Ephemeris generator</h2>
-      <p>Choose a city or enter coordinates, then choose an instant. Your device calculates the positions and rise/set times here, using astronomy data stored with this site.</p>
+      <h2>Choose your place and time</h2>
+      <p>Find your city, choose a local date and time, then tap Calculate. Your city sets the time zone automatically; you can adjust it below.</p>
       {% endif %}
-      <label for="ephemera-city">Find a city</label>
+      {% unless page.calculator == 'natal' %}<p>Default location: San Bernardino, California. Choose your city to change it.</p>{% endunless %}
+      <label for="ephemera-city">{% if page.calculator == 'natal' %}Find a city{% else %}1. Find your city{% endif %}</label>
       <input id="ephemera-city" type="search" autocomplete="off" placeholder="Type a city name, e.g. San Bernardino" aria-describedby="city-note" aria-controls="ephemera-cities">
       <p id="city-note"><small>Choose a match to fill coordinates, estimated elevation and timezone. Smaller places can be entered by coordinates.</small></p>
       <div id="ephemera-cities" class="city-options" aria-label="City matches"></div>
@@ -15,6 +16,7 @@
         <label class="unknown-time"><input type="checkbox" name="unknown_time"> Birth time unknown</label>
         <p id="unknown-time-note" hidden>A noon snapshot will be used in the selected timezone. Houses and chart angles will be omitted; planet positions and aspects may differ at the actual birth time, especially for the Moon.</p>
         {% endif %}
+        {% unless page.calculator == 'natal' %}<h3>2. Choose a date and time</h3>{% endunless %}
         <div class="form-grid">
           <label>Local date
             <input type="date" name="local_date" min="1900-01-01" max="2099-12-31" required aria-describedby="time-note">
@@ -25,6 +27,12 @@
           <label>Time zone
             <input type="text" name="timezone" required value="America/Los_Angeles" list="ephemera-zones" autocomplete="off" aria-describedby="zone-note">
           </label>
+          {% unless page.calculator == 'natal' %}
+        </div>
+        <details class="advanced-location"><summary>Advanced location settings</summary>
+          <p>City selection fills these values. Open this section to enter a place by coordinates.</p>
+          <div class="form-grid">
+          {% endunless %}
           <label>Latitude (north positive)
             <input type="number" name="latitude" min="-90" max="90" step="any" required value="34.1083">
           </label>
@@ -35,6 +43,7 @@
             <input type="number" name="elevation_m" min="-500" max="10000" step="any" required value="0">
           </label>
         </div>
+        {% unless page.calculator == 'natal' %}</details>{% endunless %}
         <datalist id="ephemera-zones"></datalist>
         <p id="time-note"><small>Choose a date and time in the selected time zone. Current date range: 1900–2099; dates at the source-data boundaries may be unavailable.</small></p>
         <label id="ephemera-repeat-label" hidden>This time occurs twice when the clocks go back. Choose which occurrence:
@@ -83,3 +92,4 @@
       <p>Calculations run on your device. City search and astronomy files come from this site; your chosen coordinates are not sent to a calculation service. The browser may cache downloaded files for later visits.</p>
       <p><small>City locations adapted from <a href="https://www.geonames.org/">GeoNames</a>, <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. City elevation is an estimate. <a href="{{ '/star-almanack/assets/ephemera/NOTICE.txt' | relative_url }}">Calculation software and data credits</a>.</small></p>
     </section>
+

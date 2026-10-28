@@ -42,13 +42,14 @@
     if (!source?.querySelector('.wheel svg')) throw Error('Generate a chart first.');
     // Snapshot before asynchronous loading; a new calculation must not mix charts.
     const chart = source.cloneNode(true);
-    const interpretationSource = include.interpretations ? document.getElementById('natal-interpretations') : null;
+    const interpretationSource = include.interpretations ? (source.querySelector('.synastry-interpretations') || document.getElementById('natal-interpretations')) : null;
     if (include.interpretations && interpretationSource?.getAttribute('data-print-ready') !== 'true') throw Error('Interpretations are still loading or unavailable. Choose other sections or try again shortly.');
     const interpretations = interpretationSource?.cloneNode(true);
     chart.querySelectorAll('br').forEach(el => el.replaceWith(document.createTextNode('\n')));
     const [{PDFDocument}, wheel] = await Promise.all([loadLibrary(), include.wheel ? wheelImage(chart.querySelector('.wheel svg')) : Promise.resolve(null)]);
     const pdf = await PDFDocument.create();
-    pdf.setTitle('Nativitas Natal Report');
+    const reportTitle = source.getAttribute('data-report-title') || 'Nativitas Natal Report';
+    pdf.setTitle(reportTitle);
     const W = 595, H = 842, M = 36, WIDTH = W - M * 2;
     let canvas, ctx, y;
     function newPage() {
@@ -98,7 +99,7 @@
       y += 6;
     }
     newPage();
-    await text('Nativitas · Natal Report', 21, true);
+    await text(reportTitle, 21, true);
     const intro = chart.querySelector('.chart-intro');
     if (intro) await text(intro.textContent);
     const location = chart.querySelector('.chart-print-location');
@@ -114,8 +115,8 @@
     }
     for (const table of chart.querySelectorAll('table')) {
       const detail = table.closest('details');
-      const heading = detail?.querySelector('summary')?.textContent || table.caption?.textContent || 'Chart positions';
-      const category = heading.startsWith('Major aspects') ? 'aspects' : heading.startsWith('House cusp') ? 'houses' : 'positions';
+      const heading = table.getAttribute('data-print-heading') || detail?.querySelector('summary')?.textContent || table.caption?.textContent || 'Chart positions';
+      const category = table.getAttribute('data-print-section') || (heading.startsWith('Major aspects') ? 'aspects' : heading.startsWith('House') ? 'houses' : 'positions');
       if (!include[category]) continue;
       await room(90); await text(heading, 15, true);
       if (table.caption) await text(table.caption.textContent, 10);
@@ -179,4 +180,5 @@
     return new Blob([await pdf.save()], {type: 'application/pdf'});
   };
 })();
+
 
