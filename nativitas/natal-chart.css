@@ -44,3 +44,7 @@
   .print-aspect-key{display:block;color:#000}
   body,th,td,.chart-intro,.chart-note,.tagline{color:#000!important}
 }
+
+.natal-print-actions{border:1px solid #64768c;border-radius:8px;padding:1rem;margin:1rem 0}
+.natal-print-actions a,.natal-print-actions button{display:inline-block;margin:.25rem .75rem .25rem 0}
+@media print{.natal-print-actions{display:none!important}}

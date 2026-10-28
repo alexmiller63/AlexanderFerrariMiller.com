@@ -1,0 +1,137 @@
+/* Local PDF export: no chart or birth details leave the device. */
+(() => {
+  'use strict';
+  const libraryURL = new URL('vendor/pdf-lib/pdf-lib-1.17.1.min.js', document.currentScript.src).href;
+  let library;
+  function loadLibrary() {
+    if (window.PDFLib) return Promise.resolve(window.PDFLib);
+    if (!library) library = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = libraryURL;
+      script.onload = () => resolve(window.PDFLib);
+      script.onerror = () => { library = null; script.remove(); reject(Error('Could not load PDF tools. Check your connection and try again.')); };
+      document.head.append(script);
+    });
+    return library;
+  }
+  async function wheelImage(svg) {
+    const copy = svg.cloneNode(true);
+    copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    copy.setAttribute('width', '1500');
+    copy.setAttribute('height', '1500');
+    copy.setAttribute('style', 'font-family:"DejaVu Sans","Segoe UI Symbol","Apple Symbols",sans-serif;text-anchor:middle;dominant-baseline:central');
+    copy.querySelectorAll('circle').forEach(el => { el.setAttribute('fill', 'none'); el.setAttribute('stroke', '#000'); });
+    copy.querySelectorAll('rect').forEach(el => el.setAttribute('fill', '#fff'));
+    copy.querySelectorAll('text').forEach(el => el.setAttribute('fill', '#000'));
+    copy.querySelectorAll('line,path').forEach(el => el.setAttribute('stroke', '#000'));
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(copy)], {type: 'image/svg+xml'}));
+    try {
+      const image = new Image();
+      const ready = new Promise((resolve, reject) => {
+        image.onload = resolve;
+        image.onerror = () => reject(Error('Could not render the chart wheel. Please try again.'));
+      });
+      image.src = url;
+      await ready;
+      return image;
+    } finally { URL.revokeObjectURL(url); }
+  }
+  window.NativitasPDF = async source => {
+    if (!source?.querySelector('.wheel svg')) throw Error('Generate a chart first.');
+    // Snapshot before asynchronous loading; a new calculation must not mix charts.
+    const chart = source.cloneNode(true);
+    chart.querySelectorAll('br').forEach(el => el.replaceWith(document.createTextNode('\n')));
+    const [{PDFDocument}, wheel] = await Promise.all([loadLibrary(), wheelImage(chart.querySelector('.wheel svg'))]);
+    const pdf = await PDFDocument.create();
+    pdf.setTitle('Nativitas Natal Chart');
+    const W = 595, H = 842, M = 36, WIDTH = W - M * 2;
+    let canvas, ctx, y;
+    function newPage() {
+      canvas = document.createElement('canvas');
+      canvas.width = W * 2; canvas.height = H * 2;
+      ctx = canvas.getContext('2d');
+      if (!ctx) throw Error('PDF drawing is unavailable in this browser.');
+      ctx.scale(2, 2); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#000'; ctx.textBaseline = 'top'; y = M;
+    }
+    async function flush() {
+      const image = await pdf.embedPng(canvas.toDataURL('image/png'));
+      pdf.addPage([W, H]).drawImage(image, {x: 0, y: 0, width: W, height: H});
+    }
+    async function room(height) {
+      if (y + height > H - M) { await flush(); newPage(); }
+    }
+    function lines(text, width) {
+      const result = [];
+      for (const paragraph of text.split('\n')) {
+        let line = '';
+        for (const word of paragraph.split(/\s+/)) {
+          const next = line ? `${line} ${word}` : word;
+          if (line && ctx.measureText(next).width > width) { result.push(line); line = word; }
+          else line = next;
+        }
+        result.push(line);
+      }
+      return result;
+    }
+    async function text(value, size = 11, bold = false) {
+      ctx.font = `${bold ? 'bold ' : ''}${size}px system-ui, sans-serif`;
+      const wrapped = lines(value, WIDTH);
+      for (const line of wrapped) {
+        await room(size * 1.5);
+        ctx.font = `${bold ? 'bold ' : ''}${size}px system-ui, sans-serif`;
+        ctx.fillText(line, M, y); y += size * 1.5;
+      }
+      y += 6;
+    }
+    newPage();
+    await text('Nativitas · Natal Chart', 21, true);
+    const intro = chart.querySelector('.chart-intro');
+    if (intro) await text(intro.textContent);
+    const location = chart.querySelector('.chart-print-location');
+    if (location) await text(location.textContent);
+    await room(WIDTH);
+    ctx.drawImage(wheel, M, y, WIDTH, WIDTH); y += WIDTH + 12;
+    const note = chart.querySelector('.wheel + .chart-note');
+    if (note) await text(note.textContent);
+    await flush(); newPage();
+    for (const table of chart.querySelectorAll('table')) {
+      const detail = table.closest('details');
+      const heading = detail?.querySelector('summary')?.textContent || table.caption?.textContent || 'Chart positions';
+      await room(90); await text(heading, 15, true);
+      if (table.caption) await text(table.caption.textContent, 10);
+      const rows = [...table.rows];
+      const headerRow = table.tHead?.rows[0];
+      const columns = rows[0]?.cells.length || 1;
+      const widths = columns === 3 ? [WIDTH * .47, WIDTH * .32, WIDTH * .21] : Array(columns).fill(WIDTH / columns);
+      async function row(element, header) {
+        ctx.font = `${header ? 'bold ' : ''}11px system-ui, sans-serif`;
+        const cells = [...element.cells].map((cell, i) => lines(cell.textContent.trim(), widths[i] - 12));
+        const height = Math.max(...cells.map(cell => cell.length)) * 16 + 12;
+        if (y + height > H - M) {
+          await flush(); newPage();
+          await text(`${heading} (continued)`, 15, true);
+          if (!header && headerRow) await row(headerRow, true);
+        }
+        ctx.font = `${header ? 'bold ' : ''}11px system-ui, sans-serif`;
+        ctx.strokeStyle = '#777'; ctx.lineWidth = .5;
+        let x = M;
+        cells.forEach((cell, i) => {
+          ctx.strokeRect(x, y, widths[i], height);
+          cell.forEach((line, j) => ctx.fillText(line, x + 6, y + 6 + j * 16));
+          x += widths[i];
+        });
+        y += height;
+      }
+      for (const element of rows) await row(element, element === headerRow);
+      y += 12;
+      for (const note of detail?.querySelectorAll('.chart-note') || []) await text(note.textContent, 10);
+    }
+    const key = chart.querySelector('.print-aspect-key');
+    if (key) await text(key.textContent, 10);
+    const sourceNote = [...chart.querySelectorAll('.chart-note')].find(el => el.textContent.includes('DE440s'));
+    if (sourceNote) await text(sourceNote.textContent, 10);
+    await flush();
+    return new Blob([await pdf.save()], {type: 'application/pdf'});
+  };
+})();
