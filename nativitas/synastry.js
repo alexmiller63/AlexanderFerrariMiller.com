@@ -25,7 +25,7 @@
       <label class="wide">Time zone<input name="zone" list="synastry-zones" placeholder="e.g. America/Los_Angeles" required autocomplete="off"></label>
       <label>Latitude (north positive)<input name="latitude" type="number" step="any" min="-90" max="90" required></label>
       <label>Longitude (east positive)<input name="longitude" type="number" step="any" min="-180" max="180" required></label>
-      <label class="wide occurrence" hidden>Repeated clock time<select name="occurrence"></select></label>
+      <input type="hidden" name="elevation" value="0"><label class="wide occurrence" hidden>Repeated clock time<select name="occurrence"></select></label>
       <p class="hint wide">Choose a city to fill coordinates and time zone, or enter them manually.</p></div>`;
     people.append(field);
   }
@@ -63,7 +63,7 @@
         const rows=await cityData();if(busy||value(field,'city')!==query)return;
         const tokens=fold(query).split(/\s+/), matches=rows.filter(x=>tokens.every(t=>x.text.includes(t))).slice(0,10);
         for(const {row} of matches){const button=document.createElement('button');button.type='button';button.textContent=`${row[1]} · ${row[6]}`;
-          button.addEventListener('click',()=>{if(busy)return;control(field,'city').value=row[1];control(field,'latitude').value=row[3];control(field,'longitude').value=row[4];control(field,'zone').value=row[6];target.replaceChildren();occurrences(field);});target.append(button);}
+          button.addEventListener('click',()=>{if(busy)return;control(field,'city').value=row[1];control(field,'latitude').value=row[3];control(field,'longitude').value=row[4];control(field,'zone').value=row[6];control(field,'elevation').value=row[5];target.replaceChildren();occurrences(field);});target.append(button);}
         field.querySelector('.hint').textContent=matches.length?'Choose a match to fill coordinates and time zone.':'No match. Add a country, or enter coordinates and time zone manually.';
       }catch(e){field.querySelector('.hint').textContent=e.message;}
     });
@@ -78,8 +78,25 @@
     const year=new Date(chosen).getUTCFullYear();if(year<1900||year>2099)throw Error('The UTC instant is outside the 1900–2099 source coverage.');
     const latitude=Number(value(field,'latitude')),longitude=Number(value(field,'longitude'));
     if(!value(field,'latitude')||!value(field,'longitude')||!Number.isFinite(latitude)||!Number.isFinite(longitude)||latitude < -90||latitude >90||longitude < -180||longitude >180)throw Error('Enter valid birth-place coordinates.');
-    return {calculator:'natal',instant_utc:new Date(chosen).toISOString(),timezone:value(field,'zone'),unknown_time:unknown,latitude,longitude,elevation_m:0};
+    return {calculator:'natal',instant_utc:new Date(chosen).toISOString(),timezone:value(field,'zone'),unknown_time:unknown,latitude,longitude,elevation_m:Number(value(field,'elevation'))};
   }
+  if(window.NativitasProfiles) fields.forEach(field => window.NativitasProfiles.attach({
+    container: field,
+    isBusy: () => busy,
+    validate: () => request(field),
+    read: () => ({date:value(field,'date'), time:control(field,'unknown').checked?'':value(field,'time'),
+      zone:value(field,'zone'), city:value(field,'city'), unknown:control(field,'unknown').checked,
+      latitude:Number(value(field,'latitude')), longitude:Number(value(field,'longitude')),
+      elevation:Number(value(field,'elevation')), occurrence:value(field,'occurrence')}),
+    apply: p => {
+      for(const name of ['date','time','zone','city','latitude','longitude','elevation']) control(field,name).value=p[name];
+      control(field,'label').value=p.name;
+      control(field,'unknown').checked=p.unknown;
+      control(field,'unknown').dispatchEvent(new Event('change'));
+      field.querySelector('.city-matches').replaceChildren();
+      control(field,'occurrence').value=p.occurrence;
+    }
+  }));
   function calculate(request,index){
     return new Promise((resolve,reject)=>{
       if(!worker){

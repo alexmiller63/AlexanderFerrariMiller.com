@@ -183,8 +183,27 @@
     }
     return values;
   }
+  const profilePanel = natal && window.NativitasProfiles && window.NativitasProfiles.attach({
+    container: form.parentElement,
+    isBusy: () => busy,
+    validate,
+    read: () => ({date:format('local_date'), time:unknownTime() ? '' : format('local_time'),
+      zone:format('timezone'), city:cityInput.value.trim(), unknown:unknownTime(),
+      latitude:Number(format('latitude')), longitude:Number(format('longitude')),
+      elevation:Number(format('elevation_m')), occurrence:format('time_occurrence')}),
+    apply: p => {
+      for (const [field, property] of [['local_date','date'],['local_time','time'],['timezone','zone'],
+        ['latitude','latitude'],['longitude','longitude'],['elevation_m','elevation']]) form.elements[field].value = p[property];
+      cityInput.value = p.city;
+      cityOptions.replaceChildren();
+      form.elements.unknown_time.checked = p.unknown;
+      updateUnknownTime();
+      form.elements.time_occurrence.value = p.occurrence;
+    }
+  });
   function setBusy(value) {
     busy = value;
+    if (profilePanel) profilePanel.disabled = value;
     calculate.disabled = value;
     cancel.hidden = !value;
     results.setAttribute('aria-busy', String(value));
