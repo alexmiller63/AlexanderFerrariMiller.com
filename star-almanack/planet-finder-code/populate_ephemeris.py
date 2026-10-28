@@ -1,0 +1,282 @@
+#!/usr/bin/env python3
+"""Populate weekly Star Almanack Solar-System ephemerides from local source kernels.
+
+The weekly table is a civil-time presentation snapshot: each row is sampled at
+Monday 00:00 UTC, then calculated locally from cached JPL/NAIF SPK source data.
+No Horizons or other answer service is queried.
+"""
+from __future__ import annotations
+
+import argparse
+import csv
+import html
+import re
+from datetime import date
+from pathlib import Path
+
+from star_almanack_ephemeris import StarAlmanackEphemeris
+from almanack_sections import replace_section_inner
+
+ROOT = Path(__file__).resolve().parents[1]
+DEFAULT_LATITUDE_DEG = 45.0
+MIN_LATITUDE_DEG = -90.0
+MAX_LATITUDE_DEG = 90.0
+MIN_SUPPORTED_YEAR = 1900
+MAX_SUPPORTED_YEAR = 2100
+SOLAR_GLARE_MAX_ELONGATION_DEG = 20.0
+NAKED_EYE_MAX_MAGNITUDE = 3.5
+BINOCULARS_MAX_MAGNITUDE = 7.5
+TELESCOPE_MAX_MAGNITUDE = 12.0
+SUN_HORIZON_DEG = -0.8333
+STANDARD_HORIZON_DEG = -0.5667
+SIGNS = "♈♉♊♋♌♍♎♏♐♑♒♓"
+SIGN_NAMES = ("Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces")
+
+TARGETS = [
+    ("☉ Sun", "sun", "sun"), ("☽ Moon", "moon", "moon"), ("☿ Mercury", "mercury", "mercury"),
+    ("♀ Venus", "venus", "venus"), ("♂ Mars", "mars", "mars"), ("♃ Jupiter", "jupiter", "jupiter"),
+    ("♄ Saturn", "saturn", "saturn"), ("⚳ Ceres", "ceres", "ceres"), ("♅ Uranus", "uranus", "uranus"),
+    ("♆ Neptune", "neptune", "neptune"), ("♇ Pluto", "pluto", "pluto"),
+]
+
+VISIBILITY_GLYPH_ROOT = "../../../assets/almanack/visibility-glyphs/masters/"
+_TELESCOPE_GLYPH = f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}telescope.svg" alt="Telescope" aria-label="Telescope">'
+VISIBILITY_GLYPHS = {
+    "naked_eye": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}eye.svg" alt="Naked eye" aria-label="Naked eye">',
+    "binoculars": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}binoculars.svg" alt="Binoculars" aria-label="Binoculars">',
+    "telescope": _TELESCOPE_GLYPH,
+    "substantial_telescope": ('<span class="substantial-telescope" role="img" aria-label="Substantial telescope">' + _TELESCOPE_GLYPH + _TELESCOPE_GLYPH + '</span>'),
+    "daylight": '<span class="text-symbol" role="img" aria-label="Daylight" title="Daylight">☉︎</span>',
+    "solar_glare": '<span class="text-symbol" role="img" aria-label="Solar Glare" title="Solar Glare">☉︎</span>',
+    "visible": '<span class="text-symbol" role="img" aria-label="Visible" title="Visible">☉︎</span>',
+    "night": f'<img class="visibility-glyph" src="{VISIBILITY_GLYPH_ROOT}night.svg" alt="Night" aria-label="Night" title="Night — Sun more than 18° below the horizon">',
+}
+
+EPHEMERIS_STYLE = """<style id="ephemeris-css">
+.ephemeris-notation-item { display:inline-block; font-size:1em; line-height:inherit; vertical-align:baseline; font-family:inherit; }
+.ephemeris-symbol { display:inline-block; font-family:'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif; font-variant-emoji:text; color:currentColor; -webkit-text-fill-color:currentColor; font-size:1.5em; line-height:.75; vertical-align:-.12em; }
+table.ephemeris .greek-letter { font-size:1em; }
+table.ephemeris .visibility-glyph { height:1.5rem !important; width:auto !important; vertical-align:-.28rem !important; }
+.ephemeris-visibility .text-symbol { font-size:1.5em; line-height:.75; vertical-align:-.12em; }
+table.ephemeris, table.ephemeris thead, table.ephemeris tbody, table.ephemeris tr, table.ephemeris th, table.ephemeris td { display:revert !important; }
+.ephemeris-scroll { display:block; width:100%; max-width:100%; min-width:0; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; }
+.ephemeris-scroll table.ephemeris { display:table !important; width:max-content !important; min-width:100% !important; table-layout:auto !important; overflow:visible !important; }
+table.ephemeris thead { display:table-header-group !important; }
+table.ephemeris tbody { display:table-row-group !important; }
+table.ephemeris tr { display:table-row !important; }
+table.ephemeris { border-collapse:collapse !important; }\ntable.ephemeris th, table.ephemeris td { display:table-cell !important; border:1px solid currentColor !important; }
+table.ephemeris.extended-ephemeris { grid-template-columns:none !important; grid-template-rows:none !important; }
+table.ephemeris th, table.ephemeris td { width:auto !important; min-width:0 !important; padding:.7rem .55rem !important; text-align:center; white-space:nowrap; overflow-wrap:normal; word-break:normal; }
+table.ephemeris small { white-space:nowrap; }
+@media (max-width:760px) { table.ephemeris { font-size:.86rem !important; } table.ephemeris th, table.ephemeris td { padding:.55rem .35rem !important; } }
+</style>"""
+
+
+def notation_toggle(target):
+    return (f'<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="{target}"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span><button type="button" data-bayer-mode="1" aria-pressed="true">Greek/Symbols</button><button type="button" data-bayer-mode="2" aria-pressed="false">English</button><button type="button" data-bayer-mode="3" data-legacy-label="Mixed · Learner" aria-pressed="false">Mixed Learner</button></div></div>')
+
+
+def week_count(year): return date(year, 12, 28).isocalendar().week
+
+def symbol_html(glyph): return f'<span class="ephemeris-symbol">{glyph}&#xfe0e;</span>'
+
+def target_heading(display):
+    glyph, name = display.split(" ", 1)
+    greek = f"{glyph}\ufe0e"
+    mixed = f"{greek} {name}"
+    return ('<span class="notation-item ephemeris-notation-item" ' f'data-greek="{html.escape(greek, quote=True)}" ' f'data-latin="{html.escape(name, quote=True)}" ' f'data-mixed="{html.escape(mixed, quote=True)}">' f'{symbol_html(glyph)}</span>')
+
+
+def computed_ephemeris(year: int, engine: StarAlmanackEphemeris | None = None):
+    engine = engine or StarAlmanackEphemeris()
+    count = week_count(year)
+    generated = {key: [] for _, key, _ in TARGETS}
+    for week in range(1, count + 1):
+        monday = date.fromisocalendar(year, week, 1)
+        for _, key, _ in TARGETS:
+            sample = engine.sample(key, monday)
+            rise, setting = engine.rise_set_lat(sample, key, DEFAULT_LATITUDE_DEG)
+            daylight = engine.daylight_at_observing_time(sample, DEFAULT_LATITUDE_DEG)
+            generated[key].append((sample.longitude_deg, sample.latitude_deg, sample.magnitude, sample.elongation_deg, rise, setting, daylight, sample.right_ascension_hours, sample.declination_deg, sample.sun_right_ascension_hours, sample.sun_declination_deg))
+    return generated
+
+
+def zodiac_text(longitude):
+    minutes = int(round((longitude % 360) * 60)) % (360 * 60)
+    sign, within = divmod(minutes, 1800)
+    degree, minute = divmod(within, 60)
+    return f"{SIGNS[sign]} {degree}°{minute:02d}′"
+
+
+def zodiac(longitude):
+    position = zodiac_text(longitude)
+    glyph, value = position.split(" ", 1)
+    return f'{target_heading(f"{glyph} {SIGN_NAMES[SIGNS.index(glyph)]}")} {value}'
+
+
+def beta(latitude):
+    sign = "+" if latitude >= 0 else "−"
+    minutes = int(round(abs(latitude) * 60))
+    degree, minute = divmod(minutes, 60)
+    return ('<span class="notation-item ephemeris-notation-item" '
+            'data-greek="β" data-latin="Beta" data-mixed="β Beta">β</span> '
+            f"{sign}{degree}°{minute:02d}′")
+
+
+def current_visibility(key, magnitude, elongation, daylight=False):
+    # The Sun's observer-facing state is computed from solar altitude at the
+    # selected Monday observer time in almanack/js/ephemeris.js.  Seed the
+    # generated page with the default 21:00 LAT state rather than the old
+    # generic Visible/Solar-Glare classification.
+    if key == "sun": return "daylight" if daylight else "night"
+    if elongation is not None and elongation < SOLAR_GLARE_MAX_ELONGATION_DEG: return "solar_glare"
+    if magnitude is not None and elongation is not None:
+        if magnitude <= NAKED_EYE_MAX_MAGNITUDE: return "daylight" if daylight else "naked_eye"
+        if magnitude <= BINOCULARS_MAX_MAGNITUDE: return "binoculars"
+        if magnitude <= TELESCOPE_MAX_MAGNITUDE: return "telescope"
+        return "substantial_telescope"
+    if key == "moon": return "daylight" if daylight else "naked_eye"
+    if key == "ceres": return "telescope"
+    if key == "pluto": return "substantial_telescope"
+    return None
+
+
+def visibility_html(key, magnitude, elongation, daylight=False):
+    aid = current_visibility(key, magnitude, elongation, daylight)
+    return VISIBILITY_GLYPHS[aid] if aid else ""
+
+
+def observing_label(key, magnitude, elongation, daylight=False):
+    labels = {"naked_eye":"Naked eye", "binoculars":"Binoculars", "telescope":"Telescope", "substantial_telescope":"Substantial telescope", "daylight":"Daylight", "solar_glare":"Solar Glare", "visible":"Visible", "night":"Night"}
+    aid = current_visibility(key, magnitude, elongation, daylight)
+    return labels.get(aid, "")
+
+
+def observing_html(key, magnitude, elongation, daylight=False):
+    aid = current_visibility(key, magnitude, elongation, daylight)
+    if not aid: return ""
+    glyph = VISIBILITY_GLYPHS[aid]
+    label = observing_label(key, magnitude, elongation, daylight)
+    try: magnitude_text = f" {float(magnitude):.1f}"
+    except (TypeError, ValueError): magnitude_text = ""
+    # Greek/Symbols is deliberately symbol-only for categorical sky states.
+    # Magnitude belongs to observing-aid classifications, not Daylight/Solar Glare.
+    categorical = aid in {"daylight", "solar_glare", "visible", "night"}
+    shown_magnitude = "" if categorical else magnitude_text
+    greek = glyph + shown_magnitude
+    latin = label + shown_magnitude
+    mixed = glyph + " " + label + shown_magnitude
+    # Use the same notation-item data contract as the centralized renderer.
+    # The renderer assigns mode values through innerHTML, so glyph markup is preserved.
+    return ('<span class="notation-item observing-notation-item" ' f'data-greek="{html.escape(greek, quote=True)}" ' f'data-latin="{html.escape(latin, quote=True)}" ' f'data-mixed="{html.escape(mixed, quote=True)}">' f'{greek}</span>')
+
+
+def render_observing_status(key, sample_values):
+    aid = current_visibility(key, sample_values["magnitude"], sample_values["elongation"], sample_values["daylight"])
+    return {"aid": aid, "label": observing_label(key, sample_values["magnitude"], sample_values["elongation"], sample_values["daylight"]), "html": observing_html(key, sample_values["magnitude"], sample_values["elongation"], sample_values["daylight"])}
+
+
+def planet_finder(year, week):
+    base = "finders"
+    return ('<div class="planet-finder-strip w15-finder-strip">' f'<figure data-finder-mode="1" class="is-active"><img src="{base}/planet-finder-greek-symbols.svg" alt="Planet Finder — Greek / Symbols"><figcaption>Greek / Symbols</figcaption></figure>' f'<figure data-finder-mode="2"><img src="{base}/planet-finder-latin.svg" alt="Planet Finder — English"><figcaption>English</figcaption></figure>' f'<figure data-finder-mode="3"><img src="{base}/planet-finder-mixed-learner.svg" alt="Planet Finder — Mixed Learner"><figcaption>Mixed Learner</figcaption></figure>' '</div>')
+
+
+def render_sections(monday, values):
+    primary, extended = TARGETS[:7], TARGETS[7:]
+    week = monday.isocalendar().week
+    def table(columns, extra_class=""):
+        headers = '<th scope="col">Body</th>' + "".join(f"<th scope=\"col\">{target_heading(display)}</th>" for display, _, _ in columns)
+        rows = []
+        for label, field in (("Ecliptic", "position"), ("Observing", "observing"), ("Rise", "rise"), ("Set", "set")):
+            cells = []
+            for _, key, _ in columns:
+                item = values[key]
+                if field == "position": content = f'{item["position"]}<br><small>{item["beta"]}</small>'
+                elif field == "observing": content = item["observing"]
+                else: content = item[field]
+                if field in ("rise", "set"):
+                    content = (f'<td class="ephemeris-{field.lower()}" ' f'data-ra-hours="{item["ra_hours"]:.9f}" ' f'data-dec-deg="{item["dec_deg"]:.9f}" ' f'data-sun-ra-hours="{item["sun_ra_hours"]:.9f}" ' f'data-horizon-deg="{item["horizon_deg"]:.4f}">{content}</td>')
+                elif field == "observing":
+                    content = (f'<td class="ephemeris-observing" ' f'data-normal-label="{html.escape(item["normal_label"], quote=True)}" ' f'data-solar-glare="{str(item["solar_glare"]).lower()}" ' f'data-sun-special="{str(item["sun_special"]).lower()}" ' f'data-ra-hours="{item["ra_hours"]:.9f}" ' f'data-dec-deg="{item["dec_deg"]:.9f}" ' f'data-sun-ra-hours="{item["sun_ra_hours"]:.9f}" ' f'data-sun-dec-deg="{item["sun_dec_deg"]:.9f}">{content}</td>')
+                else: content = f"<td>{content}</td>"
+                cells.append(content)
+            rows.append(f'<tr><th scope="row">{label}</th>{"".join(cells)}</tr>')
+        classes = "ephemeris" + (f" {extra_class}" if extra_class else "")
+        return f'<div class="ephemeris-scroll"><table class="{classes}"><thead><tr>{headers}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>'
+    ephemeris_html = ("<h3>Weekly Solar-System Ephemeris</h3>" + EPHEMERIS_STYLE + f'<p><strong>Snapshot:</strong> Week begins {monday.strftime("%B")} {monday.day}, {monday.year}, 00:00 UTC.</p>' + f'<p class="ephemeris-latitude-control"><label for="ephemeris-latitude"><strong>Observer latitude:</strong> <input id="ephemeris-latitude" name="ephemeris-latitude" type="text" inputmode="text" value="{DEFAULT_LATITUDE_DEG:g}" data-ephemeris-latitude aria-describedby="ephemeris-latitude-range">°</label> <label for="ephemeris-observer-time"><strong>Monday observer time:</strong> <input id="ephemeris-observer-time" name="ephemeris-observer-time" type="time" value="21:00" data-ephemeris-observer-time></label> <button type="button" data-ephemeris-apply>Apply</button> <span id="ephemeris-latitude-range">({MIN_LATITUDE_DEG:g}° to +{MAX_LATITUDE_DEG:g}°; defaults +{DEFAULT_LATITUDE_DEG:g}°, 21:00 LAT)</span></p>' + notation_toggle("ephemeris") + table(primary) + "<p><strong>Extended targets:</strong></p>" + table(extended, "extended-ephemeris") + '<p class="ephemeris-note"><strong>β</strong> = ecliptic latitude (+ north, − south).<br>Rise and set are Local Apparent Time for the selected latitude.<br>Naked-eye observing uses the Sun’s altitude at the selected Monday observer time: <strong>Daylight</strong> (Sun ≥ −0.833°), <strong>Civil twilight</strong> (−0.833° to −6°), <strong>Nautical twilight</strong> (−6° to −12°), <strong>Astronomical twilight</strong> (−12° to −18°), and <strong>Night</strong> (below −18°).<br><strong>Solar Glare</strong> identifies a body too close to the Sun when the sky-state rule does not already supersede its naked-eye classification.<br>The Sun’s observing status uses this same five-state sky classification.</p>'
+     )
+    finder_html = notation_toggle("finder") + "<h3>Planet Finder</h3>" + planet_finder(monday.year, week)
+    return ephemeris_html, finder_html
+
+
+def render_ephemeris(monday, values):
+    ephemeris_html, finder_html = render_sections(monday, values)
+    return ephemeris_html + finder_html
+
+
+
+def put_ephemeris(text, replacement, path):
+    ephemeris_html, finder_html = replacement if isinstance(replacement, tuple) else (replacement, "")
+    new = replace_section_inner(text, 3, ephemeris_html, path)
+    if finder_html:
+        new = replace_section_inner(new, 4, finder_html, path)
+    return new
+
+
+def write_preserved_weekly_table(year, generated):
+    path = ROOT / f"weekly-ephemeris-{year}.csv"
+    fields = ["iso_week", "monday_utc", *[key for _, key, _ in TARGETS]]
+    rows = []
+    for week in range(1, week_count(year) + 1):
+        monday = date.fromisocalendar(year, week, 1)
+        row = {"iso_week": f"{year}-W{week:02d}", "monday_utc": monday.isoformat()}
+        for key in fields[2:]: row[key] = zodiac_text(generated[key][week - 1][0])
+        rows.append(row)
+    with path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fields, lineterminator="\n")
+        writer.writeheader(); writer.writerows(rows)
+    return path
+
+
+def update_year(year, engine=None):
+    generated = computed_ephemeris(year, engine)
+    write_preserved_weekly_table(year, generated)
+    changed = 0
+    pages = sorted((ROOT / "almanack" / str(year)).glob("W??/index.html"))
+    for path in pages:
+        week = int(path.parent.name[1:])
+        monday = date.fromisocalendar(year, week, 1)
+        values = {}
+        for _, key, _ in TARGETS:
+            sample = generated[key][week - 1]
+            aid = current_visibility(key, sample[2], sample[3], sample[6])
+            values[key] = {"position":zodiac(sample[0]), "beta":beta(sample[1]), "observing":observing_html(key, sample[2], sample[3], sample[6]), "normal_label":observing_label(key, sample[2], sample[3], False), "solar_glare":aid == "solar_glare", "sun_special":key == "sun", "rise":sample[4], "set":sample[5], "ra_hours":sample[7], "dec_deg":sample[8], "sun_ra_hours":sample[9], "sun_dec_deg":sample[10], "horizon_deg":SUN_HORIZON_DEG if key == "sun" else STANDARD_HORIZON_DEG}
+        replacement = render_sections(monday, values)
+        text = path.read_text(encoding="utf-8")
+        new = put_ephemeris(text, replacement, path)
+        if new != text:
+            path.write_text(new, encoding="utf-8"); changed += 1
+    return changed
+
+
+def parse_years():
+    parser = argparse.ArgumentParser(description="Populate weekly Solar-System ephemeris for one or more ISO years.")
+    parser.add_argument("years", nargs="+", type=int, help="ISO week-years to populate")
+    args = parser.parse_args()
+    years = list(dict.fromkeys(args.years))
+    for year in years:
+        if not MIN_SUPPORTED_YEAR <= year <= MAX_SUPPORTED_YEAR: parser.error(f"YEAR must be between {MIN_SUPPORTED_YEAR} and {MAX_SUPPORTED_YEAR}: {year}")
+    return years
+
+
+def main():
+    years = parse_years()
+    engine = StarAlmanackEphemeris()
+    total = 0
+    for year in years:
+        changed = update_year(year, engine)
+        print(f"Updated {changed} weekly pages for {year}"); total += changed
+    print(f"Updated {total} weekly pages total")
+
+
+if __name__ == "__main__": main()

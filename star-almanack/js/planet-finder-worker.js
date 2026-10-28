@@ -1,0 +1,97 @@
+/* The engine, packages and source kernels are all served by this site. */
+'use strict';
+const assets = new URL('../assets/ephemera/', self.location.href).href;
+let ready;
+let completed = 0;
+const progress = (message, completed) => self.postMessage({type: 'progress', message, completed});
+async function bytes(name) {
+  const response = await fetch(new URL(name, assets));
+  if (!response.ok) throw Error(`Could not load ${name} (${response.status}). Please retry.`);
+  return new Uint8Array(await response.arrayBuffer());
+}
+async function initialize() {
+  progress('Loading the calculation engine… The first visit downloads about 60 MB.');
+  importScripts(assets + 'pyodide/pyodide.js');
+  const python = await loadPyodide({indexURL: assets + 'pyodide/',
+    stdout: message => {
+      if (message.startsWith('COMPUTED ') && !message.startsWith('COMPUTED positions')) {
+        completed += 1;
+        const body = message.split(' ')[1];
+        const name = body[0].toUpperCase() + body.slice(1);
+        progress(`${name} complete — ${completed} of 11 bodies calculated.`, completed);
+      }
+    }});
+  await python.loadPackage('numpy');
+  progress('Loading the local astronomy data…');
+  python.FS.mkdirTree('/app/.cache/skyfield');
+  for (const name of ['application.zip', 'de440s.bsp', 'ceres_1900_2100.bsp']) {
+    const data = await bytes(name === 'application.zip' ? 'application.zip?v=20261028-natal-readable-1' : name);
+    python.FS.writeFile(name.endsWith('.bsp') ? '/app/.cache/skyfield/' + name : '/app/' + name, data);
+  }
+  // Project calculation code is an independent snapshot, not the shared bundle's tools.
+  python.FS.mkdirTree('/app/tools');
+  for (const name of ["star_almanack_ephemeris.py","planet_finder_validation.py","generate_natal_chart.py","notation_modes.py","almanack_sections.py","planet_finder_makeup.py","planet_finder_search_core.py","populate_ephemeris.py","generate_observer_ephemera.py","generate_planet_finder_at_instant.py","planet_finder_rendering.py","almanack_time.py","almanack_paths.py","planet_finder_search.py","planet_finder_geometry.py","planet_finder_joint_plan.py"]) {
+    const response = await fetch(new URL('../planet-finder-code/' + name, self.location.href));
+    if (!response.ok) throw Error('Could not load calculation module: ' + name);
+    python.FS.writeFile('/app/tools/' + name, new Uint8Array(await response.arrayBuffer()));
+  }
+  await python.runPythonAsync(`
+import sys, zipfile, json
+from datetime import datetime
+with zipfile.ZipFile('/app/application.zip') as archive:
+    for member in archive.namelist():
+        if member.startswith('site-packages/'):
+            archive.extract(member, '/app')
+sys.path[:0] = ['/app/tools', '/app/site-packages']
+from generate_observer_ephemera import calculate
+from star_almanack_ephemeris import StarAlmanackEphemeris
+engine = StarAlmanackEphemeris('/app/.cache/skyfield')
+`);
+  return python;
+}
+self.onmessage = async event => {
+  try {
+    ready = ready || initialize().catch(error => { ready = null; throw error; });
+    const python = await ready;
+    completed = 0;
+    progress(event.data.calculator === 'natal' ? 'Calculating natal positions and houses — 0 of 11 bodies.' : 'Calculating positions and local-day rise/set times — 0 of 11 bodies.', 0);
+    python.globals.set('request_json', JSON.stringify(event.data));
+    if (event.data.calculator === 'planet-finder') {
+      progress('Calculating all 11 geocentric longitudes…');
+      python.globals.set('request_json', JSON.stringify(event.data));
+      const payload = await python.runPythonAsync(`
+request = json.loads(request_json)
+from generate_planet_finder_at_instant import generate, parse_instant
+instant = parse_instant(request['instant_utc'])
+print('COMPUTED positions')
+modes = ['greek', 'latin', 'mixed'] if request['mode'] == 'all' else [request['mode']]
+charts = {}
+for mode in modes:
+    charts[mode] = generate(instant, mode, engine)
+from zoneinfo import ZoneInfo
+local = instant.astimezone(ZoneInfo(request.get('timezone', 'UTC')))
+clock = f"{local.hour % 12 or 12}:{local.minute:02d} {'AM' if local.hour < 12 else 'PM'} {local.tzname()}"
+place = request.get('city') or request.get('timezone', 'UTC')
+local_title = f"{local.strftime('%B')} {local.day}, {local.year} · {clock} · {place}"
+json.dumps({'charts': charts, 'local_title': local_title})
+`);
+      self.postMessage({type: 'result', data: {...JSON.parse(payload), instant_utc: event.data.instant_utc}});
+      return;
+    }
+    const result = await python.runPythonAsync(`
+request = json.loads(request_json)
+instant = datetime.fromisoformat(request['instant_utc'].replace('Z', '+00:00'))
+if request.get('calculator') == 'natal':
+    from generate_natal_chart import calculate_natal
+    report = calculate_natal(instant, request['latitude'], request['longitude'],
+        request['timezone'], unknown_time=request.get('unknown_time', False), engine=engine)
+else:
+    report = calculate(instant, request['latitude'], request['longitude'],
+        request['elevation_m'], request['timezone'], engine=engine)
+json.dumps(report)
+`);
+    self.postMessage({type: 'result', data: JSON.parse(result)});
+  } catch (error) {
+    self.postMessage({type: 'error', message: String(error.message || error)});
+  }
+};

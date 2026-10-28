@@ -1,4 +1,9 @@
 (function () {
+  // Link existing weekly charts to the shared arbitrary-date finder.
+  document.querySelectorAll('.planet-finder-strip, .w41-finder-strip').forEach(function(strip) {
+    if (strip.parentElement.querySelector('.planet-finder-by-date')) return;
+    strip.insertAdjacentHTML('afterend', '<p class="planet-finder-by-date"><a href="/star-almanack/planet-finder.html">Planet finder by date and time</a></p>');
+  });
   const modeIds = {1:'1',2:'2',3:'3',greek:'1',symbols:'1',latin:'2',english:'2',mixed:'3'};
   const modeKeys = {'1':'greek','2':'latin','3':'mixed'};
   function modeId(value) { return modeIds[value] || '1'; }

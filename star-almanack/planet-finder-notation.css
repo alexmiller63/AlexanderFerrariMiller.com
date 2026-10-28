@@ -1,0 +1,111 @@
+.bayer-toggle-wrap {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: .75rem 1.5rem 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.bayer-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .35rem;
+  flex-wrap: nowrap;
+  font-size: .86rem;
+}
+
+.bayer-toggle-label {
+  margin-right: .2rem;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.bayer-toggle button {
+  appearance: none;
+  border: 1px solid #c8d3dc;
+  background: #fff;
+  color: var(--link);
+  padding: .35rem .62rem;
+  border-radius: .4rem;
+  font: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.bayer-toggle button[aria-pressed='true'] {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+
+.notation-legend {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1rem 1.5rem 1.15rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: .78rem;
+  line-height: 1.55;
+  color: var(--muted);
+  border-top: 1px solid var(--rule);
+}
+
+.notation-legend p { max-width: none; margin: .35rem 0; }
+.notation-legend strong { color: inherit; }
+.legend-line { display: flex; flex-wrap: wrap; gap: .12rem .5rem; align-items:baseline; }
+.legend-item { white-space: nowrap; }
+.text-symbol {
+  font-family: 'Apple Symbols','Arial Unicode MS','Segoe UI Symbol','Noto Sans Symbols 2',serif;
+  font-variant-emoji: text;
+  color: currentColor;
+  -webkit-text-fill-color: currentColor;
+  font-size: 2em;
+  line-height: .75;
+  vertical-align: -.12em;
+}
+
+.zodiac-day { text-align: center; line-height: 1.05; }
+.zodiac-day .notation-item,
+table.calendar tbody td:nth-child(2) .zodiac-glyph {
+  display: block;
+  box-sizing: border-box;
+  max-width: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+  white-space: pre-line;
+  font-size: 2em;
+  line-height: .9;
+}
+.zodiac-day .zodiac-day-number { display: block; margin: .15rem 0 0; }
+
+@media (max-width: 760px) and (orientation: portrait) {
+  .bayer-toggle-wrap,
+  .notation-legend {
+    padding-left: .5rem;
+    padding-right: .5rem;
+  }
+
+  .bayer-toggle {
+    justify-content: center;
+    flex-wrap: nowrap;
+    gap: .22rem;
+    font-size: .76rem;
+    white-space: nowrap;
+  }
+
+  .bayer-toggle-label { margin-right: .05rem; }
+  .bayer-toggle button { padding: .32rem .44rem; }
+}
+
+@media (prefers-color-scheme: dark) {
+  .bayer-toggle button {
+    background: #1c2a36;
+    border-color: #405567;
+    color: #b6dcff;
+  }
+
+  .bayer-toggle button[aria-pressed='true'] {
+    background: #eef7ff;
+    color: #102a43;
+    border-color: #eef7ff;
+  }
+}
