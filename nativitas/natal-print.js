@@ -2,6 +2,7 @@
   'use strict';
   let folded = null, pdfURL = null;
   const output = () => document.getElementById('natal-chart-output') || document.querySelector('main');
+  const standalone = () => navigator.standalone === true || window.matchMedia?.('(display-mode: standalone)').matches === true;
   window.addEventListener('beforeprint', () => {
     if (folded !== null) return;
     folded = [...(output()?.querySelectorAll('details:not([open])') || [])];
@@ -20,7 +21,10 @@
     // Keep native printing in the user's click: PDF loading/rendering may stall
     // or fail, and must never be a prerequisite for opening the print dialog.
     // Continue preparing a PDF for browsers that ignore or block window.print().
-    try { window.print(); } catch { /* PDF controls below provide a fallback. */ }
+    const homeScreen = standalone();
+    if (!homeScreen) {
+      try { window.print(); } catch { /* PDF controls below provide a fallback. */ }
+    }
     const chart = output();
     chart.querySelector('.natal-print-actions')?.remove();
     if (pdfURL) { URL.revokeObjectURL(pdfURL); pdfURL = null; }
@@ -42,17 +46,24 @@
       link.href = pdfURL;
       link.target = '_blank'; link.rel = 'noopener';
       link.textContent = 'Open PDF';
-      panel.append(link);
+      // The standalone iPhone PDF viewer shares a temporary URL rather than
+      // reliably handing off the document. Use file sharing in that mode.
+      if (!homeScreen) panel.append(link);
       const download = document.createElement('a');
       download.href = pdfURL; download.download = 'Nativitas-Natal-Chart.pdf';
       download.textContent = 'Save PDF'; panel.append(download);
       const file = new File([blob], 'Nativitas-Natal-Chart.pdf', {type: 'application/pdf'});
-      if (navigator.canShare?.({files: [file]})) {
+      let canShareFile = false;
+      try { canShareFile = typeof navigator.share === 'function' && !!navigator.canShare?.({files: [file]}); } catch { /* Keep download available. */ }
+      const fileInstructions = 'Choose Print in the share sheet. If Print is missing, choose Save to Files, then open Nativitas-Natal-Chart.pdf in Files and choose Share → Print.';
+      if (canShareFile) {
         const share = document.createElement('button');
-        share.type = 'button'; share.textContent = 'Share PDF';
+        share.type = 'button'; share.textContent = homeScreen ? 'Print or save PDF' : 'Share PDF';
         share.addEventListener('click', async () => {
-          try { await navigator.share({files: [file], title: 'Nativitas Natal Chart'}); }
-          catch (error) { if (error.name !== 'AbortError') status.textContent = 'Sharing is unavailable. Use Open PDF or Save PDF instead.'; }
+          status.textContent = fileInstructions;
+          // No asynchronous work before share(): this tap supplies activation.
+          try { await navigator.share({files: [file]}); }
+          catch (error) { if (error.name !== 'AbortError') status.textContent = 'Sharing is unavailable. Choose Save PDF, then open the downloaded PDF in Files and choose Share → Print.'; }
         });
         panel.append(share);
       }
@@ -63,8 +74,10 @@
         try { window.print(); }
         catch { status.textContent = 'Printing is unavailable here. Choose Open PDF to print or share the PDF.'; }
       });
-      panel.append(print);
-      status.textContent = 'Your PDF is ready. Open it to view, print or share, or save a copy.';
+      if (!homeScreen) panel.append(print);
+      status.textContent = homeScreen
+        ? (canShareFile ? 'Your PDF is ready. Tap Print or save PDF. ' + fileInstructions : 'Your PDF is ready. Choose Save PDF, then open the downloaded PDF in Files and choose Share → Print.')
+        : 'Your PDF is ready. Open it to view, print or share, or save a copy.';
     } catch (error) {
       status.textContent = `Could not prepare the PDF. ${error.message || 'Please try again.'}`;
     } finally { button.disabled = false; }
@@ -74,7 +87,7 @@
     for (const button of root?.querySelectorAll('[data-natal-print]') || []) {
       if (bound.has(button)) continue;
       bound.add(button);
-      button.textContent = 'Print / Save as PDF';
+      button.textContent = standalone() ? 'Prepare PDF for printing' : 'Print / Save as PDF';
       button.addEventListener('click', handlePrint);
     }
   }

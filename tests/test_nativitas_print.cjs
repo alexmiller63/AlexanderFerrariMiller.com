@@ -45,7 +45,7 @@ function chart(rowCount=11){
  main.append(element('p','Black aspect lines.','chart-note print-aspect-key'),element('p','Calculated with DE440s.','chart-note'));
  return {body,main,button};
 }
-function environment(fixture,{exporter,share,loadError=false}={}){
+function environment(fixture,{exporter,share,standalone=false,loadError=false}={}){
  const events={},drawn=[],serialized=[],urlEvents=[];
  const document={currentScript:{src:'https://example.test/nativitas/natal-pdf.js'},head:element('head'),getElementById:()=>fixture.main,querySelector:()=>fixture.main,
   addEventListener:(n,fn)=>events[n]=fn,createTextNode:t=>element('text',t),createElement:tag=>{
@@ -59,6 +59,7 @@ function environment(fixture,{exporter,share,loadError=false}={}){
  const window={PDFLib:loadError?undefined:pdfLib,addEventListener:(n,fn)=>events[n]=fn};
  if(exporter)window.NativitasPDF=exporter;
  const navigator=share?{canShare:()=>true,share}:{};
+ navigator.standalone=standalone;
  class Image {set src(url){queueMicrotask(()=>this.onload());}}
  class XMLSerializer {serializeToString(svg){serialized.push(svg);return '<svg/>';}}
  class URLs extends URL{static createObjectURL(blob){urlEvents.push(blob);return `blob:test-${urlEvents.length}`;}static revokeObjectURL(){}}
@@ -113,4 +114,35 @@ test('first click prints synchronously even when PDF preparation never finishes'
  const event={target:f.button};f.button.events.click(event);
  assert.equal(printed,1,'the first click must open printing without waiting for a PDF');
  env.events.click(event);assert.equal(printed,1,'bubbling must not print twice');
+});
+
+test('Home Screen printing hands a named PDF file to the share sheet, without a blob viewer',async()=>{
+ const f=chart();let shared,printed=0;
+ const env=environment(f,{standalone:true,exporter:async()=>new Blob(['%PDF-test'],{type:'application/pdf'}),share:data=>{shared=data;return Promise.resolve();}});
+ env.window.print=()=>{printed++;};env.run('nativitas/natal-print.js');await f.button.events.click({target:f.button});
+ assert.equal(printed,0,'standalone mode must not offer the ineffective page print route');
+ const panel=f.main.querySelector('.natal-print-actions');
+ assert.equal(panel.querySelectorAll('a').some(a=>a.textContent==='Open PDF'),false);
+ const print=panel.querySelectorAll('button').find(b=>b.textContent==='Print or save PDF');assert.ok(print);
+ const pending=print.events.click();assert.equal(shared.files[0].name,'Nativitas-Natal-Chart.pdf');
+ assert.equal(shared.files[0].type,'application/pdf');assert.equal(shared.url,undefined);
+ assert.equal(await shared.files[0].text(),'%PDF-test');await pending;
+ assert.match(panel.textContent,/Save to Files/);
+});
+test('Home Screen share failure gives a Files fallback and allows retry',async()=>{
+ const f=chart();let calls=0;
+ const env=environment(f,{standalone:true,exporter:async()=>new Blob(['%PDF-test']),share:async()=>{calls++;throw Error('Unavailable');}});
+ env.run('nativitas/natal-print.js');await f.button.events.click({target:f.button});
+ const panel=f.main.querySelector('.natal-print-actions');const share=panel.querySelectorAll('button').find(b=>b.textContent==='Print or save PDF');
+ assert.ok(share);await share.events.click();assert.match(panel.textContent,/Files/);await share.events.click();assert.equal(calls,2);
+ assert.ok(panel.querySelectorAll('a').some(a=>a.download==='Nativitas-Natal-Chart.pdf'));
+});
+
+test('Home Screen without file sharing offers a named download and Files instructions',async()=>{
+ const f=chart(),env=environment(f,{standalone:true,exporter:async()=>new Blob(['%PDF-test'])});
+ env.run('nativitas/natal-print.js');await f.button.events.click({target:f.button});
+ const panel=f.main.querySelector('.natal-print-actions');
+ assert.equal(panel.querySelectorAll('button').length,0);
+ const links=panel.querySelectorAll('a');assert.equal(links.length,1);
+ assert.equal(links[0].download,'Nativitas-Natal-Chart.pdf');assert.match(panel.textContent,/Files/);
 });
