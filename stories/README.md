@@ -38,3 +38,16 @@ python tools/story_completion.py 2025-12-29 2026-01-04
 
 Catalog targets without a permanent ID remain visible in the pending list; they
 cannot become complete until their story is associated with a permanent identity.
+
+## Source presentation
+
+Keep routine SIMBAD/database mentions out of the narrative unless intrinsically
+relevant. Retain measured values, uncertainties and scientific qualifications.
+Collect clickable references in one compact **Sources** section at the bottom.
+This applies to object and constellation stories and to future generated drafts.
+Do not invent references for drafts that have no recorded sources.
+
+Run `python tools/clean_story_sources.py --check` to check all editable object,
+Luna, legacy JSON and constellation manuscripts. Omit `--check` to apply the
+presentation pass. Source snapshots, response payloads and review attestations
+are preserved. Presentation cleanup does not grant research approval.

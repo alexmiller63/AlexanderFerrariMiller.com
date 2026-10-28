@@ -8,6 +8,10 @@ whether an object can participate in Sky Notes.
 from __future__ import annotations
 
 import csv
+if __package__:
+    from .story_editorial import render_markdown
+else:
+    from story_editorial import render_markdown
 import html
 import json
 import re
@@ -410,10 +414,7 @@ def write_public_story(story: Story) -> Path:
     """Materialize the human-readable HTML representation for any story."""
     path = STORIES_ROOT / story.collection / f"{story.fixed_object_id}.html"
     path.parent.mkdir(parents=True, exist_ok=True)
-    paragraphs = "\n".join(
-        f"<p>{html.escape(' '.join(part.splitlines()))}</p>"
-        for part in re.split(r"\n\s*\n", story.body.strip()) if part.strip()
-    )
+    paragraphs = render_markdown(story.body)
     artwork_path = ROOT / "sky-notes-artwork" / "objects" / str(story.fixed_object_id) / "finder.svg"
     artwork_version = str(artwork_path.stat().st_mtime_ns) if artwork_path.exists() else None
     artwork_url = (

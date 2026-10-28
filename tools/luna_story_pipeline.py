@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """Three-stage research, writing and editorial audit. Dry-run unless --execute."""
+if __package__:
+    from .story_editorial import EDITORIAL_RULE
+else:
+    from story_editorial import EDITORIAL_RULE
 import argparse
 import json
 import os
@@ -239,7 +243,7 @@ def save_or_recover_evidence(path, retrieved, ledger_file, persist=None):
 def paid_story_response(stage, instruction, source, model, key, input_price,
                         output_price, ledger, ledger_file, output_dir=None):
     """Retry only recoverable request/output failures; account and persist every attempt."""
-    prompt = (instruction + "\n\n" + source)[:18000]
+    prompt = (EDITORIAL_RULE + "\n\n" + instruction + "\n\n" + source)[:18000]
     limit = MAX_OUTPUT
     last_error = "No response"
     for attempt in range(1, MAX_ATTEMPTS + 1):

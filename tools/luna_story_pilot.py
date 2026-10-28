@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """Opt-in, bounded Star Almanack story pilot. Never overwrites existing stories."""
+if __package__:
+    from .story_editorial import EDITORIAL_RULE
+else:
+    from story_editorial import EDITORIAL_RULE
 import argparse
 import json
 import os
@@ -52,7 +56,7 @@ def main():
         if spent + reservation > 1.00:
             print("STOP: cannot safely reserve next call within $1.00 application budget")
             break
-        prompt = ("Write one original, accurate Star Almanack story, 450-650 words, with a headline, "
+        prompt = (EDITORIAL_RULE + "\n\n" + "Write one original, accurate Star Almanack story, 450-650 words, with a headline, "
                   "standfirst, readable astronomy and citations to the supplied sources. "
                   "Do not invent observations or sources. Distinguish uncertainty. "
                   "Use ONLY the supplied verified facts and sources. Never assert publication approval.\n"
