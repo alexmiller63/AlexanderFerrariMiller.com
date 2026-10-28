@@ -8,6 +8,10 @@ import subprocess
 import time
 import uuid
 from pathlib import Path
+if __package__:
+    from .story_source_style import SOURCE_STYLE_RULE
+else:
+    from story_source_style import SOURCE_STYLE_RULE
 from html import unescape
 from html.parser import HTMLParser
 from urllib.request import Request, urlopen
@@ -408,6 +412,7 @@ def main():
                         "Write an original 450-650 word Star Almanack story with hed, dek, "
                         "scientific context and observing guidance. The exact subject name "
                         f"{task['title']!r} must appear in the hed or opening paragraph. "
+                        + SOURCE_STYLE_RULE +
                         "Cite source URLs. Do not invent sources or assert publication review.", research)
             audit = "Free deterministic review only; factual claims require independent editorial verification."
             # One bounded correction pass, only if deterministic screening fails.
@@ -415,6 +420,7 @@ def main():
             if not initial_gate["screen_passed"] and (ledger["estimated_usd"] + reserve <= CAP or (work_out / (ident + ".correction.stage.txt")).exists()):
                 revised = stage(ident, "correction",
                               "Revise this draft to address the listed structural issues. "
+                              + SOURCE_STYLE_RULE +
                               "Use only facts supported by the research. Preserve accurate citations. "
                               "Return the complete 450-650 word story, without commentary.",
                               json.dumps(initial_gate["checks"]) + "\\nRESEARCH:\\n" +

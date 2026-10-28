@@ -4,6 +4,10 @@ import argparse
 import json
 import os
 from pathlib import Path
+if __package__:
+    from .story_source_style import SOURCE_STYLE_RULE
+else:
+    from story_source_style import SOURCE_STYLE_RULE
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
@@ -54,6 +58,7 @@ def main():
             break
         prompt = ("Write one original, accurate Star Almanack story, 450-650 words, with a headline, "
                   "standfirst, readable astronomy and citations to the supplied sources. "
+                  + SOURCE_STYLE_RULE +
                   "Do not invent observations or sources. Distinguish uncertainty. "
                   "Use ONLY the supplied verified facts and sources. Never assert publication approval.\n"
                   + json.dumps(t, ensure_ascii=False))
