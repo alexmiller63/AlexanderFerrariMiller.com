@@ -11,9 +11,12 @@
     folded?.forEach(section => { section.open = false; });
     folded = null;
   });
-  document.addEventListener('click', async event => {
+  const handled = new WeakSet();
+  async function handlePrint(event) {
+    if (handled.has(event)) return;
     const button = event.target.closest?.('[data-natal-print]');
     if (!button || button.disabled) return;
+    handled.add(event);
     const chart = output();
     chart.querySelector('.natal-print-actions')?.remove();
     if (pdfURL) { URL.revokeObjectURL(pdfURL); pdfURL = null; }
@@ -61,5 +64,17 @@
     } catch (error) {
       status.textContent = `Could not prepare the PDF. ${error.message || 'Please try again.'}`;
     } finally { button.disabled = false; }
-  });
+  }
+  const bound = new WeakSet();
+  function bind(root) {
+    for (const button of root?.querySelectorAll('[data-natal-print]') || []) {
+      if (bound.has(button)) continue;
+      bound.add(button);
+      button.textContent = 'Prepare printable PDF';
+      button.addEventListener('click', handlePrint);
+    }
+  }
+  window.NativitasPrint = {bind};
+  bind(output());
+  document.addEventListener('click', handlePrint);
 })();

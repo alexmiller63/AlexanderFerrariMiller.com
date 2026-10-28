@@ -95,3 +95,13 @@ test('PDF includes collapsed tables, paginates all rows and preserves the screen
 test('a failed local library load rejects rather than leaving the UI waiting',async()=>{
  const f=chart(),env=environment(f,{loadError:true});env.run('nativitas/natal-pdf.js');await assert.rejects(env.window.NativitasPDF(f.main),/Could not load PDF tools/);
 });
+
+test('button handles its own click without any document-level event',async()=>{
+ const f=chart();let calls=0;const env=environment(f,{exporter:async()=>{calls++;return new Blob(['%PDF-test']);}});env.run('nativitas/natal-print.js');
+ assert.equal(f.button.textContent,'Prepare printable PDF');
+ const event={target:f.button};await f.button.events.click(event);
+ assert.match(f.main.textContent,/Your PDF is ready/);
+ await env.events.click(event);assert.equal(calls,1,'bubbling must not export twice');
+ const holder=element('p'),next=element('button','Old label');next.setAttribute('data-natal-print','');holder.append(next);f.main.append(holder);env.window.NativitasPrint.bind(f.main);
+ assert.equal(next.textContent,'Prepare printable PDF');assert.equal(typeof next.events.click,'function');
+});

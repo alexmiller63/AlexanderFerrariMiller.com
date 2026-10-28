@@ -241,7 +241,7 @@ HOUSE_TABLE
 </main>
 {% include nativitas-footer.html %}
 <script src="natal-pdf.js?v=20261028-pdf-2"></script>
-<script src="natal-print.js?v=20261028-pdf-1"></script>
+<script src="natal-print.js?v=20261028-direct-print"></script>
 </body>
 </html>
 '''.replace('PRINTLOCATION', html.escape(f'Location: {latitude:.5f}°, {longitude:.5f}°. Time zone: {zone}.')).replace('LABEL',html.escape(label)).replace('UTCSTAMP',instant.strftime('%Y-%m-%d %H:%M UTC')).replace('STAMP',instant.isoformat()).replace('WHEEL',wheel).replace('POSITIONS',position_rows).replace('HOUSE_DESCRIPTION', 'Tropical zodiac with twelve Placidus houses. AS is the Ascendant, DS the Descendant, MC the Midheaven, and IC the lower meridian. The Ascendant sits at the left.' if houses else 'Birth time unknown. Positions and aspects are a noon snapshot in the selected timezone, not exact birth positions. The Moon can move substantially during the day. Houses and chart angles are omitted.').replace('HOUSE_TABLE', f'<details><summary>House cusp positions</summary><table><caption>Placidus · {latitude:.4f}°, {longitude:.4f}°</caption><thead><tr><th>House</th><th>Position</th></tr></thead><tbody>{cusp_rows}</tbody></table></details>' if houses else '').replace('ASPECTROWS',aspect_rows).replace('ASPECTCOUNT',str(len(aspects)))

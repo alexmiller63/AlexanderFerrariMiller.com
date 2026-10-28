@@ -225,6 +225,7 @@
   function render(data) {
     if (natal) {
       document.getElementById('natal-chart-output').innerHTML = data.chart_html;
+      window.NativitasPrint?.bind(document.getElementById('natal-chart-output'));
       document.getElementById('ephemera-summary').textContent =
         `Location: ${data.observer.latitude}°, ${data.observer.longitude}°. Time zone: ${data.timezone}. ${data.unknown_time ? 'Birth time unknown — noon snapshot; houses omitted.' : 'House system: Placidus.'}`;
       if (downloadURL) URL.revokeObjectURL(downloadURL);
