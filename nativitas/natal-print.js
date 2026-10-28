@@ -122,6 +122,29 @@
         if (key === 'interpretations') state.interpretationLabel = text;
         input.addEventListener('change', () => clearPDF(state));
       }
+      const wheel = root.querySelector('.wheel');
+      if (wheel) {
+        const sizes = document.createElement('fieldset');
+        sizes.className = 'natal-view-controls';
+        const sizeTitle = document.createElement('legend'); sizeTitle.textContent = 'On-screen chart size'; sizes.append(sizeTitle);
+        for (const size of ['small', 'large']) {
+          const label = document.createElement('label');
+          const input = document.createElement('input');
+          input.type = 'radio'; input.name = 'natal-screen-chart-size'; input.value = size;
+          input.checked = size === 'large';
+          input.setAttribute('data-chart-view-size', size);
+          const text = document.createElement('span'); text.textContent = size === 'small' ? 'Small' : 'Large';
+          label.append(input, text); sizes.append(label);
+          input.addEventListener('change', () => {
+            if (!input.checked) return;
+            wheel.setAttribute('data-chart-view-size', size);
+            root.setAttribute('data-chart-view-size', size);
+          });
+        }
+        wheel.setAttribute('data-chart-view-size', 'large');
+        root.setAttribute('data-chart-view-size', 'large');
+        wheel.before(sizes);
+      }
       button.parentElement.before(fieldset);
       state.panel = document.createElement('section');
       state.panel.className = 'natal-print-actions';

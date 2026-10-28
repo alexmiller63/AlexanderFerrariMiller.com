@@ -49,11 +49,11 @@ function chart(rowCount=11){
  return {body,main,button};
 }
 function environment(fixture,{exporter,share,standalone=false,loadError=false}={}){
- const events={},drawn=[],serialized=[],urlEvents=[];let canvases=0;
+ const events={},drawn=[],serialized=[],urlEvents=[],images=[];let canvases=0;
  const document={currentScript:{src:'https://example.test/nativitas/natal-pdf.js'},head:element('head'),getElementById:id=>id==='natal-interpretations'?(fixture.interpretations||null):fixture.main,querySelector:()=>fixture.main,
   addEventListener:(n,fn)=>events[n]=fn,dispatchEvent:e=>events[e.type]?.(e),createTextNode:t=>element('text',t),createElement:tag=>{
    const el=element(tag);if(tag==='canvas'){const page=++canvases;
-    const ctx={scale(){},fillRect(){},drawImage(){},strokeRect(){},measureText:t=>({width:t.length*6}),fillText(t,x,y){drawn.push({t,x,y,page,color:this.fillStyle});}};
+    const ctx={scale(){},fillRect(){},drawImage(...args){images.push({args,page});},strokeRect(){},measureText:t=>({width:t.length*6}),fillText(t,x,y){drawn.push({t,x,y,page,color:this.fillStyle});}};
     el.getContext=()=>ctx;
     el.toDataURL=()=> 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAusB9Y9Zl1sAAAAASUVORK5CYII=';
    }return el;
@@ -70,7 +70,7 @@ function environment(fixture,{exporter,share,standalone=false,loadError=false}={
  const sandbox=vm.createContext(context);
  const run=file=>vm.runInContext(fs.readFileSync(file==='nativitas/natal-print.js' && process.env.NATIVITAS_PRINT_SOURCE ? process.env.NATIVITAS_PRINT_SOURCE : path.join(root,file),'utf8'),sandbox);
  if (!loadError) { run('nativitas/vendor/pdf-lib/pdf-lib-1.17.1.min.js'); window.PDFLib=sandbox.PDFLib; }
- return {events,drawn,serialized,urlEvents,window,document,run};
+ return {events,drawn,images,serialized,urlEvents,window,document,run};
 }
 test('before/after printing restores only the originally closed sections',()=>{
  const f=chart();const details=f.main.querySelectorAll('details');details[0].open=true;
@@ -88,7 +88,7 @@ test('a failed local library load rejects rather than leaving the UI waiting',as
  const f=chart(),env=environment(f,{loadError:true});env.run('nativitas/natal-pdf.js');await assert.rejects(env.window.NativitasPDF(f.main),/Could not load PDF tools/);
 });
 
-function toggles(f){return Object.fromEntries(f.main.querySelectorAll('input').map(i=>[i.getAttribute('data-print-section'),i]));}
+function toggles(f){return Object.fromEntries(f.main.querySelectorAll('input').filter(i=>i.type==='checkbox').map(i=>[i.getAttribute('data-print-section'),i]));}
 function ready(f,env){
  f.interpretations=element('section');f.body.append(f.interpretations);
  f.interpretations.setAttribute('data-print-ready','true');
@@ -195,4 +195,16 @@ test('interpretation headings stay on the same page as their first paragraph lin
   const heading=env.drawn.find(x=>x.t===`Heading ${i}`),paragraph=env.drawn.find(x=>x.t.startsWith(`Paragraph ${i}:`));
   assert.equal(heading.page,paragraph.page,`Heading ${i} was orphaned`);
  }
+});
+
+test('on-screen Small and Large resize the wheel without changing the PDF selection or invalidating its file',async()=>{
+ const f=chart();let captured,exports=0,shares=0;
+ const env=environment(f,{share:async()=>{shares++;},exporter:async(source,selection)=>{captured=selection;exports++;return new Blob(['pdf']);}});
+ env.run('nativitas/natal-print.js');await f.button.events.click({target:f.button});
+ const small=f.main.querySelectorAll('input').find(i=>i.getAttribute('data-chart-view-size')==='small');
+ const large=f.main.querySelectorAll('input').find(i=>i.getAttribute('data-chart-view-size')==='large');
+ assert.ok(small);assert.ok(large);assert.equal(f.main.querySelector('.wheel').getAttribute('data-chart-view-size'),'large');
+ small.checked=true;small.events.change();assert.equal(f.main.querySelector('.wheel').getAttribute('data-chart-view-size'),'small');
+ assert.equal(captured.chartSize,undefined);await f.button.events.click({target:f.button});assert.equal(exports,1);assert.equal(shares,1);
+ large.checked=true;large.events.change();assert.equal(f.main.querySelector('.wheel').getAttribute('data-chart-view-size'),'large');
 });
