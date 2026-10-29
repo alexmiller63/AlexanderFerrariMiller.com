@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 import re
+import json
+from calendar import monthrange
 import sys
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -17,6 +19,10 @@ BOTTOM_ID = "almanack-bottom-nav"
 LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 
 STYLE = """<style id="week-position-nav-css">
+.seasonnav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; margin:-1rem 0 2rem; font:.9rem system-ui,sans-serif; }
+.seasonnav a,.seasonnav a:visited,.seasonnav span { padding:.58rem .4rem; border:1px solid #c8d3dc; border-radius:.45rem; text-align:center; text-decoration:none; color:var(--link); }
+.seasonnav small { display:block; margin-bottom:.3rem; font-size:.75em; }
+.seasonnav [aria-current="date"] { background:var(--navy); color:white !important; font-weight:700; }
 .weekgrid a.current-week,
 .weekgrid a.current-week:visited,
 .weeknav span[aria-current="page"],
@@ -71,6 +77,7 @@ STYLE = """<style id="week-position-nav-css">
 
 WEEK_NAV_RE = re.compile(r'<nav class="weeknav(?: week-position)?"(?: id="(?:week-bottom-nav|almanack-bottom-nav)")?(?: aria-label="Week navigation")?>(.*?)</nav>', re.S)
 YEAR_NAV_RE = re.compile(r'<nav class="yearnav"(?: id="almanack-bottom-nav")?>(.*?)</nav>', re.S)
+SEASON_NAV_RE = re.compile(r'<nav class="seasonnav" aria-label="Seasons">.*?</nav>', re.S)
 SITE_NAV_RE = re.compile(r'<nav class="weeknav sitenav">.*?</nav>', re.S)
 BOTTOM_WRAP_RE = re.compile(r'<div class="almanack-bottom-nav-wrap" id="almanack-bottom-nav">.*?</div>', re.S)
 EMPTY_BOTTOM_RE = re.compile(r'<div id="almanack-bottom-nav"></div>')
@@ -163,11 +170,42 @@ def build_year_nav(year: int, weekly_page: bool, bottom: bool = False) -> str:
 
 
 def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
+    if not weekly_page:
+        text = SEASON_NAV_RE.sub("", text)
     match = YEAR_NAV_RE.search(text)
     if not match:
         raise RuntimeError("year navigation not found")
     nav = build_year_nav(year, weekly_page)
+    if not weekly_page:
+        nav += build_season_nav(year)
     return text[:match.start()] + nav + text[match.end():]
+
+
+def build_season_nav(year: int, today: date | None = None) -> str:
+    """Select the current seasonal position using cached solar boundaries."""
+    today = today or datetime.now(LOCAL_ZONE).date()
+    day = date(year, today.month, min(today.day, monthrange(year, today.month)[1]))
+    payload = json.loads((ROOT / "generated" / f"calendar-{year}.json").read_text())
+    seasons = ("spring", "summer", "autumn", "winter")
+    signs = ("Aries", "Cancer", "Libra", "Capricorn")
+    boundaries = [(date.fromisoformat(row["utc"][:10]), signs.index(row["name"]))
+                  for row in payload["solar_ingresses"] if row["name"] in signs
+                  and date.fromisoformat(row["utc"][:10]) <= day]
+    start, index = max(boundaries)
+    position = start.year * 4 + index
+    links = []
+    for offset, role in ((-1, "Previous season"), (0, "Current season"), (1, "Next season")):
+        target_year, target_index = divmod(position + offset, 4)
+        season = seasons[target_index]
+        label = f"{season.title()} {target_year}"
+        label = "← " + label if offset < 0 else label + " →" if offset > 0 else label
+        body = f"<small>{role}</small>{label}"
+        current = ' aria-current="date"' if offset == 0 else ''
+        if (ROOT / "almanack" / "seasons" / str(target_year) / season / "index.html").exists():
+            links.append(f'<a href="/almanack/seasons/{target_year}/{season}/"{current}>{body}</a>')
+        else:
+            links.append(f'<span{current}>{body}</span>')
+    return '<nav class="seasonnav" aria-label="Seasons">' + ''.join(links) + '</nav>'
 
 
 def adjacent_week(year: int, week: int, days: int) -> tuple[int, int]:
