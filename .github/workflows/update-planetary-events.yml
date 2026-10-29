@@ -1,9 +1,39 @@
 name: Update Planetary Events
 on:
   workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: almanack-generator-main-writer
+  cancel-in-progress: false
 jobs:
-  validate:
+  update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python tools/update_planetary_events.py --dry-run
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate verified event records
+        run: python tools/update_planetary_events.py --dry-run
+      - name: Update affected weeks
+        run: python tools/update_planetary_events.py
+      - name: Refresh seasonal pages only when weeks changed
+        run: |
+          if ! git diff --quiet -- almanack/; then
+            python tools/build_seasonal_calendar.py
+          fi
+      - name: Commit calendar changes
+        run: |
+          if git diff --quiet -- almanack/; then
+            echo "No calendar changes to publish."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack/
+          git commit -m "Refresh dated planetary events in calendars"
+          git pull --rebase origin main
+          git push origin HEAD:main
