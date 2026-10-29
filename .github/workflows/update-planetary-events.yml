@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       week:
-        description: 'Single ISO week to update (YYYY-Www)'
+        description: 'all, or one ISO week (YYYY-Www)'
         required: true
-        default: '2026-W02'
+        default: 'all'
         type: string
 permissions:
   contents: write
@@ -31,12 +31,20 @@ jobs:
           key: star-almanack-de440s-v1
       - name: Ensure planetary kernel
         run: python tools/ensure_ephemeris_kernels.py
+      - name: Verify planetary stations and calendar insertion
+        run: python -m unittest discover -s tests -p test_planetary_stations.py
       - name: Calculate dated planetary phenomena
         run: python tools/calculate_planetary_events.py
-      - name: Validate verified event records
-        run: python tools/update_planetary_events.py --dry-run --week '${{ inputs.week }}'
       - name: Update affected weeks
-        run: python tools/update_planetary_events.py --week '${{ inputs.week }}'
+        env:
+          PLANETARY_WEEK: ${{ inputs.week }}
+        run: |
+          args=()
+          if [[ "$PLANETARY_WEEK" != "all" ]]; then
+            args=(--week "$PLANETARY_WEEK")
+          fi
+          python tools/update_planetary_events.py --dry-run "${args[@]}"
+          python tools/update_planetary_events.py "${args[@]}"
       - name: Refresh seasonal pages only when weeks changed
         run: |
           if ! git diff --quiet -- almanack/; then
