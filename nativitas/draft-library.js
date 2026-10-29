@@ -1,8 +1,11 @@
-/* Nativitas interpretation catalog. Editorial drafts, not source-verified citations. */
+/* Nativitas interpretations: qualified natal aspect reviews and separate editorial drafts. */
 (() => {
   'use strict';
   const source = new URL('data/paid-interpretation-drafts.json', document.currentScript.src);
   const signs = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+  const natalSource = new URL("data/natal-aspects-reviewed.json", document.currentScript.src);
+  let reviewedPending;
+  const reviewed = () => reviewedPending ||= fetch(natalSource).then(r => { if (!r.ok) throw Error("Reviewed natal aspects unavailable"); return r.json(); }).then(d => d.entries).catch(error => { reviewedPending = undefined; throw error; });
   let pending;
   const catalog = () => pending ||= fetch(source).then(r => { if (!r.ok) throw Error('Interpretation catalog unavailable'); return r.json(); }).then(d => d.entries || {});
   const cap = s => String(s).replace(/\b\w/g, c => c.toUpperCase());
@@ -12,7 +15,15 @@
     const article = document.createElement('article');
     const h = document.createElement('h4'); h.textContent = heading;
     const p = document.createElement('p'); p.textContent = item.text;
-    article.append(h,p); root.append(article);
+    article.append(h,p);
+    for (const reference of item.sources || []) {
+      const note = document.createElement('p');
+      const link = document.createElement('a');
+      link.href = reference.url; link.textContent = reference.title || reference.url;
+      note.append('Sources: ', link, '. ' + (reference.scope || '') + '. ' + (reference.qualification || ''));
+      article.append(note);
+    }
+    root.append(article);
   }
   function section(root, title) {
     const box = document.createElement('section');
@@ -28,9 +39,9 @@
     return null;
   }
   async function natal(report, target) {
-    const entries = await catalog(); target.replaceChildren();
+    const [entries, natalAspects] = await Promise.all([catalog(), reviewed()]); target.replaceChildren();
     const intro = document.createElement('p');
-    intro.textContent = 'Symbolic Western astrological interpretations; these editorial drafts have not completed historical source verification. Astrology is not scientifically validated.';
+    intro.textContent = 'Symbolic Western astrological interpretations. Natal aspects are passage-checked against a historical transcription; edition verification is pending. Other sections remain editorial drafts awaiting source verification. Astrology is not scientifically validated.';
     target.append(intro);
     const placements = section(target, 'Planets in signs');
     for (const b of report.bodies || []) paragraph(placements, `${cap(b.body)} in ${cap(sign(b.longitude))}`, entries[`natal-placement:${b.body}:${sign(b.longitude)}`]);
@@ -47,7 +58,7 @@
     for (const a of report.aspects || []) {
       const first = a.first?.body || a.first_body, second = a.second?.body || a.second_body;
       const kind = a.name || a.aspect;
-      if (first && second && kind) paragraph(aspects, `${cap(first)} ${cap(kind)} ${cap(second)}`, unorderedKey('natal-aspect', first, second, kind, entries));
+      if (first && second && kind) paragraph(aspects, `${cap(first)} ${cap(kind)} ${cap(second)}`, unorderedKey('natal-aspect', first, second, String(kind).toLowerCase(), natalAspects));
     }
   }
   async function synastry(report, target) {
