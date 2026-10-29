@@ -27,6 +27,11 @@
       label.textContent = 'Traditional sign dignity: an editorial application of checked rules, not a complete personality reading.';
       article.append(label);
     }
+    if (item.status === 'checked-cusp-rulership-synthesis') {
+      const label = document.createElement('p');
+      label.textContent = 'Traditional house rulership: a guide to the ruler to examine, not a prediction from the cusp sign alone.';
+      article.append(label);
+    }
     for (const reference of item.sources || []) {
       const note = document.createElement('p');
       const link = document.createElement('a');
@@ -53,7 +58,7 @@
     const [drafts, natalAspects, replacements] = await Promise.all([catalog(), reviewed(), reviewedPlacements()]);
     const entries = {...drafts, ...replacements}; target.replaceChildren();
     const intro = document.createElement('p');
-    intro.textContent = 'Symbolic Western astrological interpretations. Natal aspects are passage-checked against a historical transcription; edition verification is pending. Selected sign-dignity and house readings have qualified Lilly sources beneath them; other placement readings remain editorial drafts awaiting source verification. Astrology is not scientifically validated.';
+    intro.textContent = 'Symbolic Western astrological interpretations. Natal aspects are passage-checked against a historical transcription; edition verification is pending. House-cusp rulership notes and selected sign-dignity and house readings have qualified Lilly sources beneath them; other placement readings remain editorial drafts awaiting source verification. Astrology is not scientifically validated.';
     target.append(intro);
     const placements = section(target, 'Planets in signs');
     for (const b of report.bodies || []) paragraph(placements, `${cap(b.body)} in ${cap(sign(b.longitude))}`, entries[`natal-placement:${b.body}:${sign(b.longitude)}`]);
