@@ -17,7 +17,7 @@ SOURCE = ROOT / "almanack"
 DEST = SOURCE / "seasons"
 SEASONS = (("spring", "Aries"), ("summer", "Cancer"),
            ("autumn", "Libra"), ("winter", "Capricorn"))
-ROW = re.compile(r'<tr data-date="(\d{4}-\d\d-\d\d)".*?</tr>', re.S)
+ROW = re.compile(r'<tr\b(?=[^>]*\bdata-date="(\d{4}-\d\d-\d\d)")[^>]*>.*?</tr>', re.S)
 ZODIAC = re.compile(r'<td data-zodiac-sign="([^"]+)" data-zodiac-day="(\d+)"')
 EVENT = re.compile(r'<div class="event-cell"[^>]*>.*?</div>', re.S)
 PHASE = re.compile(r'New Moon|First Quarter|Full Moon|Last Quarter', re.I)
@@ -27,7 +27,10 @@ ASSET = re.compile(r'(?:src|href)="(?!https?:|/|#)([^"]+)"')
 
 def source_rows() -> dict[dt.date, tuple[str, str, list[str]]]:
     found = {}
-    for file in sorted(SOURCE.glob("20??/W??/calendar/index.html")):
+    files = sorted(SOURCE.glob("20??/W??/index.html"))
+    if not files:
+        raise ValueError("No published weekly calendar pages found")
+    for file in files:
         page = file.read_text(encoding="utf-8")
         for iso, raw in ROW.findall(page):
             day = dt.date.fromisoformat(iso)
@@ -65,9 +68,10 @@ def season_dates(rows: dict, year: int, index: int) -> tuple[dt.date, dt.date]:
 def event_allowed(fragment: str) -> bool:
     plain = html.unescape(re.sub(r"<[^>]*>", " ", fragment))
     # Planetary entries are excluded; lunar phase entries are retained.
-    if PLANET.search(plain):
+    special = re.search(r"\b(opposition|greatest elongation|conjunction|greatest brilliance|maximum brightness|occultation|transit)\b", plain, re.I)
+    if PLANET.search(plain) and not special:
         return False
-    if re.search(r'\bMoon\b', plain, re.I) and not PHASE.search(plain):
+    if re.search(r'\bMoon\b', plain, re.I) and not (PHASE.search(plain) or re.search(r"eclipse|occultation", plain, re.I)):
         return False
     return True
 
