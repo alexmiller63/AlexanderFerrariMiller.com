@@ -42,6 +42,7 @@ jobs:
             git reset --hard origin/main
 
             python3 tools/wire_week_navigation.py $ALMANACK_YEARS
+            python3 tools/build_seasonal_calendar.py
 
             if git diff --quiet; then
               echo "No changes needed."
@@ -49,7 +50,9 @@ jobs:
             fi
 
             for year in $ALMANACK_YEARS; do
+              git add -- "almanack/$year"
             done
+            git add -- almanack/seasons
             git commit -m "Standardize Almanack navigation for $ALMANACK_YEARS"
 
             if git push origin HEAD:main; then

@@ -14,6 +14,7 @@ import re
 from pathlib import Path
 
 from almanack_calendar import season_day_label
+from wire_week_navigation import build_season_nav, SEASON_CSS
 
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "almanack"
@@ -108,17 +109,16 @@ def render(year: int, index: int, rows: dict) -> str:
     if signs != required:
         raise ValueError(f"{name} {year}: expected {required}, found {signs}")
     title = f"{name.title()} {year}"
-    prev = (year-1, 3) if index == 0 else (year, index-1)
-    following = (year+1, 0) if index == 3 else (year, index+1)
-    link = lambda p: f"/almanack/seasons/{p[0]}/{SEASONS[p[1]][0]}/"
     lines = ['<!doctype html><html lang="en"><head><meta charset="utf-8">',
              '<meta name="viewport" content="width=device-width,initial-scale=1">',
              f'<title>{title} · Star Almanack</title>',
              '<link rel="stylesheet" href="/almanack/css/notation.css">',
              '<style>body{max-width:1050px;margin:auto;padding:1rem;font:17px/1.5 Georgia,serif;background:#fffdf8;color:#202833}nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccd4dc;padding:.55rem;vertical-align:top}th{background:#e8f0f5}td:first-child{white-space:nowrap}.event-cell{margin:.2rem 0}.zodiac-glyph{font-family:"Apple Symbols","Arial Unicode MS","Segoe UI Symbol","Noto Sans Symbols 2",serif;font-variant-emoji:text;color:inherit;-webkit-text-fill-color:currentColor}img{max-width:1.3em}a{color:#245c86}.week-link,.week-link:visited{display:block;margin:0 0 .35rem;padding:.72rem .55rem;border:1px solid #cbd3da;border-radius:.5rem;text-decoration:none;text-align:center;background:#fff;color:#245c86;font:650 .92rem/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}@media(max-width:600px){body{font-size:15px}th,td{padding:.3rem}td:first-child{white-space:normal}}</style>',
+             "<style>" + SEASON_CSS + "</style>",
              '</head><body><header><a href="/star-almanack/">Star Almanack</a></header>',
              f'<h1>{title}</h1><p>{start:%B %d, %Y} – {(stop-dt.timedelta(days=1)):%B %d, %Y}</p>',
-             f'<nav><a href="{link(prev)}">← Previous season</a><a href="/almanack/seasons/">All seasons</a><a href="{link(following)}">Next season →</a></nav>',
+             build_season_nav(year, season_index=index),
+             '<p><a href="/almanack/seasons/">All seasons</a> · <a href="/almanack/' + str(year) + '/">Full calendar</a></p>',
              '<p>Complete ISO weeks covering this season. Boundary weeks also appear in the adjoining season.</p>',
              '<main data-notation-calendar-root>',
              '<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="calendar"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span> <button type="button" data-bayer-mode="1" aria-pressed="true">Greek/Symbols</button> <button type="button" data-bayer-mode="2" aria-pressed="false">English</button> <button type="button" data-bayer-mode="3" aria-pressed="false">Mixed Learner</button></div></div>',
