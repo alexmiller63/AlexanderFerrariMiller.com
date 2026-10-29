@@ -17,7 +17,7 @@ The seasonal calendar is an alternative view of the same data used by the ISO-we
 
 ## Event selection
 - Retain the same nonplanetary objects, best-visibility events, links, and observing labels as the weekly source data, on their original single best-visibility dates.
-- Omit routine daily planetary positions and planetary finder tables. Retain significant observational planetary events: oppositions, greatest elongations, close apparent conjunctions, maximum brilliance, lunar occultations of planets, and rare solar transits. No astrology, retrograde/direct stations, or astrological interpretations.
+- Omit routine daily planetary positions and planetary finder tables. Retain significant observational planetary events: oppositions, greatest elongations, close apparent conjunctions, maximum brilliance, apparent retrograde/direct stations, lunar occultations of planets, and rare solar transits. Include apparent retrograde and direct stations (start and end of apparent westward motion), with UTC time, constellation, sky position, and observing conditions. These are astronomical events, not astrological interpretations. No astrology or astrological interpretations.
 - The weekly calendar is the canonical event source. Add special planetary events to its event-generation pipeline first; seasonal pages must reuse the same dated records without independent calculations.
 - Include solar and lunar eclipses on their event dates, with type and existing information links.
 - Include meteor showers on their peak dates, with activity intervals in descriptions and existing information links.
@@ -28,7 +28,7 @@ The seasonal calendar is an alternative view of the same data used by the ISO-we
 ## Presentation and verification
 - One date row per civil day, with columns Date, Zodiac Day, Events. Group visually by month if helpful, without splitting the season.
 - Use a responsive, accessible table and the same notation conventions as the weekly calendar.
-- Assert: 13 pages, consecutive nonoverlapping day coverage, correct seasonal boundaries, exactly three sign ingresses per season, no daily lunar positions, no planet events, and event parity with the weekly source.
+- Assert: 13 pages, consecutive nonoverlapping day coverage, correct seasonal boundaries, exactly three sign ingresses per season, no daily lunar positions, no routine daily planet positions, and event parity with the weekly source.
 - Validate cross-year coverage against the 2025–2027 weekly source, including the 2024 and 2028 winter edges. Do not publish an incomplete season as complete.
 
 ## Missing boundary ISO weeks
