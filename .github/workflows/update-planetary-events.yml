@@ -1,0 +1,9 @@
+name: Update Planetary Events
+on:
+  workflow_dispatch:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python tools/update_planetary_events.py --dry-run
