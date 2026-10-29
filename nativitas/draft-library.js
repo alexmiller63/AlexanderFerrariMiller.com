@@ -6,6 +6,12 @@
   const natalSource = new URL("data/natal-aspects-reviewed.json", document.currentScript.src);
   let reviewedPending;
   const reviewed = () => reviewedPending ||= fetch(natalSource).then(r => { if (!r.ok) throw Error("Reviewed natal aspects unavailable"); return r.json(); }).then(d => d.entries).catch(error => { reviewedPending = undefined; throw error; });
+  const placementSource = new URL('data/natal-placements-reviewed.json', document.currentScript.src);
+  let placementPending;
+  const reviewedPlacements = () => placementPending ||= fetch(placementSource).then(r => {
+    if (!r.ok) throw Error('Reviewed natal placements unavailable');
+    return r.json();
+  }).then(d => d.entries).catch(error => { placementPending = undefined; throw error; });
   let pending;
   const catalog = () => pending ||= fetch(source).then(r => { if (!r.ok) throw Error('Interpretation catalog unavailable'); return r.json(); }).then(d => d.entries || {});
   const cap = s => String(s).replace(/\b\w/g, c => c.toUpperCase());
@@ -16,6 +22,11 @@
     const h = document.createElement('h4'); h.textContent = heading;
     const p = document.createElement('p'); p.textContent = item.text;
     article.append(h,p);
+    if (item.status === 'prepared-dignity-synthesis-adapted-source-checked') {
+      const label = document.createElement('p');
+      label.textContent = 'Traditional sign dignity: an editorial application of checked rules, not a complete personality reading.';
+      article.append(label);
+    }
     for (const reference of item.sources || []) {
       const note = document.createElement('p');
       const link = document.createElement('a');
@@ -39,9 +50,10 @@
     return null;
   }
   async function natal(report, target) {
-    const [entries, natalAspects] = await Promise.all([catalog(), reviewed()]); target.replaceChildren();
+    const [drafts, natalAspects, replacements] = await Promise.all([catalog(), reviewed(), reviewedPlacements()]);
+    const entries = {...drafts, ...replacements}; target.replaceChildren();
     const intro = document.createElement('p');
-    intro.textContent = 'Symbolic Western astrological interpretations. Natal aspects are passage-checked against a historical transcription; edition verification is pending. Other sections remain editorial drafts awaiting source verification. Astrology is not scientifically validated.';
+    intro.textContent = 'Symbolic Western astrological interpretations. Natal aspects are passage-checked against a historical transcription; edition verification is pending. Selected sign-dignity and house readings have qualified Lilly sources beneath them; other placement readings remain editorial drafts awaiting source verification. Astrology is not scientifically validated.';
     target.append(intro);
     const placements = section(target, 'Planets in signs');
     for (const b of report.bodies || []) paragraph(placements, `${cap(b.body)} in ${cap(sign(b.longitude))}`, entries[`natal-placement:${b.body}:${sign(b.longitude)}`]);
