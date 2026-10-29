@@ -1,6 +1,12 @@
 name: Update Planetary Events
 on:
   workflow_dispatch:
+    inputs:
+      week:
+        description: 'Single ISO week to update (YYYY-Www)'
+        required: true
+        default: '2026-W02'
+        type: string
 permissions:
   contents: write
 concurrency:
@@ -28,9 +34,9 @@ jobs:
       - name: Calculate dated planetary phenomena
         run: python tools/calculate_planetary_events.py
       - name: Validate verified event records
-        run: python tools/update_planetary_events.py --dry-run
+        run: python tools/update_planetary_events.py --dry-run --week '${{ inputs.week }}'
       - name: Update affected weeks
-        run: python tools/update_planetary_events.py
+        run: python tools/update_planetary_events.py --week '${{ inputs.week }}'
       - name: Refresh seasonal pages only when weeks changed
         run: |
           if ! git diff --quiet -- almanack/; then
