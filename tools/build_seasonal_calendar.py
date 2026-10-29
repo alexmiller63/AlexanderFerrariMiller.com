@@ -67,8 +67,8 @@ def season_dates(rows: dict, year: int, index: int) -> tuple[dt.date, dt.date]:
 
 def event_allowed(fragment: str) -> bool:
     plain = html.unescape(re.sub(r"<[^>]*>", " ", fragment))
-    # Planetary entries are excluded; lunar phase entries are retained.
-    special = re.search(r"\b(opposition|greatest elongation|conjunction|greatest brilliance|maximum brightness|occultation|transit)\b", plain, re.I)
+    # Routine planetary entries are excluded; significant planetary events and lunar phases are retained.
+    special = re.search(r"\b(opposition|greatest elongation|conjunction|greatest brilliance|maximum brightness|maximum brilliance|occultation|transit|retrograde|direct station|stationary)\b", plain, re.I)
     if PLANET.search(plain) and not special:
         return False
     if re.search(r'\bMoon\b', plain, re.I) and not (PHASE.search(plain) or re.search(r"eclipse|occultation", plain, re.I)):
