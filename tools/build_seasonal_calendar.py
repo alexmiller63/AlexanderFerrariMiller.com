@@ -32,7 +32,9 @@ def source_rows() -> dict[dt.date, tuple[str, str, list[str]]]:
         raise ValueError("No published weekly calendar pages found")
     for file in files:
         page = file.read_text(encoding="utf-8")
-        for iso, raw in ROW.findall(page):
+        for row_match in ROW.finditer(page):
+            iso = row_match.group(1)
+            raw = row_match.group(0)
             day = dt.date.fromisoformat(iso)
             match = ZODIAC.search(raw)
             if not match:
