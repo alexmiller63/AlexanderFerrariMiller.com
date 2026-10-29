@@ -3,7 +3,7 @@
 The seasonal calendar is an alternative view of the same data used by the ISO-week calendar, not an independent astronomical computation.
 
 ## Coverage and navigation
-- Fourteen chronological pages: Winter 2024, Spring–Winter 2025, Spring–Winter 2026, Spring–Winter 2027.
+- Thirteen chronological pages: Winter 2024, Spring–Winter 2025, Spring–Winter 2026, Spring–Winter 2027.
 - Winter is named for its starting year. Winter 2024 includes January 1, 2025; Winter 2027 continues into 2028.
 - Every seasonal page links to the previous and next season when present, and to the seasonal index.
 - Add **Seasons** to the Star Almanack navigation, alongside the existing Calendar.
@@ -25,5 +25,5 @@ The seasonal calendar is an alternative view of the same data used by the ISO-we
 ## Presentation and verification
 - One date row per civil day, with columns Date, Zodiac Day, Events. Group visually by month if helpful, without splitting the season.
 - Use a responsive, accessible table and the same notation conventions as the weekly calendar.
-- Assert: 14 pages, consecutive nonoverlapping day coverage, correct seasonal boundaries, exactly three sign ingresses per season, no daily lunar positions, no planet events, and event parity with the weekly source.
+- Assert: 13 pages, consecutive nonoverlapping day coverage, correct seasonal boundaries, exactly three sign ingresses per season, no daily lunar positions, no planet events, and event parity with the weekly source.
 - Validate cross-year coverage against the 2025–2027 weekly source, including the 2024 and 2028 winter edges. Do not publish an incomplete season as complete.
