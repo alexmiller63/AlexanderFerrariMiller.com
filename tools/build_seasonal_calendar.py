@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import datetime as dt
 import html
+import json
 import re
 from pathlib import Path
 
@@ -23,6 +24,32 @@ EVENT = re.compile(r'<div\b[^>]*class="[^"]*\bevent-cell\b[^"]*"[^>]*>.*?</div>'
 PHASE = re.compile(r'New Moon|First Quarter|Full Moon|Last Quarter', re.I)
 PLANET = re.compile(r'\b(?:Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto)\b', re.I)
 ASSET = re.compile(r'(?:src|href)="(?!https?:|/|#)([^"]+)"')
+ZODIAC_ORDER = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+                "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"]
+
+
+def season_label(day: dt.date, sign: str, rows: dict) -> str:
+    index = ZODIAC_ORDER.index(sign) // 3
+    name, first_sign = SEASONS[index]
+    year = day.year - (index == 3 and day.month < 12)
+    candidates = {d for d, (s, n, _) in rows.items()
+                  if d.year == year and s == first_sign and n == "1"}
+    if not candidates:
+        # The first displayed week can precede the earliest published season.
+        # Reuse its cached astronomical ingress, never a fixed calendar date.
+        cache = ROOT / "generated" / f"calendar-{year}.json"
+        if cache.exists():
+            payload = json.loads(cache.read_text(encoding="utf-8"))
+            candidates = {dt.date.fromisoformat(item["utc"][:10])
+                          for item in payload["solar_ingresses"]
+                          if item["name"] == first_sign
+                          and dt.date.fromisoformat(item["utc"][:10]).year == year}
+    if len(candidates) != 1:
+        raise ValueError(f"Expected one {first_sign} ingress in {year}; got {candidates}")
+    number = (day - candidates.pop()).days + 1
+    if not 1 <= number <= 95:
+        raise ValueError(f"Invalid season day for {day}: {number}")
+    return f"{name.title()} · Day {number}"
 
 
 def source_rows() -> dict[dt.date, tuple[str, str, list[str]]]:
@@ -109,7 +136,7 @@ def render(year: int, index: int, rows: dict) -> str:
              '</head><body><header><a href="/star-almanack/">Star Almanack</a></header>',
              f'<h1>{title}</h1><p>{start:%B %d, %Y} – {(stop-dt.timedelta(days=1)):%B %d, %Y}</p>',
              f'<nav><a href="{link(prev)}">← Previous season</a><a href="/almanack/seasons/">All seasons</a><a href="{link(following)}">Next season →</a></nav>',
-             '<p>Complete ISO weeks covering this season. Boundary weeks also appear in the adjoining season; dates outside this season are marked.</p>',
+             '<p>Complete ISO weeks covering this season. Boundary weeks also appear in the adjoining season.</p>',
              '<style>.iso-week{margin:1.5rem 0}.outside-season td{background:#f2f3f4}.season-marker{display:block;font:600 .8rem/1.4 system-ui,sans-serif}</style>']
     symbols = dict(zip(zodiac_order, "♈♉♊♋♌♍♎♏♐♑♒♓"))
     for day in days:
@@ -130,11 +157,8 @@ def render(year: int, index: int, rows: dict) -> str:
                           f'ISO {iso.year}-W{iso.week:02d}</a>{date_label}')
         outside = not start <= day < stop
         row_class = ' class="outside-season"' if outside else ''
-        if day == start:
-            date_label += f'<span class="season-marker">{title} begins</span>'
-        elif outside:
-            date_label += '<span class="season-marker">Outside this season</span>'
-        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}</td><td>{"".join(cells) or "—"}</td></tr>')
+        season = season_label(day, sign, rows)
+        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}<span class="season-marker">{season}</span></td><td>{"".join(cells) or "—"}</td></tr>')
         if day.weekday() == 6:
             lines.append('</tbody></table></section>')
     lines.append('</body></html>')
