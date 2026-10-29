@@ -16,11 +16,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DOC = "https://rhodesmill.org/skyfield/almanac.html"
 EXT = "https://rhodesmill.org/skyfield/searches.html"
 
-def calculate(start_year=2025, end_year=2028):
+def calculate(start_year=2024, end_year=2028):
     engine = StarAlmanackEphemeris()
     ts, eph = engine.ts, engine.planets
     earth, sun = engine.earth, engine.sun
-    start, stop = ts.utc(start_year, 1, 1), ts.utc(end_year + 1, 1, 1)
+    start, stop = ts.utc(2024, 12, 1), ts.utc(2028, 4, 1)
     rows = []
     for name in ("Mars", "Jupiter", "Saturn", "Uranus", "Neptune"):
         target = engine.bodies[name.lower()]
@@ -50,7 +50,7 @@ def calculate(start_year=2025, end_year=2028):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--start-year", type=int, default=2025)
+    parser.add_argument("--start-year", type=int, default=2024)
     parser.add_argument("--end-year", type=int, default=2028)
     parser.add_argument("--output", type=Path, default=ROOT / "data/planetary-events.json")
     args = parser.parse_args()
