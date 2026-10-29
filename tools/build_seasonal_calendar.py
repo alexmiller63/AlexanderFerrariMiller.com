@@ -80,8 +80,6 @@ def render(year: int, index: int, rows: dict) -> str:
     if missing:
         raise ValueError(f"Incomplete {name} {year}: {len(missing)} missing days, first {missing[0]}")
     # All dates in a season must span exactly its three consecutive zodiac signs.
-    expected = [SEASONS[index][1],
-                list(SEASONS[k][1] for k in range(4))[index] if False else None]
     signs = list(dict.fromkeys(rows[d][0] for d in days))
     zodiac_order = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo",
                     "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"]
@@ -109,8 +107,6 @@ def render(year: int, index: int, rows: dict) -> str:
             if not event_allowed(e):
                 continue
             # Resolve relative asset links against the canonical site root.
-            e = ASSET.sub(lambda m: m.group(0).replace(m.group(1), "/almanack/assets/" + m.group(1))
-                          if False else m.group(0), e)
             # The source uses paths relative to /almanack/YYYY/Www/calendar/.
             e = re.sub(r'(src|href)="(?:\.\./){4}assets/', r'\1="/assets/', e)
             cells.append(e)
