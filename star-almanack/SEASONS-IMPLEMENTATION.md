@@ -17,7 +17,10 @@ The seasonal calendar is an alternative view of the same data used by the ISO-we
 
 ## Event selection
 - Retain the same nonplanetary objects, best-visibility events, links, and observing labels as the weekly source data, on their original single best-visibility dates.
-- Omit planetary positions, planetary finder tables, and planet-only events.
+- Omit routine daily planetary positions and planetary finder tables. Retain significant observational planetary events: oppositions, greatest elongations, close apparent conjunctions, maximum brilliance, lunar occultations of planets, and rare solar transits. No astrology, retrograde/direct stations, or astrological interpretations.
+- The weekly calendar is the canonical event source. Add special planetary events to its event-generation pipeline first; seasonal pages must reuse the same dated records without independent calculations.
+- Include solar and lunar eclipses on their event dates, with type and existing information links.
+- Include meteor showers on their peak dates, with activity intervals in descriptions and existing information links.
 - Retain the Moon's four principal phases (New, First Quarter, Full, Last Quarter) only on their event dates, not daily Moon positions.
 - Full Moon names must be read from the canonical naming engine, not guessed from Gregorian month names: preserve the protected Harvest Moon, Moon Before Yule, Moon After Yule, seasonal Blue Moon, and any Frost Moon.
 - Preserve any other nonplanetary calendar events from the weekly view without introducing duplicate events.
