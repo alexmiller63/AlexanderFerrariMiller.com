@@ -30,3 +30,9 @@ The seasonal calendar is an alternative view of the same data used by the ISO-we
 - Use a responsive, accessible table and the same notation conventions as the weekly calendar.
 - Assert: 13 pages, consecutive nonoverlapping day coverage, correct seasonal boundaries, exactly three sign ingresses per season, no daily lunar positions, no planet events, and event parity with the weekly source.
 - Validate cross-year coverage against the 2025–2027 weekly source, including the 2024 and 2028 winter edges. Do not publish an incomplete season as complete.
+
+## Missing boundary ISO weeks
+- Generate and populate ISO 2024-W51 and 2024-W52 to cover the December 2024 solstice through December 29. ISO 2025-W01 already covers December 30–31, 2024.
+- Generate and populate the ISO 2028 weeks required through the March 2028 equinox (likely W01–W12; determine the last required week from the canonical ingress calculation, not an assumed date).
+- Use `tools/scaffold_almanack_weeks.py` for shells, then the existing calendar, fixed-sky, eclipse, and meteor pipelines. A shell is not a complete week.
+- Validate boundary-week dates, zodiac labels, event completeness, and season coverage before publishing. Do not silently invent or omit astronomical events.
