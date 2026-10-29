@@ -19,6 +19,8 @@ from __future__ import annotations
 
 import datetime as dt
 import html
+import json
+from functools import lru_cache
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -66,6 +68,48 @@ EVENT_STYLE = f'''<style id="{EVENT_STYLE_ID}">
 .calendar-events:empty{{min-height:1.8rem}}
 @media(max-width:760px){{.calendar-events{{grid-template-columns:1fr}}}}
 </style>'''
+
+
+@lru_cache(maxsize=None)
+def _season_starts(year: int) -> tuple[tuple[dt.date, str], ...]:
+    """Reuse calculated solar ingresses; civil labels use their UTC dates."""
+    path = Path(__file__).resolve().parents[1] / "generated" / f"calendar-{year}.json"
+    names = {"Aries": "Spring", "Cancer": "Summer", "Libra": "Autumn", "Capricorn": "Winter"}
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    return tuple((dt.date.fromisoformat(row["utc"][:10]), names[row["name"]])
+                 for row in payload["solar_ingresses"] if row["name"] in names)
+
+
+def season_day_label(day: dt.date) -> str:
+    starts = [(start, name) for start, name in _season_starts(day.year) if start <= day]
+    if not starts:
+        raise ValueError(f"No cached season boundary for {day}")
+    start, name = max(starts)
+    number = (day - start).days + 1
+    if not 1 <= number <= 95:
+        raise ValueError(f"Invalid season day for {day}: {number}")
+    return f"{name} {number}"
+
+
+def _with_season_label(rendered: str, day: dt.date) -> str:
+    rendered = re.sub(r'<span class="season-marker"[^>]*>.*?</span>', '', rendered, flags=re.S)
+    return (rendered + '<span class="season-marker" style="display:block;font:600 .8rem/1.4 system-ui,sans-serif">'
+            + season_day_label(day) + '</span>')
+
+
+def ensure_season_labels(text: str) -> str:
+    """Update only zodiac contents, preserving dates, events and navigation."""
+    match = CALENDAR_RE.search(text)
+    if not match:
+        return text
+    def label(row_match):
+        parts = row_match.groupdict()
+        iso = _get_attr(parts["trattrs"], "data-date")
+        if iso and _get_attr(parts["zattrs"], "data-zodiac-sign"):
+            parts["zodiac"] = _with_season_label(parts["zodiac"], dt.date.fromisoformat(iso))
+        return _render_row(parts)
+    body = ROW_RE.sub(label, match.group("body"))
+    return text[:match.start("body")] + body + text[match.end("body"):]
 
 
 def _set_attr(attrs: str, name: str, value: str) -> str:
@@ -244,7 +288,7 @@ def ensure_calendar_metadata(text: str, path: Path) -> str:
         text,
         count=1,
     )
-    return _ensure_event_style(text)
+    return ensure_season_labels(_ensure_event_style(text))
 
 
 def _transform_row(text: str, day: dt.date, transform: Callable[[dict[str, str]], None]) -> tuple[str, bool]:
@@ -326,7 +370,7 @@ def set_zodiac(
     def transform(parts: dict[str, str]) -> None:
         parts["zattrs"] = _set_attr(parts["zattrs"], "data-zodiac-sign", sign_name)
         parts["zattrs"] = _set_attr(parts["zattrs"], "data-zodiac-day", str(zodiac_day))
-        parts["zodiac"] = rendered_html
+        parts["zodiac"] = _with_season_label(rendered_html, day)
     return _transform_row(text, day, transform)
 
 

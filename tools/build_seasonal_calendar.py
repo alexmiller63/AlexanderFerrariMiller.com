@@ -13,6 +13,8 @@ import json
 import re
 from pathlib import Path
 
+from almanack_calendar import season_day_label
+
 ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "almanack"
 DEST = SOURCE / "seasons"
@@ -29,27 +31,7 @@ ZODIAC_ORDER = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
 
 
 def season_label(day: dt.date, sign: str, rows: dict) -> str:
-    index = ZODIAC_ORDER.index(sign) // 3
-    name, first_sign = SEASONS[index]
-    year = day.year - (index == 3 and day.month < 12)
-    candidates = {d for d, (s, n, _) in rows.items()
-                  if d.year == year and s == first_sign and n == "1"}
-    if not candidates:
-        # The first displayed week can precede the earliest published season.
-        # Reuse its cached astronomical ingress, never a fixed calendar date.
-        cache = ROOT / "generated" / f"calendar-{year}.json"
-        if cache.exists():
-            payload = json.loads(cache.read_text(encoding="utf-8"))
-            candidates = {dt.date.fromisoformat(item["utc"][:10])
-                          for item in payload["solar_ingresses"]
-                          if item["name"] == first_sign
-                          and dt.date.fromisoformat(item["utc"][:10]).year == year}
-    if len(candidates) != 1:
-        raise ValueError(f"Expected one {first_sign} ingress in {year}; got {candidates}")
-    number = (day - candidates.pop()).days + 1
-    if not 1 <= number <= 95:
-        raise ValueError(f"Invalid season day for {day}: {number}")
-    return f"{name.title()} {number}"
+    return season_day_label(day)
 
 
 def source_rows() -> dict[dt.date, tuple[str, str, list[str]]]:
