@@ -114,13 +114,15 @@ def render(year: int, index: int, rows: dict) -> str:
     lines = ['<!doctype html><html lang="en"><head><meta charset="utf-8">',
              '<meta name="viewport" content="width=device-width,initial-scale=1">',
              f'<title>{title} · Star Almanack</title>',
+             '<link rel="stylesheet" href="/almanack/css/notation.css">',
              '<style>body{max-width:1050px;margin:auto;padding:1rem;font:17px/1.5 Georgia,serif;background:#fffdf8;color:#202833}nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccd4dc;padding:.55rem;vertical-align:top}th{background:#e8f0f5}td:first-child{white-space:nowrap}.event-cell{margin:.2rem 0}.zodiac-glyph{font-family:"Apple Symbols","Arial Unicode MS","Segoe UI Symbol","Noto Sans Symbols 2",serif;font-variant-emoji:text;color:inherit;-webkit-text-fill-color:currentColor}img{max-width:1.3em}a{color:#245c86}.week-link,.week-link:visited{display:block;margin:0 0 .35rem;padding:.72rem .55rem;border:1px solid #cbd3da;border-radius:.5rem;text-decoration:none;text-align:center;background:#fff;color:#245c86;font:650 .92rem/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}@media(max-width:600px){body{font-size:15px}th,td{padding:.3rem}td:first-child{white-space:normal}}</style>',
              '</head><body><header><a href="/star-almanack/">Star Almanack</a></header>',
              f'<h1>{title}</h1><p>{start:%B %d, %Y} – {(stop-dt.timedelta(days=1)):%B %d, %Y}</p>',
              f'<nav><a href="{link(prev)}">← Previous season</a><a href="/almanack/seasons/">All seasons</a><a href="{link(following)}">Next season →</a></nav>',
              '<p>Complete ISO weeks covering this season. Boundary weeks also appear in the adjoining season.</p>',
-             '<div class="season-notation" role="group" aria-label="Astronomical notation"><span>Notation:</span> <button type="button" data-mode="greek" aria-pressed="true">Greek/Symbols</button> <button type="button" data-mode="latin" aria-pressed="false">Latin</button> <button type="button" data-mode="mixed" aria-pressed="false">Mixed Learner</button></div>',
-             '<style>.season-notation{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;margin:1rem 0;font: .9rem system-ui,sans-serif}.season-notation button{border:1px solid #c8d3dc;border-radius:.4rem;padding:.4rem .6rem;background:white;color:#245c86;cursor:pointer}.season-notation button[aria-pressed=true]{background:#202f46;color:white}.zodiac-name{display:none}.season-notation[data-active=latin]~.iso-week .zodiac-glyph{display:none}.season-notation[data-active=latin]~.iso-week .zodiac-name{display:inline}.season-notation[data-active=mixed]~.iso-week .zodiac-name{display:inline}</style>',
+             '<main data-notation-calendar-root>',
+             '<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="calendar"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span> <button type="button" data-bayer-mode="1" aria-pressed="true">Greek/Symbols</button> <button type="button" data-bayer-mode="2" aria-pressed="false">English</button> <button type="button" data-bayer-mode="3" aria-pressed="false">Mixed Learner</button></div></div>',
+             '<style>:root{--navy:#202f46;--link:#245c86;--muted:#526273;--rule:#ccd4dc}.bayer-toggle-wrap{padding:.5rem 0;margin:0}.bayer-toggle{justify-content:flex-start;flex-wrap:wrap}.observing-aid-notation.is-mixed .observing-aid-word{margin-left:.25em}.notation-rendered{white-space:pre-line}.zodiac-day{width:7.5rem}.zodiac-day .notation-rendered{display:block}.season-marker{margin-top:.35rem}[hidden]{display:none!important}@media(max-width:600px){.bayer-toggle{font-size:.76rem}.zodiac-day{width:5rem;font-size:.85rem}}@media(prefers-color-scheme:dark){.bayer-toggle button{background:white;color:var(--link)}.bayer-toggle button[aria-pressed=true]{background:var(--navy);color:white}}</style>',
              '<style>.iso-week{margin:1.5rem 0}.outside-season td{background:#f2f3f4}.season-marker{display:block;font:600 .8rem/1.4 system-ui,sans-serif}</style>']
     symbols = dict(zip(zodiac_order, "♈♉♊♋♌♍♎♏♐♑♒♓"))
     for day in days:
@@ -136,16 +138,16 @@ def render(year: int, index: int, rows: dict) -> str:
         date_label = f"{day:%a, %b %d, %Y}"
         if day.weekday() == 0:
             iso = day.isocalendar()
-            lines.append(f'<section class="iso-week" aria-label="ISO {iso.year}-W{iso.week:02d}"><table><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>')
+            lines.append(f'<section class="iso-week" aria-label="ISO {iso.year}-W{iso.week:02d}"><table class="calendar"><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>')
             date_label = (f'<a class="week-link" href="/almanack/{iso.year}/W{iso.week:02d}/">'
                           f'ISO {iso.year}-W{iso.week:02d}</a>{date_label}')
         outside = not start <= day < stop
         row_class = ' class="outside-season"' if outside else ''
         season = season_label(day, sign, rows)
-        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span><span class="zodiac-name"> {sign}</span> {number}<span class="season-marker">{season}</span></td><td>{"".join(cells) or "—"}</td></tr>')
+        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td class="zodiac-day"><span class="zodiac-glyph">{symbols[sign]}</span><span class="zodiac-day-number">{number}</span><span class="season-marker">{season}</span></td><td>{"".join(cells) or "—"}</td></tr>')
         if day.weekday() == 6:
             lines.append('</tbody></table></section>')
-    lines.append('<script>document.querySelectorAll(".season-notation button").forEach(b=>b.addEventListener("click",()=>{const p=b.parentElement;p.dataset.active=b.dataset.mode;p.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));}));</script>')
+    lines.append('</main><script src="/almanack/js/notation.js?v=season-controls-2"></script>')
     lines.append('</body></html>')
     # Request monochrome text even on platforms that default zodiac to emoji.
     # Include glyphs copied from weekly event text; leave lunar emoji alone.
