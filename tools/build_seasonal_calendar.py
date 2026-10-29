@@ -116,7 +116,12 @@ def render(year: int, index: int, rows: dict) -> str:
             # Weekly pages and older nested pages use different relative depths.
             e = re.sub(r'(src|href)="(?:\.\./)+assets/', r'\1="/assets/', e)
             cells.append(e)
-        lines.append(f'<tr data-date="{day.isoformat()}"><td>{day:%a, %b %d, %Y}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}</td><td>{"".join(cells) or "—"}</td></tr>')
+        date_label = f"{day:%a, %b %d, %Y}"
+        if day.weekday() == 0:
+            iso = day.isocalendar()
+            date_label = (f'<a href="/almanack/{iso.year}/W{iso.week:02d}/">'
+                          f'{date_label} · Week {iso.week}</a>')
+        lines.append(f'<tr data-date="{day.isoformat()}"><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}</td><td>{"".join(cells) or "—"}</td></tr>')
     lines.append('</tbody></table></body></html>')
     # Request monochrome text even on platforms that default zodiac to emoji.
     # Include glyphs copied from weekly event text; leave lunar emoji alone.
