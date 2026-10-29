@@ -49,7 +49,7 @@ def season_label(day: dt.date, sign: str, rows: dict) -> str:
     number = (day - candidates.pop()).days + 1
     if not 1 <= number <= 95:
         raise ValueError(f"Invalid season day for {day}: {number}")
-    return f"{name.title()} · Day {number}"
+    return f"{name.title()} {number}"
 
 
 def source_rows() -> dict[dt.date, tuple[str, str, list[str]]]:
