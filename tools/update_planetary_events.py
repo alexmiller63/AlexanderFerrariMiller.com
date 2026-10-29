@@ -47,8 +47,7 @@ def load_events(path):
         if url and not url.startswith("https://"):
             raise ValueError("Source links must be HTTPS")
         label = f"{planet} {kind} — {instant:%H:%M:%S} UTC · {description}"
-        link = f' <a href="{html.escape(url, quote=True)}">Event details</a>' if url else ""
-        markup = f'<span {MARKER}{key}">{html.escape(label)}</span>{link}'
+        markup = f'<span {MARKER}{key}">{html.escape(label)}</span>'
         events.setdefault(instant.date(), []).append((instant, key, CalendarEvent(markup)))
     return events
 
