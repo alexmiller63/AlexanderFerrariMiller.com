@@ -52,9 +52,11 @@ def load_events(path):
         events.setdefault(instant.date(), []).append((instant, key, CalendarEvent(markup)))
     return events
 
-def update(events, dry_run=False):
+def update(events, dry_run=False, only_week=None):
     changed = []
     weeks = sorted({(d.isocalendar().year, d.isocalendar().week) for d in events})
+    if only_week is not None:
+        weeks = [w for w in weeks if w == only_week]
     for year, week in weeks:
         path = week_index(year, week)
         if not path.is_file():
@@ -85,9 +87,20 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--events", type=Path, default=ROOT / "data" / "planetary-events.json")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--week", help="Restrict changes to an ISO week, e.g. 2026-W02")
     args = parser.parse_args()
+    only_week = None
+    if args.week:
+        match = re.fullmatch(r"(\d{4})-W(\d{2})", args.week)
+        if not match:
+            parser.error("--week must be YYYY-Www")
+        only_week = (int(match.group(1)), int(match.group(2)))
+        try:
+            dt.date.fromisocalendar(*only_week, 1)
+        except ValueError as exc:
+            parser.error(str(exc))
     events = load_events(args.events)
-    changed = update(events, args.dry_run)
+    changed = update(events, args.dry_run, only_week)
     for path in changed:
         print(f"{'Would update' if args.dry_run else 'Updated'} {path.relative_to(ROOT)}")
     print(f"{len(changed)} affected weekly pages; {sum(map(len, events.values()))} verified events")
