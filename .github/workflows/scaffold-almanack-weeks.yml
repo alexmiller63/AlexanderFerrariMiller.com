@@ -51,13 +51,13 @@ jobs:
 
       - name: Commit scaffolded weeks
         run: |
-          if git diff --quiet; then
+          git add -- almanack
+          if git diff --cached --quiet; then
             echo "No scaffold changes."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- almanack
           git commit -m "Rebuild Almanack week scaffolds ${{ inputs.start_year }}-W${{ inputs.start_week }} through ${{ inputs.end_year }}-W${{ inputs.end_week }}"
           # Minute-log updates can advance main between pull and push.
           # Preserve generated changes by rebasing and retrying without force.
