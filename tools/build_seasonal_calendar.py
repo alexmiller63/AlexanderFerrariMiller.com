@@ -81,12 +81,17 @@ def event_allowed(fragment: str) -> bool:
 def render(year: int, index: int, rows: dict) -> str:
     name, _ = SEASONS[index]
     start, stop = season_dates(rows, year, index)
-    days = [start + dt.timedelta(days=i) for i in range((stop-start).days)]
+    # Keep astronomical boundaries, but display every ISO week touching them.
+    display_start = start - dt.timedelta(days=start.weekday())
+    last = stop - dt.timedelta(days=1)
+    display_stop = last + dt.timedelta(days=7-last.weekday())
+    days = [display_start + dt.timedelta(days=i)
+            for i in range((display_stop-display_start).days)]
     missing = [d for d in days if d not in rows]
     if missing:
         raise ValueError(f"Incomplete {name} {year}: {len(missing)} missing days, first {missing[0]}")
     # All dates in a season must span exactly its three consecutive zodiac signs.
-    signs = list(dict.fromkeys(rows[d][0] for d in days))
+    signs = list(dict.fromkeys(rows[d][0] for d in days if start <= d < stop))
     zodiac_order = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo",
                     "Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"]
     first = zodiac_order.index(SEASONS[index][1])
@@ -104,7 +109,8 @@ def render(year: int, index: int, rows: dict) -> str:
              '</head><body><header><a href="/star-almanack/">Star Almanack</a></header>',
              f'<h1>{title}</h1><p>{start:%B %d, %Y} – {(stop-dt.timedelta(days=1)):%B %d, %Y}</p>',
              f'<nav><a href="{link(prev)}">← Previous season</a><a href="/almanack/seasons/">All seasons</a><a href="{link(following)}">Next season →</a></nav>',
-             '<table><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>']
+             '<p>Complete ISO weeks covering this season. Boundary weeks also appear in the adjoining season; dates outside this season are marked.</p>',
+             '<style>.iso-week{margin:1.5rem 0}.outside-season td{background:#f2f3f4}.season-marker{display:block;font:600 .8rem/1.4 system-ui,sans-serif}</style>']
     symbols = dict(zip(zodiac_order, "♈♉♊♋♌♍♎♏♐♑♒♓"))
     for day in days:
         sign, number, events = rows[day]
@@ -119,10 +125,19 @@ def render(year: int, index: int, rows: dict) -> str:
         date_label = f"{day:%a, %b %d, %Y}"
         if day.weekday() == 0:
             iso = day.isocalendar()
+            lines.append(f'<section class="iso-week" aria-label="ISO {iso.year}-W{iso.week:02d}"><table><thead><tr><th>Date</th><th>Zodiac day</th><th>Events</th></tr></thead><tbody>')
             date_label = (f'<a class="week-link" href="/almanack/{iso.year}/W{iso.week:02d}/">'
                           f'ISO {iso.year}-W{iso.week:02d}</a>{date_label}')
-        lines.append(f'<tr data-date="{day.isoformat()}"><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}</td><td>{"".join(cells) or "—"}</td></tr>')
-    lines.append('</tbody></table></body></html>')
+        outside = not start <= day < stop
+        row_class = ' class="outside-season"' if outside else ''
+        if day == start:
+            date_label += f'<span class="season-marker">{title} begins</span>'
+        elif outside:
+            date_label += '<span class="season-marker">Outside this season</span>'
+        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}</td><td>{"".join(cells) or "—"}</td></tr>')
+        if day.weekday() == 6:
+            lines.append('</tbody></table></section>')
+    lines.append('</body></html>')
     # Request monochrome text even on platforms that default zodiac to emoji.
     # Include glyphs copied from weekly event text; leave lunar emoji alone.
     return re.sub(r"([\u2648-\u2653])[\ufe0e\ufe0f]?", lambda m: m.group(1) + "\ufe0e", "\n".join(lines))
