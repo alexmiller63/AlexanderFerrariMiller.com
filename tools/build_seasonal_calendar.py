@@ -113,8 +113,8 @@ def render(year: int, index: int, rows: dict) -> str:
             if not event_allowed(e):
                 continue
             # Resolve relative asset links against the canonical site root.
-            # The source uses paths relative to /almanack/YYYY/Www/calendar/.
-            e = re.sub(r'(src|href)="(?:\.\./){4}assets/', r'\1="/assets/', e)
+            # Weekly pages and older nested pages use different relative depths.
+            e = re.sub(r'(src|href)="(?:\.\./)+assets/', r'\1="/assets/', e)
             cells.append(e)
         lines.append(f'<tr data-date="{day.isoformat()}"><td>{day:%a, %b %d, %Y}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}</td><td>{"".join(cells) or "—"}</td></tr>')
     lines.append('</tbody></table></body></html>')
