@@ -18,8 +18,8 @@ DEST = SOURCE / "seasons"
 SEASONS = (("spring", "Aries"), ("summer", "Cancer"),
            ("autumn", "Libra"), ("winter", "Capricorn"))
 ROW = re.compile(r'<tr\b(?=[^>]*\bdata-date="(\d{4}-\d\d-\d\d)")[^>]*>.*?</tr>', re.S)
-ZODIAC = re.compile(r'<td data-zodiac-sign="([^"]+)" data-zodiac-day="(\d+)"')
-EVENT = re.compile(r'<div class="event-cell"[^>]*>.*?</div>', re.S)
+ZODIAC = re.compile(r'<td\b(?=[^>]*\bdata-zodiac-sign="([^"]+)")(?=[^>]*\bdata-zodiac-day="(\d+)")[^>]*>')
+EVENT = re.compile(r'<div\b[^>]*class="[^"]*\bevent-cell\b[^"]*"[^>]*>.*?</div>', re.S)
 PHASE = re.compile(r'New Moon|First Quarter|Full Moon|Last Quarter', re.I)
 PLANET = re.compile(r'\b(?:Mercury|Venus|Mars|Jupiter|Saturn|Uranus|Neptune|Pluto)\b', re.I)
 ASSET = re.compile(r'(?:src|href)="(?!https?:|/|#)([^"]+)"')
