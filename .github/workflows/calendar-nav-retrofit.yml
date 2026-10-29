@@ -14,6 +14,7 @@ on:
       - .github/workflows/calendar-nav-retrofit.yml
       - tools/calendar-nav-trigger.txt
       - tools/wire_week_navigation.py
+      - tools/build_seasonal_calendar.py
 
 env:
   ALMANACK_YEARS: ${{ github.event_name == 'workflow_dispatch' && inputs.years || '2025 2026 2027' }}

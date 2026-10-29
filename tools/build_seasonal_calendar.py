@@ -167,12 +167,24 @@ def main() -> None:
         out = DEST / str(year) / SEASONS[index][0] / "index.html"
         out.parent.mkdir(parents=True, exist_ok=True)
         out.write_text(page, encoding="utf-8")
-    links = [f'<li><a href="/almanack/seasons/{year}/{SEASONS[index][0]}/">{SEASONS[index][0].title()} {year}</a></li>'
-             for year, index in plans]
+    groups = []
+    for year in sorted({year for year, _ in plans}):
+        links = ''.join(
+            f'<li><a href="/almanack/seasons/{year}/{SEASONS[index][0]}/">{SEASONS[index][0].title()}</a></li>'
+            for candidate, index in plans if candidate == year)
+        groups.append(f'<section aria-labelledby="year-{year}"><h2 id="year-{year}">{year}</h2><ul class="season-links">{links}</ul></section>')
     DEST.mkdir(parents=True, exist_ok=True)
     (DEST / "index.html").write_text(
-        '<!doctype html><html lang="en"><meta charset="utf-8"><title>Seasons · Star Almanack</title>'
-        '<h1>Star Almanack · Seasons</h1><ul>' + "".join(links) + '</ul></html>', encoding="utf-8")
+        '<!doctype html><html lang="en"><head><meta charset="utf-8">'
+        '<meta name="viewport" content="width=device-width,initial-scale=1">'
+        '<title>Seasons · Star Almanack</title>'
+        '<style>body{max-width:1050px;margin:auto;padding:1rem;font:17px/1.5 Georgia,serif;background:#fffdf8;color:#202833}'
+        'h1,h2{color:#17344d}section{margin:2rem 0}h2{border-bottom:1px solid #ccd4dc;padding-bottom:.35rem}'
+        'a{color:#245c86}.season-links{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;list-style:none;padding:0}'
+        '.season-links a{display:block;padding:.75rem .4rem;border:1px solid #c8d3dc;border-radius:.45rem;text-align:center;text-decoration:none;font:600 .95rem system-ui,sans-serif}'
+        '@media(max-width:600px){.season-links{grid-template-columns:repeat(2,minmax(0,1fr))}}</style></head><body>'
+        '<header><a href="/star-almanack/">Star Almanack</a></header><main><h1>All seasons</h1>'
+        + ''.join(groups) + '</main></body></html>', encoding="utf-8")
     print(f"Generated {len(generated)} complete seasonal calendars.")
 
 
