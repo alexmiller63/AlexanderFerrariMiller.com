@@ -100,7 +100,7 @@ def render(year: int, index: int, rows: dict) -> str:
     lines = ['<!doctype html><html lang="en"><head><meta charset="utf-8">',
              '<meta name="viewport" content="width=device-width,initial-scale=1">',
              f'<title>{title} · Star Almanack</title>',
-             '<style>body{max-width:1050px;margin:auto;padding:1rem;font:17px/1.5 Georgia,serif;background:#fffdf8;color:#202833}nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccd4dc;padding:.55rem;vertical-align:top}th{background:#e8f0f5}td:first-child{white-space:nowrap}.event-cell{margin:.2rem 0}img{max-width:1.3em}a{color:#245c86}@media(max-width:600px){body{font-size:15px}th,td{padding:.3rem}td:first-child{white-space:normal}}</style>',
+             '<style>body{max-width:1050px;margin:auto;padding:1rem;font:17px/1.5 Georgia,serif;background:#fffdf8;color:#202833}nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccd4dc;padding:.55rem;vertical-align:top}th{background:#e8f0f5}td:first-child{white-space:nowrap}.event-cell{margin:.2rem 0}.zodiac-glyph{font-family:"Apple Symbols","Arial Unicode MS","Segoe UI Symbol","Noto Sans Symbols 2",serif;font-variant-emoji:text;color:inherit;-webkit-text-fill-color:currentColor}img{max-width:1.3em}a{color:#245c86}@media(max-width:600px){body{font-size:15px}th,td{padding:.3rem}td:first-child{white-space:normal}}</style>',
              '</head><body><header><a href="/star-almanack/">Star Almanack</a></header>',
              f'<h1>{title}</h1><p>{start:%B %d, %Y} – {(stop-dt.timedelta(days=1)):%B %d, %Y}</p>',
              f'<nav><a href="{link(prev)}">← Previous season</a><a href="/almanack/seasons/">All seasons</a><a href="{link(following)}">Next season →</a></nav>',
@@ -116,9 +116,11 @@ def render(year: int, index: int, rows: dict) -> str:
             # The source uses paths relative to /almanack/YYYY/Www/calendar/.
             e = re.sub(r'(src|href)="(?:\.\./){4}assets/', r'\1="/assets/', e)
             cells.append(e)
-        lines.append(f'<tr data-date="{day.isoformat()}"><td>{day:%a, %b %d, %Y}</td><td>{symbols[sign]} {number}</td><td>{"".join(cells) or "—"}</td></tr>')
+        lines.append(f'<tr data-date="{day.isoformat()}"><td>{day:%a, %b %d, %Y}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}</td><td>{"".join(cells) or "—"}</td></tr>')
     lines.append('</tbody></table></body></html>')
-    return "\n".join(lines)
+    # Request monochrome text even on platforms that default zodiac to emoji.
+    # Include glyphs copied from weekly event text; leave lunar emoji alone.
+    return re.sub(r"([\u2648-\u2653])[\ufe0e\ufe0f]?", lambda m: m.group(1) + "\ufe0e", "\n".join(lines))
 
 
 def main() -> None:
