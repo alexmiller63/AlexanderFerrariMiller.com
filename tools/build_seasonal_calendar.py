@@ -119,6 +119,8 @@ def render(year: int, index: int, rows: dict) -> str:
              f'<h1>{title}</h1><p>{start:%B %d, %Y} – {(stop-dt.timedelta(days=1)):%B %d, %Y}</p>',
              f'<nav><a href="{link(prev)}">← Previous season</a><a href="/almanack/seasons/">All seasons</a><a href="{link(following)}">Next season →</a></nav>',
              '<p>Complete ISO weeks covering this season. Boundary weeks also appear in the adjoining season.</p>',
+             '<div class="season-notation" role="group" aria-label="Astronomical notation"><span>Notation:</span> <button type="button" data-mode="greek" aria-pressed="true">Greek/Symbols</button> <button type="button" data-mode="latin" aria-pressed="false">Latin</button> <button type="button" data-mode="mixed" aria-pressed="false">Mixed Learner</button></div>',
+             '<style>.season-notation{display:flex;align-items:center;flex-wrap:wrap;gap:.4rem;margin:1rem 0;font: .9rem system-ui,sans-serif}.season-notation button{border:1px solid #c8d3dc;border-radius:.4rem;padding:.4rem .6rem;background:white;color:#245c86;cursor:pointer}.season-notation button[aria-pressed=true]{background:#202f46;color:white}.zodiac-name{display:none}.season-notation[data-active=latin]~.iso-week .zodiac-glyph{display:none}.season-notation[data-active=latin]~.iso-week .zodiac-name{display:inline}.season-notation[data-active=mixed]~.iso-week .zodiac-name{display:inline}</style>',
              '<style>.iso-week{margin:1.5rem 0}.outside-season td{background:#f2f3f4}.season-marker{display:block;font:600 .8rem/1.4 system-ui,sans-serif}</style>']
     symbols = dict(zip(zodiac_order, "♈♉♊♋♌♍♎♏♐♑♒♓"))
     for day in days:
@@ -140,9 +142,10 @@ def render(year: int, index: int, rows: dict) -> str:
         outside = not start <= day < stop
         row_class = ' class="outside-season"' if outside else ''
         season = season_label(day, sign, rows)
-        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span> {number}<span class="season-marker">{season}</span></td><td>{"".join(cells) or "—"}</td></tr>')
+        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td><span class="zodiac-glyph">{symbols[sign]}</span><span class="zodiac-name"> {sign}</span> {number}<span class="season-marker">{season}</span></td><td>{"".join(cells) or "—"}</td></tr>')
         if day.weekday() == 6:
             lines.append('</tbody></table></section>')
+    lines.append('<script>document.querySelectorAll(".season-notation button").forEach(b=>b.addEventListener("click",()=>{const p=b.parentElement;p.dataset.active=b.dataset.mode;p.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",String(x===b)));}));</script>')
     lines.append('</body></html>')
     # Request monochrome text even on platforms that default zodiac to emoji.
     # Include glyphs copied from weekly event text; leave lunar emoji alone.
