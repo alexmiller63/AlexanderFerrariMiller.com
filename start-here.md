@@ -4,12 +4,16 @@
 
 ## Use your birthday
 
-You already know one date by heart. Use it to find your way into the sky.
+Your birthday is first a season: a place in Earth’s yearly journey around the Sun. Think of the time of year it belongs to—the changing daylight, the weather, and the stars that return to the evening sky.
 
-1. **Enter your birthday.** Open the [Calendar](/star-almanack/calendar.html) and enter your birth month and day. The converter finds that date’s ISO week in the available 2025–2027 calendars. You do not need to enter your birth year.
-2. **Open your birthday week.** Choose a year, find your date in the calendar, and explore the entries around it. What is the Moon doing? Which stars, constellations, or deep-sky objects have their best-visibility dates nearby?
-3. **Follow something that interests you.** Read its Sky Note, open its article, and look at the finder chart. Your birthday is the starting point for an evening’s exploration.
-4. **Try another year.** Your birthday can fall in a different ISO week. Compare the Moon and dated events, and notice which fixed-sky objects return around the same time of year.
+The Almanack marks the seasons by the equinoxes and solstices. It uses Northern Hemisphere names: Spring begins at the March equinox, Summer at the June solstice, Autumn at the September equinox, and Winter at the December solstice. In the Southern Hemisphere, the local seasons are reversed.
+
+Use the date you already know by heart to explore your season of the sky.
+
+1. **Find your birthday’s season.** Open the [Calendar](/star-almanack/calendar.html), enter your birth month and day, and choose a year from the available 2025–2027 calendars. Open the birthday week, then use its season links to explore the season containing your birthday. You do not need to enter your birth year. If your birthday is close to an equinox or solstice, check the date’s season-and-day label: the season can change within that week.
+2. **Explore the season’s sky.** Browse the seasonal calendar. Which constellations, stars, and deep-sky objects have their best-visibility dates in this part of the year? Follow something that interests you into its Sky Note, article, or finder chart.
+3. **Look more closely at your birthday week.** Return to the week containing your birthday and find your date. What is the Moon doing? What events fall nearby? The week gives you the detail within the larger season.
+4. **Try another year.** The seasonal sky returns around your birthday, while the Moon and dated events change. Compare the years to see both the returning patterns and the differences.
 
 You are looking at the sky around your birthday in the year you choose. To see what you can observe now, return to the converter and enter today’s date.
 
