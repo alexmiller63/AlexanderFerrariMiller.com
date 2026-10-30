@@ -90,8 +90,17 @@ def calculate(start_year=2024, end_year=2028):
         for t, angle in zip(times, angles):
             if float(angle) < 10:
                 continue
+            observer = earth.at(t)
+            sun_lon = observer.observe(sun).apparent().frame_latlon(ecliptic_frame)[1].degrees
+            planet_lon = observer.observe(target).apparent().frame_latlon(ecliptic_frame)[1].degrees
+            # Wrap at Aries so a longitude crossing cannot swap dawn and dusk.
+            east = (planet_lon - sun_lon + 180.0) % 360.0 - 180.0 > 0
+            direction = "eastern" if east else "western"
+            guidance = ("look low in the western sky during evening twilight, after sunset"
+                        if east else
+                        "look low in the eastern sky during dawn twilight, before sunrise")
             rows.append(dict(utc=t.utc_iso(), kind="greatest elongation", planet=name,
-                             description=f"Maximum angular separation from the Sun ({float(angle):.1f}°); look near twilight, with visibility depending on location and season.",
+                             description=f"Greatest {direction} elongation ({float(angle):.1f}° from the Sun); {guidance}. Visibility depends on location and season.",
                              source_url=EXT))
     return sorted(rows, key=lambda row: (row["utc"], row["planet"]))
 
