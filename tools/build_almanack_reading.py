@@ -66,6 +66,13 @@ layout: null
 
 
 def build() -> None:
+    guide = (ROOT / 'start-here.md').read_text(encoding='utf-8')
+    if '{%' in guide or '{{' in guide:
+        raise ValueError('Unexpected Liquid syntax in start-here.md')
+    guide_contents = ('{% capture manuscript %}\n' + guide
+                      + '\n{% endcapture %}\n<article class="prose manuscript">\n'
+                      + '{{ manuscript | markdownify }}\n</article>')
+    (OUT / 'start-here.html').write_text(shell('Start Here', guide_contents), encoding='utf-8')
     front_matter = (ROOT / 'front-matter.md').read_text(encoding='utf-8')
     if '{%' in front_matter or '{{' in front_matter:
         raise ValueError('Unexpected Liquid syntax in front-matter.md')

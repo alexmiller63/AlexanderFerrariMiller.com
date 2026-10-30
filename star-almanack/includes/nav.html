@@ -5,6 +5,7 @@
     <summary>Menu</summary>
     <div class="star-menu-links">
   <a href="/star-almanack/" {% if star_url == "/star-almanack/" or star_url == "/star-almanack/index.html" %}aria-current="page"{% endif %}>Star Almanack Home</a>
+  <a href="/star-almanack/start-here.html" {% if star_url == "/star-almanack/start-here.html" %}aria-current="page"{% endif %}>Start Here</a>
   <a href="/star-almanack/chart-library/" {% if star_url contains "/star-almanack/chart-library/" %}aria-current="page"{% endif %}>Chart Library</a>
   <a href="/star-almanack/reading.html" {% if star_url == "/star-almanack/reading.html" or star_url contains "/star-almanack/read-" %}aria-current="page"{% endif %}>Text and Stories</a>
   <a href="/star-almanack/front-matter.html" {% if star_url == "/star-almanack/front-matter.html" %}aria-current="page"{% endif %}>Front Matter</a>
