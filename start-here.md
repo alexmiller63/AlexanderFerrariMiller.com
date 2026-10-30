@@ -2,34 +2,39 @@
 
 *A reader’s guide to the Star Almanack*
 
-## Start with today
+The sky has a calendar of its own. As the year turns, familiar stars return to the evening sky, different constellations come into view, and the Moon and planets move among them. The Star Almanack connects those changes with dates you can look up.
 
-Enter today’s month and day in the [Calendar](/star-almanack/calendar.html), choose the year you want to explore, and open its week. Find the zodiac month containing your chosen date, then browse that month and the months before and after it.
+You can begin with **today**, to discover what is well placed for evening viewing now, or with **your birthday**, to explore a part of the year you already know by heart. Each route below takes you from a date to a season, then to objects, stories, and charts. You do not need to know the symbols or the astronomy before you begin.
 
-This is your **observing window**: three zodiac months giving you ample evening viewing, with the Almanack showing which stars and other objects are well placed by date. Check the Moon, your latitude, and local conditions as you choose what to observe.
+Your **observing window** includes the zodiac month containing your chosen date, plus the month before and the month after. That three-zodiac-month range gives you ample viewing to explore. The calendar’s best-visibility dates help you choose targets within it.
 
-Then try another date you know by heart.
+## Explore from today, step by step
 
-## Use your birthday
+1. **Open the calendar converter.** Go to the [Calendar](/star-almanack/calendar.html). Select today’s **Month** and enter today’s **Day**.
+2. **Find today’s week.** Tap **Find the weeks**, then open the result for the current year. The converter links to the available 2025–2027 Almanack calendars. The page you open covers one Monday-through-Sunday week.
+3. **Find today in the table.** Locate today’s civil date and look across to its zodiac day. Note the zodiac month’s name. If the symbols are unfamiliar, use **English** or **Mixed Learner** in the calendar’s notation controls.
+4. **Open the larger seasonal view.** Use the **Current season** link near the top of the weekly page. Find today’s date again and browse the surrounding weeks. This gives you the wider sky of this time of year.
+5. **Explore your observing window.** Browse the zodiac month containing today, together with the preceding and following zodiac months. Look for stars, constellations, and deep-sky objects listed at their best-visibility dates. Use the neighboring season links if your window extends beyond the page.
+6. **Choose one object and follow it.** Pick an entry that interests you and open its linked material. Read the Sky Note or article, then look at its finder chart. Use the [Chart Library](/star-almanack/chart-library/) if you want a wider view of the surrounding constellations.
+7. **Make it an evening’s observation.** Check the Moon, the equipment guidance, and whether the object is accessible from your latitude and horizon. Use [Ephemera](/star-almanack/ephemera.html) for location-specific calculations. Take the chart outside and begin with a familiar landmark.
 
-Your birthday is first a season: a place in Earth’s yearly journey around the Sun. Think of the time of year it belongs to—the changing daylight, the weather, and the stars that return to the evening sky.
+Once you have found one object, return to the same observing window and choose another. You have a range of evenings and targets to enjoy.
 
-The Almanack marks the seasons by the equinoxes and solstices. It uses Northern Hemisphere names: Spring begins at the March equinox, Summer at the June solstice, Autumn at the September equinox, and Winter at the December solstice. In the Southern Hemisphere, the local seasons are reversed.
+## Explore from your birthday, step by step
 
-The stars of your birthday season give you a whole sky to explore. They are generally well placed for evening viewing throughout that season, so you can enjoy them on many evenings around your birthday. Which ones you can actually see depends on your latitude, horizon, and sky conditions.
+Your birthday is first a season: a place in Earth’s yearly journey around the Sun. Think of the time of year it belongs to—the daylight, the weather, and the evening sky. The stars of that season give you a whole sky to explore around a familiar date.
 
-Use the date you already know by heart to explore your season of the sky.
+1. **Enter your birthday.** Open the [Calendar](/star-almanack/calendar.html), select your birth **Month**, enter your birth **Day**, and tap **Find the weeks**. You do not need to enter your birth year.
+2. **Choose a year to explore.** Open your birthday week in one of the available 2025–2027 calendars. Choose this year to explore this year’s birthday sky, or another published year to compare.
+3. **Find your birthday’s place in the year.** Locate your civil date in the weekly table and read its zodiac day. Use **English** or **Mixed Learner** if you would like the zodiac name spelled out.
+4. **Explore your birthday season.** Follow the **Current season** link near the top of the week. Find your birthday on that seasonal page and browse the stars and other objects listed around it. If your birthday falls close to an equinox or solstice, check the date’s season-and-day label and use the neighboring season link if needed: a week can cross a season boundary.
+5. **Widen the view to your observing window.** Include the zodiac month containing your birthday, plus the month before and the month after. Browse the best-visibility entries across those three zodiac months. These give you ample evening viewing around your birthday; you can explore beyond the entries on the exact day.
+6. **Get to know an object.** Follow an entry to its story and chart. Learn its constellation, identify a familiar pattern nearby, and consider what equipment you would use to find it. Which objects would you like to look for when your birthday season comes around?
+7. **Compare another year.** Return to the converter and open your birthday in a different published year. The seasonal stars return around the same time of year, while the Moon, planets, and dated events change. Notice what returns and what is different.
 
-1. **Find your birthday’s season.** Open the [Calendar](/star-almanack/calendar.html), enter your birth month and day, and choose a year from the available 2025–2027 calendars. Open the birthday week, then use its season links to explore the season containing your birthday. You do not need to enter your birth year. If your birthday is close to an equinox or solstice, check the date’s season-and-day label: the season can change within that week.
-2. **Explore the season’s sky.** Browse the seasonal calendar. Which constellations, stars, and deep-sky objects have their best-visibility dates in this part of the year? Follow something that interests you into its Sky Note, article, or finder chart.
-3. **Explore your observing window.** Your observing window includes the zodiac month containing your chosen date, plus the month before and the month after. For your birthday, browse the best-visibility entries across those three zodiac months and follow their links to the stories and charts. Your birthday’s exact day is a starting point within this wider window. Also check the Moon and any events nearby.
-4. **Try another year.** The seasonal sky returns around your birthday, while the Moon and dated events change. Compare the years to see both the returning patterns and the differences.
+You are exploring the sky around your birthday in the year you choose. Whenever you want to see what is well placed now, follow the **today** route above.
 
-You are looking at the sky around your birthday in the year you choose. To see what you can observe now, return to the converter and enter today’s date.
-
-The Star Almanack helps you connect a date on the calendar with something to find in the sky. From your first week, you can explore a season, learn a constellation, or follow a story to its chart. You do not need to understand the calculations before you begin.
-
-Before going outside, check your circumstances: latitude, horizon, local time, weather, light pollution, and the Moon all affect what you can see. For calculations at your location, use [Ephemera](/star-almanack/ephemera.html).
+The Almanack names seasons using the Northern Hemisphere convention, with boundaries at the equinoxes and solstices. Southern Hemisphere readers should reverse the local seasonal association. For either route, what you can actually see depends on your latitude, horizon, weather, light pollution, and moonlight.
 
 The previous and next week buttons move through the calendar; the season links take you to the surrounding seasons. “Current week” in that navigation means the week you have opened.
 
