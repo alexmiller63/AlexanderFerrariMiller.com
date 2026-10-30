@@ -21,7 +21,7 @@ LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 SEASON_CSS = """.section-notation-toggle { max-width:100%; min-width:0; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.35rem; }\n.section-notation-toggle button { max-width:100%; white-space:normal; overflow-wrap:anywhere; }\n@media(max-width:760px) { .section-notation-toggle { justify-content:flex-start; } .bayer-toggle-wrap { overflow-x:visible; } .bayer-toggle { flex-wrap:wrap; min-width:0; justify-content:flex-start; } }\n.seasonnav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; margin:-1rem 0 2rem; font:.9rem system-ui,sans-serif; }
 .seasonnav a,.seasonnav a:visited,.seasonnav span { padding:.58rem .4rem; border:1px solid #c8d3dc; border-radius:.45rem; text-align:center; text-decoration:none; color:var(--link); }
 .seasonnav small { display:block; margin-bottom:.3rem; font-size:.75em; }
-.seasonnav [aria-current="date"],.seasonnav [aria-current="page"] { background:var(--navy); color:white !important; font-weight:700; }
+.seasonnav [aria-current="page"] { background:var(--navy); color:white !important; font-weight:700; }
 """
 
 STYLE = '<style id="week-position-nav-css">' + SEASON_CSS + """
@@ -35,6 +35,9 @@ STYLE = '<style id="week-position-nav-css">' + SEASON_CSS + """
   border-color:var(--navy) !important;
   text-decoration:none;
 }
+.weeknav.week-position { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; }
+.weeknav.week-position a,.weeknav.week-position span { min-width:0; text-align:center; overflow-wrap:anywhere; }
+.weeknav.week-position small { display:block; margin-bottom:.3rem; font-size:.75em; }
 .yearnav .nav-spacer,
 .weeknav .nav-spacer {
   visibility:hidden;
@@ -212,7 +215,7 @@ def build_season_nav(year: int, today: date | None = None, season_index: int | N
         label = f"{season.title()} {target_year}"
         label = "← " + label if offset < 0 else label + " →" if offset > 0 else label
         body = f"<small>{role}</small>{label}"
-        current = (' aria-current="page"' if season_index is not None else ' aria-current="date"') if offset == 0 else ''
+        current = ''  # Season buttons are links, never the selected weekly page.
         if (ROOT / "almanack" / "seasons" / str(target_year) / season / "index.html").exists():
             links.append(f'<a href="/almanack/seasons/{target_year}/{season}/"{current}>{body}</a>')
         else:
@@ -257,7 +260,7 @@ def adjacent_week_link(year: int, week: int, days: int, bottom: bool = False) ->
     if target_year != year and target_year not in published_years():
         label = "Previous" if days < 0 else "Next"
         arrow = "← " if days < 0 else " →"
-        return f'<span class="disabled">{arrow}{label}</span>' if days < 0 else f'<span class="disabled">{label}{arrow}</span>'
+        return f'<span class="disabled"><small>{label} week</small>{arrow}{label}</span>' if days < 0 else f'<span class="disabled"><small>{label} week</small>{label}{arrow}</span>'
 
     if target_year == year:
         href = f'../../W{target_week:02d}/'
@@ -267,14 +270,14 @@ def adjacent_week_link(year: int, week: int, days: int, bottom: bool = False) ->
         href += f'#{BOTTOM_ID}'
     label = f'ISO {target_year}-W{target_week:02d}'
     if days < 0:
-        return f'<a href="{href}">← {label}</a>'
-    return f'<a href="{href}">{label} →</a>'
+        return f'<a href="{href}"><small>Previous week</small>← {label}</a>'
+    return f'<a href="{href}"><small>Next week</small>{label} →</a>'
 
 
 def build_week_nav(year: int, week: int, bottom: bool = False) -> str:
     left = adjacent_week_link(year, week, -7, bottom)
     right = adjacent_week_link(year, week, 7, bottom)
-    current = f'<span aria-current="page">ISO {year}-W{week:02d}</span>'
+    current = f'<span aria-current="page"><small>Current week</small>ISO {year}-W{week:02d}</span>'
     return '<nav class="weeknav week-position" aria-label="Week navigation">' + left + current + right + '</nav>'
 
 
