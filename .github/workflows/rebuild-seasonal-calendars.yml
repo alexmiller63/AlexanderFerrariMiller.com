@@ -1,0 +1,56 @@
+name: Rebuild Seasonal Calendars
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: almanack-generator-main-writer
+  cancel-in-progress: false
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Rebuild all 13 seasonal calendars from published weeks
+        run: python tools/build_seasonal_calendar.py
+      - name: Verify all 13 seasonal pages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path("almanack/seasons")
+          pages = sorted(root.glob("20??/*/index.html"))
+          assert len(pages) == 13, f"Expected 13 seasonal pages, found {len(pages)}"
+          for page in pages:
+              text = page.read_text()
+              assert "data-notation-calendar-root" in text, page
+              assert "seasonnav" in text, page
+              assert "--page:#eee9df" in text, page
+          print("Verified 13 seasonal pages.")
+          PY
+      - name: Commit and publish rebuilt seasons
+        run: |
+          if git diff --quiet -- almanack/seasons/; then
+            echo "No seasonal changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add almanack/seasons/
+          git commit -m "Rebuild seasonal calendars with restored Almanack theme"
+          for attempt in 1 2 3 4 5; do
+            git pull --rebase origin main
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((attempt * 2))
+          done
+          exit 1
