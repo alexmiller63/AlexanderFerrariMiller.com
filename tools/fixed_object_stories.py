@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import csv
 if __package__:
-    from .story_editorial import render_markdown
+    from .story_editorial import render_markdown, render_inline
 else:
-    from story_editorial import render_markdown
+    from story_editorial import render_markdown, render_inline
 import html
 import json
 import re
@@ -427,7 +427,7 @@ def write_public_story(story: Story) -> Path:
         f"<title>{html.escape(story.hed)} — Star Almanack Sky Notes</title>\n</head>\n"
         f"<body>\n<main class=\"sky-note-story-page\" data-fixed-object-id=\"{story.fixed_object_id}\">\n"
         f"<h1 data-story-field=\"hed\">{html.escape(story.hed)}</h1>\n"
-        f"<p class=\"sky-note-story-dek story-dek\" data-story-field=\"dek\">{html.escape(story.dek)}</p>\n"
+        f"<p class=\"sky-note-story-dek story-dek\" data-story-field=\"dek\">{render_inline(story.dek)}</p>\n"
         f"<section class=\"sky-note-story-body\" data-story-field=\"body\">{paragraphs}</section>\n"
         + (f"<figure class=\"sky-note-story-artwork\" data-story-field=\"artwork\">"
            f"<a href=\"{artwork_url}\">"

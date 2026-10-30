@@ -64,6 +64,14 @@ def clean_story(text):
     moved = []
     body = re.sub(r"\([^()\n]*ZZCITATION\d+ZZ[^()\n]*\)", lambda m: moved.append(m.group()[1:-1]) or "", body)
     body = clause.sub(lambda m: moved.append(m.group().strip()) or "", body)
+    # Remove the complete attribution only when its link label is discarded.
+    # A factual link label remains in the sentence; URLs stay in the footer.
+    for token, label in tokens:
+        if re.match(r"(?i)SIMBAD\b|Research:|Sources?:", label):
+            body = re.sub(r",? +according to +" + token + r"(?=[.!?]|$)", "", body, flags=re.I)
+            body = re.sub(r"(?i)\baccording to +" + token + r", +", "", body)
+            body = re.sub(r"(?i)(\b(?:listed|recorded|reported|provided) (?:by|in) +)" + token,
+                          r"\1the catalogue", body)
     for token, label in tokens:
         # A link label can itself be part of a factual sentence. Keep it unless
         # it is a stand-alone reference, in which case the footer carries it.
@@ -110,36 +118,37 @@ def clean_story(text):
     return result.rstrip() + "\n"
 
 
+def render_inline(value):
+    value = html.escape(value)
+    anchors = []
+    def stash(label, url):
+        token = f"ZZANCHOR{len(anchors)}ZZ"
+        anchors.append('<a href="' + html.escape(html.unescape(url), quote=True) + '">' + label + '</a>')
+        return token
+    value = LINK.sub(lambda m: stash(m[1], m[2]), value)
+    def bare_link(m):
+        raw = m[0]
+        url = raw.rstrip(".,;:)*")
+        return stash(url, url) + raw[len(url):]
+    value = URL.sub(bare_link, value)
+    value = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", value)
+    value = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", value)
+    for i, anchor in enumerate(anchors):
+        value = value.replace(f"ZZANCHOR{i}ZZ", anchor)
+    return value
+
 def render_markdown(text):
     """Escape raw HTML and render the Markdown used by story manuscripts.
 
     Only http(s) destinations become links. This keeps source lists clickable
     without adding a dependency to every story-producing workflow.
     """
-    def inline(value):
-        value = html.escape(value)
-        anchors = []
-        def stash(label, url):
-            token = f"ZZANCHOR{len(anchors)}ZZ"
-            anchors.append('<a href="' + html.escape(html.unescape(url), quote=True) + '">' + label + '</a>')
-            return token
-        value = LINK.sub(lambda m: stash(m[1], m[2]), value)
-        def bare_link(m):
-            raw = m[0]
-            url = raw.rstrip(".,;:)*")
-            return stash(url, url) + raw[len(url):]
-        value = URL.sub(bare_link, value)
-        value = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", value)
-        value = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<em>\1</em>", value)
-        for i, anchor in enumerate(anchors):
-            value = value.replace(f"ZZANCHOR{i}ZZ", anchor)
-        return value
     blocks = []
     pending = []
     in_list = False
     def flush():
         if pending:
-            blocks.append("<p>" + inline(" ".join(pending)) + "</p>")
+            blocks.append("<p>" + render_inline(" ".join(pending)) + "</p>")
             pending.clear()
     for line in text.splitlines() + [""]:
         heading = re.match(r"^(#{1,6}) +(.+)$", line)
@@ -150,13 +159,13 @@ def render_markdown(text):
         if heading:
             flush()
             level = len(heading[1])
-            blocks.append(f"<h{level}>" + inline(heading[2]) + f"</h{level}>")
+            blocks.append(f"<h{level}>" + render_inline(heading[2]) + f"</h{level}>")
         elif item:
             flush()
             if not in_list:
                 blocks.append("<ul>")
                 in_list = True
-            blocks.append("<li>" + inline(item[1]) + "</li>")
+            blocks.append("<li>" + render_inline(item[1]) + "</li>")
         elif not line.strip():
             flush()
         else:
