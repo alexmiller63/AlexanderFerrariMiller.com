@@ -171,14 +171,16 @@ def build_year_nav(year: int, weekly_page: bool, bottom: bool = False) -> str:
     return f'<nav class="yearnav">{left}{center}{right}</nav>'
 
 
-def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
+def rewrite_year_nav(text: str, year: int, weekly_page: bool, week: int | None = None) -> str:
     text = SEASON_NAV_RE.sub("", text)
     match = YEAR_NAV_RE.search(text)
     if not match:
         raise RuntimeError("year navigation not found")
     nav = build_year_nav(year, weekly_page)
     if weekly_page:
-        monday = date.fromisocalendar(year, int(re.search(r"ISO (?:week )?\d{4}-W(\d{2})|<title>[^<]*W(\d{2})", text).group(1) or re.search(r"ISO (?:week )?\d{4}-W(\d{2})|<title>[^<]*W(\d{2})", text).group(2)), 1)
+        if week is None:
+            raise ValueError("Weekly navigation requires an ISO week number")
+        monday = date.fromisocalendar(year, week, 1)
         nav += build_four_seasons(year, monday)
     else:
         nav += build_season_nav(year)
@@ -368,7 +370,7 @@ def main() -> None:
                 if not path.exists():
                     continue
                 original = path.read_text(encoding='utf-8')
-                updated = rewrite_year_nav(original, year, weekly_page=True)
+                updated = rewrite_year_nav(original, year, weekly_page=True, week=week)
                 updated = rewrite_week_nav(updated, year, week)
                 updated = place_bottom_navigation(updated, year, week)
                 updated = ensure_style(updated)
