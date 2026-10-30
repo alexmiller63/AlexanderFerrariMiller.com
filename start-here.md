@@ -2,6 +2,14 @@
 
 *A reader’s guide to the Star Almanack*
 
+## Start with today
+
+Enter today’s month and day in the [Calendar](/star-almanack/calendar.html), choose the year you want to explore, and open its week. Find the zodiac month containing your chosen date, then browse that month and the months before and after it.
+
+This is your **observing window**: three zodiac months giving you ample evening viewing, with the Almanack showing which stars and other objects are well placed by date. Check the Moon, your latitude, and local conditions as you choose what to observe.
+
+Then try another date you know by heart.
+
 ## Use your birthday
 
 Your birthday is first a season: a place in Earth’s yearly journey around the Sun. Think of the time of year it belongs to—the changing daylight, the weather, and the stars that return to the evening sky.
@@ -14,7 +22,7 @@ Use the date you already know by heart to explore your season of the sky.
 
 1. **Find your birthday’s season.** Open the [Calendar](/star-almanack/calendar.html), enter your birth month and day, and choose a year from the available 2025–2027 calendars. Open the birthday week, then use its season links to explore the season containing your birthday. You do not need to enter your birth year. If your birthday is close to an equinox or solstice, check the date’s season-and-day label: the season can change within that week.
 2. **Explore the season’s sky.** Browse the seasonal calendar. Which constellations, stars, and deep-sky objects have their best-visibility dates in this part of the year? Follow something that interests you into its Sky Note, article, or finder chart.
-3. **Explore three zodiac months.** Find the zodiac month containing your birthday, then include the preceding and following zodiac months. The Almanack shows which stars and other objects are well placed by date; this three-month range gives you ample viewing around your birthday. Browse the best-visibility entries across that whole range and follow their links to the stories and charts. Your birthday’s exact day is a starting point within this wider observing window. Also check the Moon and any events nearby.
+3. **Explore your observing window.** Your observing window includes the zodiac month containing your chosen date, plus the month before and the month after. For your birthday, browse the best-visibility entries across those three zodiac months and follow their links to the stories and charts. Your birthday’s exact day is a starting point within this wider window. Also check the Moon and any events nearby.
 4. **Try another year.** The seasonal sky returns around your birthday, while the Moon and dated events change. Compare the years to see both the returning patterns and the differences.
 
 You are looking at the sky around your birthday in the year you choose. To see what you can observe now, return to the converter and enter today’s date.
