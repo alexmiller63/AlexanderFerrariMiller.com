@@ -59,5 +59,12 @@
     }
   }
   form.addEventListener('submit', event => { event.preventDefault(); if (form.reportValidity()) render(); });
+  document.getElementById('converter-now').addEventListener('click', () => {
+    const today = new Date();
+    form.elements.month.value = String(today.getMonth() + 1);
+    form.elements.day.value = String(today.getDate());
+    form.elements.year.value = String(today.getFullYear());
+    if (form.reportValidity()) render();
+  });
   render();
 }());
