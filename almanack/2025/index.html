@@ -80,7 +80,10 @@ footer .wrap { padding-top:1.3rem; padding-bottom:1.3rem; opacity:.9; }
     border-color:#eef7ff !important;
   }
 }
-</style><style id="week-position-nav-css">.seasonnav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; margin:-1rem 0 2rem; font:.9rem system-ui,sans-serif; }
+</style><style id="week-position-nav-css">.section-notation-toggle { max-width:100%; min-width:0; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:.35rem; }
+.section-notation-toggle button { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+@media(max-width:760px) { .section-notation-toggle { justify-content:flex-start; } .bayer-toggle-wrap { overflow-x:visible; } .bayer-toggle { flex-wrap:wrap; min-width:0; justify-content:flex-start; } }
+.seasonnav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; margin:-1rem 0 2rem; font:.9rem system-ui,sans-serif; }
 .seasonnav a,.seasonnav a:visited,.seasonnav span { padding:.58rem .4rem; border:1px solid #c8d3dc; border-radius:.45rem; text-align:center; text-decoration:none; color:var(--link); }
 .seasonnav small { display:block; margin-bottom:.3rem; font-size:.75em; }
 .seasonnav [aria-current="date"],.seasonnav [aria-current="page"] { background:var(--navy); color:white !important; font-weight:700; }
