@@ -18,7 +18,7 @@ BASES = (ROOT / "almanack",)
 BOTTOM_ID = "almanack-bottom-nav"
 LOCAL_ZONE = ZoneInfo("America/Los_Angeles")
 
-SEASON_CSS = """.seasonnav { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.4rem; margin:-1rem 0 2rem; font:.9rem system-ui,sans-serif; }
+SEASON_CSS = """.seasonnav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:.4rem; margin:-1rem 0 2rem; font:.9rem system-ui,sans-serif; }
 .seasonnav a,.seasonnav a:visited,.seasonnav span { padding:.58rem .4rem; border:1px solid #c8d3dc; border-radius:.45rem; text-align:center; text-decoration:none; color:var(--link); }
 .seasonnav small { display:block; margin-bottom:.3rem; font-size:.75em; }
 .seasonnav [aria-current="date"],.seasonnav [aria-current="page"] { background:var(--navy); color:white !important; font-weight:700; }
@@ -172,13 +172,15 @@ def build_year_nav(year: int, weekly_page: bool, bottom: bool = False) -> str:
 
 
 def rewrite_year_nav(text: str, year: int, weekly_page: bool) -> str:
-    if not weekly_page:
-        text = SEASON_NAV_RE.sub("", text)
+    text = SEASON_NAV_RE.sub("", text)
     match = YEAR_NAV_RE.search(text)
     if not match:
         raise RuntimeError("year navigation not found")
     nav = build_year_nav(year, weekly_page)
-    if not weekly_page:
+    if weekly_page:
+        monday = date.fromisocalendar(year, int(re.search(r"ISO (?:week )?\d{4}-W(\d{2})|<title>[^<]*W(\d{2})", text).group(1) or re.search(r"ISO (?:week )?\d{4}-W(\d{2})|<title>[^<]*W(\d{2})", text).group(2)), 1)
+        nav += build_four_seasons(year, monday)
+    else:
         nav += build_season_nav(year)
     return text[:match.start()] + nav + text[match.end():]
 
@@ -213,6 +215,29 @@ def build_season_nav(year: int, today: date | None = None, season_index: int | N
             links.append(f'<a href="/almanack/seasons/{target_year}/{season}/"{current}>{body}</a>')
         else:
             links.append(f'<span{current}>{body}</span>')
+    return '<nav class="seasonnav" aria-label="Seasons">' + ''.join(links) + '</nav>'
+
+
+
+def build_four_seasons(year: int, monday: date) -> str:
+    """All four astronomical seasons, highlighted for the ISO week's Monday."""
+    payload = json.loads((ROOT / "generated" / f"calendar-{year}.json").read_text())
+    signs = ("Aries", "Cancer", "Libra", "Capricorn")
+    names = ("spring", "summer", "autumn", "winter")
+    boundaries = sorted(
+        (date.fromisoformat(row["utc"][:10]), signs.index(row["name"]))
+        for row in payload["solar_ingresses"] if row["name"] in signs
+    )
+    active = next((index for start, index in reversed(boundaries) if start <= monday), 3)
+    links = []
+    for index, season in enumerate(names):
+        label = f"{season.title()} {year}"
+        current = ' aria-current="date"' if index == active else ""
+        href = f"/almanack/seasons/{year}/{season}/"
+        if (ROOT / "almanack" / "seasons" / str(year) / season / "index.html").exists():
+            links.append(f'<a href="{href}"{current}>{label}</a>')
+        else:
+            links.append(f'<span{current}>{label}</span>')
     return '<nav class="seasonnav" aria-label="Seasons">' + ''.join(links) + '</nav>'
 
 
@@ -287,6 +312,7 @@ def place_bottom_navigation(text: str, year: int, week: int) -> str:
         f'<div class="almanack-bottom-nav-wrap" id="{BOTTOM_ID}">'
         f'{site_nav}'
         f'{build_year_nav(year, weekly_page=True, bottom=True)}'
+        f'{build_four_seasons(year, date.fromisocalendar(year, week, 1))}'
         f'{build_week_nav(year, week, bottom=True)}'
         '</div>'
     )
