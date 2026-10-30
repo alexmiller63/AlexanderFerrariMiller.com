@@ -94,7 +94,10 @@ STYLE = '<style id="week-position-nav-css">' + SEASON_CSS + """
   .weekgrid a.current-week,
   .weekgrid a.current-week:visited,
   .weeknav span[aria-current="page"],
-  .yearnav span[aria-current="page"] {
+  .yearnav span[aria-current="page"],
+  .yearnav > [aria-current="page"],
+  .seasonnav > [aria-current="page"],
+  .weeknav.week-position > [aria-current="page"] {
     background:#eef7ff !important;
     color:#102a43 !important;
     border-color:#eef7ff !important;
@@ -183,13 +186,13 @@ def build_year_nav(year: int, weekly_page: bool, bottom: bool = False) -> str:
     following = adjacent_published_year(year, 1)
 
     def href(target: int) -> str:
-        base = f"../../../{target}/" if weekly_page else f"../{target}/"
+        base = f"/almanack/{target}/"
         return base + (f"#{BOTTOM_ID}" if bottom else "")
 
     left = f'<a href="{href(previous)}">← {previous}</a>' if previous is not None else '<span class="nav-spacer" aria-hidden="true">—</span>'
     right = f'<a href="{href(following)}">{following} →</a>' if following is not None else '<span class="nav-spacer" aria-hidden="true">—</span>'
     if weekly_page:
-        center_href = "../../" + (f"#{BOTTOM_ID}" if bottom else "")
+        center_href = f"/almanack/{year}/" + (f"#{BOTTOM_ID}" if bottom else "")
         center = f'<a href="{center_href}">{year}</a>'
     else:
         center = f'<span aria-current="page">{year}</span>'
