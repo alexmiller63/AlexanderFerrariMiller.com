@@ -444,6 +444,35 @@ def write_public_story(story: Story) -> Path:
     return path
 
 
+@lru_cache(maxsize=1)
+def _luna_paths() -> dict[int, Path]:
+    """Resolve saved manuscripts with the same identity bridge as their publisher."""
+    from luna_story_pipeline import resolve_objects
+    candidates = ROOT / "research/luna-pilot-candidates.json"
+    if not candidates.exists():
+        return {}
+    mapping = resolve_objects(json.loads(candidates.read_text(encoding="utf-8")))
+    return {int(mapping.get(path.stem, path.stem)): path
+            for path in sorted((ROOT / "generated/luna-pilot").glob("*.md"))
+            if path.stem.isdigit()}
+
+
+def read_luna_story(fixed_object_id: int) -> Story | None:
+    path = _luna_paths().get(fixed_object_id)
+    if path is None:
+        return None
+    text = path.read_text(encoding="utf-8").strip()
+    match = re.match(r"^#\s+(.+?)\s*\n+(.*)$", text, flags=re.S)
+    if not match:
+        return None
+    title, rest = match.groups()
+    sections = re.split(r"\n\s*\n", rest.strip(), maxsplit=1)
+    if len(sections) < 2 or not sections[1].strip():
+        return None
+    return Story("drafts", fixed_object_id, path, title.strip(),
+                 " ".join(sections[0].splitlines()), sections[1].strip(), status="pending")
+
+
 def available_stories(fixed_object_id: int) -> list[Story]:
     """Return curated stories when present; use the machine-derived baseline only as fallback."""
     stories = []
@@ -455,6 +484,11 @@ def available_stories(fixed_object_id: int) -> list[Story]:
         for story in stories:
             write_public_story(story)
         return stories
+    # Prefer the current saved manuscript over the superseded JSON draft.
+    manuscript = read_luna_story(fixed_object_id)
+    if manuscript is not None:
+        write_public_story(manuscript)
+        return [manuscript]
     # Saved AI drafts are readable but remain unverified; curated stories win.
     draft_path = ROOT / "generated" / "sky-notes-2026-drafts" / f"{fixed_object_id}.json"
     if draft_path.exists():

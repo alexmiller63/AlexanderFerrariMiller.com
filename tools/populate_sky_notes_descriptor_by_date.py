@@ -2,9 +2,9 @@
 """Populate descriptor-first Sky Notes and story presentations from Calendar IDs."""
 from __future__ import annotations
 if __package__:
-    from .story_editorial import render_markdown
+    from .story_editorial import render_markdown, render_inline
 else:
-    from story_editorial import render_markdown
+    from story_editorial import render_markdown, render_inline
 
 import csv
 import html
@@ -357,7 +357,7 @@ def render_inline_stories(stories: list[dict]) -> str:
     blocks = []
     for story in stories:
         hed = html.escape(story["hed"])
-        dek = html.escape(story["dek"])
+        dek = render_inline(story["dek"])
         url = html.escape(reader_story_url(story["url"]), quote=True)
         body_html = render_markdown(story["body"])
         blocks.append(
@@ -378,7 +378,7 @@ def render_linked_stories(stories: list[dict], elaborate: bool = False) -> str:
     items = []
     for story in stories:
         hed = html.escape(story["hed"])
-        dek = html.escape(story["dek"])
+        dek = render_inline(story["dek"])
         url = html.escape(reader_story_url(story["url"]), quote=True)
         body_html = ""
         if elaborate:
@@ -525,7 +525,7 @@ def weave_story_headlines(rendered: str, stories: list[dict], page_path) -> str:
             continue
         url = html.escape(reader_story_url(story["url"]), quote=True)
         hed = html.escape(story["hed"])
-        dek = html.escape(story["dek"])
+        dek = render_inline(story["dek"])
         grouped.setdefault(heading, []).append(
             f'<p class="sky-note-story-reference" data-fixed-object-id="{story["fixed_object_id"]}">'
             f'<a href="{url}"><strong class="sky-note-story-hed">{hed}</strong> — '

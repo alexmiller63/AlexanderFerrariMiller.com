@@ -7,6 +7,8 @@ on:
       - 'stories/**/*.md'
       - 'tools/publish_stories.py'
       - 'tools/fixed_object_stories.py'
+      - 'generated/luna-pilot/*.md'
+      - 'tools/sync_story_references.py'
       - 'tools/story_audit.py'
       - '.github/workflows/publish-reviewed-stories.yml'
 
@@ -41,7 +43,9 @@ jobs:
             git fetch origin "$branch"
             git reset --hard "origin/$branch"
             python3 tools/publish_stories.py
-            git add stories/
+            python3 tools/publish_luna_drafts.py
+            python3 tools/sync_story_references.py
+            git add stories/ almanack/
             if git diff --cached --quiet; then
               echo "No new rendered story pages to commit."
               exit 0
