@@ -13,7 +13,7 @@ import json
 import re
 from pathlib import Path
 
-from almanack_calendar import season_day_label
+from almanack_calendar import EVENT_STYLE, season_day_label
 from wire_week_navigation import build_season_nav, SEASON_CSS
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -113,8 +113,10 @@ def render(year: int, index: int, rows: dict) -> str:
              '<meta name="viewport" content="width=device-width,initial-scale=1">',
              f'<title>{title} · Star Almanack</title>',
              '<link rel="stylesheet" href="/almanack/css/notation.css">',
-             '<style>:root{--navy:#102a43;--link:#245c86;--paper:#fffdf8;--page:#eee9df;--rule:#d8d2c8;--muted:#526273;--heading:#17344d;--table-head:#e8f0f5;--table-ink:#17344d;--table-rule:#ccd4dc}body{max-width:1050px;margin:auto;padding:1rem;font:17px/1.5 Georgia,serif;background:var(--page);color:#202833}header{background:var(--navy);color:white;padding:.9rem 1.2rem;border-bottom:4px solid #c5a45c}header a,header a:visited{color:#eef7ff}main{background:var(--paper);padding:1rem}h1,h2{color:var(--heading)}@media(prefers-color-scheme:dark){:root{--page:#10171f;--paper:#17212b;--link:#9fd0ff;--muted:#a7b4c0;--heading:#f1f7fb;--table-head:#223444;--table-ink:#eef7ff;--table-rule:#40505e}body{color:#dce6ef}h1,h2{color:#f1f7fb}th{background:#223444;color:#eef7ff}td,th{border-color:#40505e}}nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--table-rule);padding:.55rem;vertical-align:top}th{background:var(--table-head);color:var(--table-ink)}td:first-child{white-space:nowrap}.event-cell{margin:.2rem 0}.zodiac-glyph{font-family:"Apple Symbols","Arial Unicode MS","Segoe UI Symbol","Noto Sans Symbols 2",serif;font-variant-emoji:text;color:inherit;-webkit-text-fill-color:currentColor}img{max-width:1.3em}a,a:visited{color:var(--link)}.week-link,.week-link:visited{display:block;margin:0 0 .35rem;padding:.72rem .55rem;border:1px solid #cbd3da;border-radius:.5rem;text-decoration:none;text-align:center;background:#fff;color:#245c86;font:650 .92rem/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}@media(max-width:600px){body{font-size:15px}th,td{padding:.3rem}td:first-child{white-space:normal}}</style>',
+             '<style>:root{--navy:#102a43;--link:#245c86;--paper:#fffdf8;--page:#eee9df;--rule:#d8d2c8;--muted:#526273;--heading:#17344d;--table-head:#e8f0f5;--table-ink:#17344d;--table-rule:#ccd4dc}body{max-width:1050px;margin:auto;padding:1rem;font:17px/1.5 Georgia,serif;background:var(--page);color:#202833}header{background:var(--navy);color:white;padding:.9rem 1.2rem;border-bottom:4px solid #c5a45c}header a,header a:visited{color:#eef7ff}main{background:var(--paper);padding:1rem}h1,h2{color:var(--heading)}@media(prefers-color-scheme:dark){:root{--page:#10171f;--paper:#17212b;--link:#9fd0ff;--muted:#a7b4c0;--heading:#f1f7fb;--table-head:#223444;--table-ink:#eef7ff;--table-rule:#40505e}body{color:#dce6ef}h1,h2{color:#f1f7fb}th{background:#223444;color:#eef7ff}td,th{border-color:#40505e}}nav{display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap}table{width:100%;border-collapse:collapse}th,td{border:1px solid var(--table-rule);padding:.55rem;vertical-align:top}th{background:var(--table-head);color:var(--table-ink)}td:first-child{white-space:nowrap}.zodiac-glyph{font-family:"Apple Symbols","Arial Unicode MS","Segoe UI Symbol","Noto Sans Symbols 2",serif;font-variant-emoji:text;color:inherit;-webkit-text-fill-color:currentColor}img{max-width:1.3em}a,a:visited{color:var(--link)}.week-link,.week-link:visited{display:block;margin:0 0 .35rem;padding:.72rem .55rem;border:1px solid #cbd3da;border-radius:.5rem;text-decoration:none;text-align:center;background:#fff;color:#245c86;font:650 .92rem/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}@media(max-width:600px){body{font-size:15px}th,td{padding:.3rem}td:first-child{white-space:normal}}</style>',
              "<style>" + SEASON_CSS + "</style>",
+             EVENT_STYLE,
+             '<style>.calendar-events .event-cell{box-sizing:border-box;width:100%;border-color:var(--table-rule)}@media(max-width:760px){.calendar-events{grid-template-columns:minmax(0,1fr)}}</style>',
              '</head><body><header><a href="/star-almanack/">Star Almanack</a></header>',
              f'<h1>{title}</h1><p>{start:%B %d, %Y} – {(stop-dt.timedelta(days=1)):%B %d, %Y}</p>',
              build_season_nav(year, season_index=index),
@@ -144,7 +146,7 @@ def render(year: int, index: int, rows: dict) -> str:
         outside = not start <= day < stop
         row_class = ' class="outside-season"' if outside else ''
         season = season_label(day, sign, rows)
-        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td class="zodiac-day"><span class="zodiac-glyph">{symbols[sign]}</span><span class="zodiac-day-number">{number}</span><span class="season-marker">{season}</span></td><td>{"".join(cells) or "—"}</td></tr>')
+        lines.append(f'<tr data-date="{day.isoformat()}"{row_class}><td>{date_label}</td><td class="zodiac-day"><span class="zodiac-glyph">{symbols[sign]}</span><span class="zodiac-day-number">{number}</span><span class="season-marker">{season}</span></td><td class="calendar-events-region"><div class="calendar-events">{"".join(cells)}</div></td></tr>')
         if day.weekday() == 6:
             lines.append('</tbody></table></section>')
     lines.append('</main><script src="/almanack/js/notation.js?v=season-controls-2"></script>')
@@ -190,3 +192,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
