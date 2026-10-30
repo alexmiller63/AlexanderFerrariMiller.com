@@ -123,7 +123,7 @@ def render(year: int, index: int, rows: dict) -> str:
              '<main data-notation-calendar-root>',
              '<div class="bayer-toggle-wrap section-notation-toggle" data-notation-target="calendar"><div class="bayer-toggle" role="group" aria-label="Astronomical notation"><span class="bayer-toggle-label">Notation:</span> <button type="button" data-bayer-mode="1" aria-pressed="true">Greek/Symbols</button> <button type="button" data-bayer-mode="2" aria-pressed="false">English</button> <button type="button" data-bayer-mode="3" aria-pressed="false">Mixed Learner</button></div></div>',
              '<style>:root{--navy:#202f46;--link:#245c86;--muted:#526273;--rule:#ccd4dc}.bayer-toggle-wrap{padding:.5rem 0;margin:0}.bayer-toggle{justify-content:flex-start;flex-wrap:wrap}.observing-aid-notation.is-mixed .observing-aid-word{margin-left:.25em}.notation-rendered{white-space:pre-line}.zodiac-day{width:7.5rem}.zodiac-day .notation-rendered{display:block}.season-marker{margin-top:.35rem}[hidden]{display:none!important}@media(max-width:600px){.bayer-toggle{font-size:.76rem}.zodiac-day{width:5rem;font-size:.85rem}}@media(prefers-color-scheme:dark){.bayer-toggle button{background:white;color:var(--link)}.bayer-toggle button[aria-pressed=true]{background:var(--navy);color:white}}</style>',
-             '<style>.iso-week{margin:1.5rem 0}.outside-season td{background:#f2f3f4}.season-marker{display:block;font:600 .8rem/1.4 system-ui,sans-serif}</style>']
+             '<style>.iso-week{margin:1.5rem 0}.outside-season td{background:var(--paper)}.season-marker{display:block;font:600 .8rem/1.4 system-ui,sans-serif}</style>']
     symbols = dict(zip(zodiac_order, "♈♉♊♋♌♍♎♏♐♑♒♓"))
     for day in days:
         sign, number, events = rows[day]
