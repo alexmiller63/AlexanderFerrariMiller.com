@@ -9,6 +9,8 @@ layout: null
 .clock-panel{max-width:850px;margin:1.2rem auto;padding:1.2rem;border:1px solid #536982;border-radius:12px;background:#17283e;color:#f6f8fc}
 .clock-panel h2,.clock-panel label{color:#f6f8fc}.clock-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.clock-tile{padding:1rem;border:1px solid #607891;border-radius:8px;background:#243b54}.clock-tile output{display:block;font:600 clamp(1.25rem,4vw,1.9rem) system-ui;color:#fff;overflow-wrap:anywhere}.clock-panel input{font-size:16px;max-width:100%;padding:.55rem}.clock-panel button{padding:.65rem 1rem;margin:.5rem .5rem .5rem 0;min-height:44px}.clock-panel small{color:#dbe6f1}.clock-panel fieldset{border:1px solid #70859b;margin:1rem 0}.clock-panel legend{padding:0 .4rem}.clock-panel .choices{display:flex;gap:1rem;flex-wrap:wrap}.clock-panel .choices label{display:inline-flex;gap:.4rem;align-items:center}
 .analog-face{width:170px;height:170px;margin:1rem auto;position:relative;border:5px solid #d8e3ef;border-radius:50%;background:#f8fafc;color:#15283e;box-shadow:inset 0 0 0 2px #8799ab}.analog-face[hidden]{display:none}.clock-numeral{position:absolute;font:700 18px system-ui;transform:translate(-50%,-50%)}.hand{position:absolute;left:50%;bottom:50%;transform-origin:bottom center;border-radius:8px}.hour-hand{width:6px;height:46px;background:#1b3048}.minute-hand{width:4px;height:62px;background:#1b3048}.second-hand{width:2px;height:68px;background:#b34237}.analog-face:after{content:"";position:absolute;width:10px;height:10px;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:#b34237}.clock-tile select{font:inherit;padding:.35rem;max-width:100%;margin-bottom:.4rem}
+
+.alarm-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin:1rem 0}.alarm-tabs button[aria-selected="true"]{background:#e8f1ff;color:#13283e;font-weight:700}.alarm-pane[hidden]{display:none}.alarm-row{display:flex;align-items:center;gap:.65rem;flex-wrap:wrap;padding:.65rem 0;border-bottom:1px solid #607891}.alarm-row label{display:inline-flex;align-items:center;gap:.4rem}.alarm-row input,.alarm-row select{min-height:42px}.alarm-note{color:#e0e9f3}.alarm-pane input[type=time],.alarm-pane select{font-size:16px;padding:.5rem;background:#fff;color:#15283e}.alarm-pane button{cursor:pointer}
 </style></head><body>
 {% include_relative includes/nav.html %}
 <main class="page-shell"><section class="hero"><p class="eyebrow">Star Almanack · Astronomy tools</p><h1>Astronomical Clock</h1><p class="tagline">Civil, solar and sidereal time — and the season of the stars on your meridian.</p></section>
@@ -25,7 +27,21 @@ layout: null
 <div class="clock-tile" data-tile="sidereal"><h2>Local sidereal time</h2><output id="sidereal">—</output><small>Right ascension crossing the meridian now.</small></div>
 <div class="clock-tile" data-tile="meridian"><h2>Meridian calendar</h2><output id="meridian">—</output><small>Approximate calendar date when this right ascension culminates at 9:00 p.m. local apparent solar time (LAT). Neighboring dates correspond to neighboring stars along the meridian.</small></div>
 </div><p><small>Solar and sidereal results are calculated from UTC and longitude, not from your device's displayed clock hour. Apparent solar time uses an approximate equation of time. The meridian calendar uses the 9 p.m. local apparent time culmination convention (approximately Sun RA + 9 hours).</small></p>
-</section></main>{% include_relative includes/footer.html %}
+</section>
+<section class="clock-panel" aria-label="Astronomical clock alarms">
+<h2>Alarms and announcements</h2>
+<div class="alarm-tabs" role="tablist" aria-label="Clock sections"><button type="button" data-alarm-tab="clock" aria-selected="true">Clock</button><button type="button" data-alarm-tab="alarms" aria-selected="false">Alarms</button><button type="button" data-alarm-tab="settings" aria-selected="false">Settings</button></div>
+<div class="alarm-pane" data-alarm-pane="clock"><p>Use the clock above to view current astronomical time.</p><button type="button" id="announce-now">Announce now</button><p id="alarm-status" role="status" aria-live="polite">Automatic announcements are off by default.</p></div>
+<div class="alarm-pane" data-alarm-pane="alarms" hidden><p>Set a daily alarm by civil, local apparent solar, or sidereal time. Sidereal alarms advance about four minutes each civil day.</p><div class="alarm-row"><label for="alarm-kind">Clock</label><select id="alarm-kind"><option value="civil">Civil time</option><option value="apparent">Apparent solar time</option><option value="sidereal">Sidereal time</option></select><label for="alarm-time">Time</label><input type="time" id="alarm-time" value="21:00"><button type="button" id="alarm-add">Add alarm</button></div><div id="alarm-list" aria-live="polite"></div></div>
+<div class="alarm-pane" data-alarm-pane="settings" hidden>
+<div class="alarm-row"><label><input type="checkbox" id="alarm-master"> Enable automatic alarms and announcements</label></div>
+<div class="alarm-row"><label><input type="checkbox" id="alarm-speak"> Speak announcements</label><label><input type="checkbox" id="alarm-tone" checked> Play tone</label></div>
+<div class="alarm-row"><label for="alarm-interval">Automatic time announcement</label><select id="alarm-interval"><option value="0">Off</option><option value="15">Every 15 minutes</option><option value="30">Every 30 minutes</option><option value="60">Every hour</option></select></div>
+<div class="alarm-row"><label><input type="checkbox" id="alarm-quiet"> Quiet hours</label><label for="alarm-quiet-start">From</label><input id="alarm-quiet-start" type="time" value="22:00"><label for="alarm-quiet-end">Until</label><input id="alarm-quiet-end" type="time" value="07:00"></div>
+<div class="alarm-row"><label for="alarm-volume">Volume</label><input type="range" id="alarm-volume" min="0" max="100" value="80"><label for="alarm-rate">Speech speed</label><select id="alarm-rate"><option value="0.8">Slow</option><option value="1" selected>Normal</option><option value="1.2">Fast</option></select></div>
+<button type="button" id="alarm-test">Test alarm</button><button type="button" id="alarm-stop">Silence</button><p class="alarm-note"><small>Alarms work only while this page is open and active. Browsers and phones may suspend background tabs, silence audio, or block speech until you interact with the page. These are not system alarms or guaranteed notifications.</small></p>
+</div></section>
+</main>{% include_relative includes/footer.html %}
 <script>
 (function(){
 'use strict';
@@ -74,6 +90,58 @@ $('longitude').addEventListener('input',()=>{$('city').value='';zone=Intl.DateTi
 document.querySelectorAll('[data-clock]').forEach(x=>x.addEventListener('change',render));
 $('pause').addEventListener('click',()=>{live=!live;if(!live)frozen=Date.now();$('pause').textContent=live?'Pause':'Resume';render()});
 $('now').addEventListener('click',()=>{live=true;frozen=null;$('pause').textContent='Pause';render()});
+
+const alarmKey='star-almanack-clock-alarms-v1';
+const alarmDefaults={master:false,speak:false,tone:true,interval:0,quiet:false,quietStart:'22:00',quietEnd:'07:00',volume:80,rate:1,alarms:[]};
+let alarmState;try{alarmState={...alarmDefaults,...JSON.parse(localStorage.getItem(alarmKey)||'{}')}}catch(e){alarmState={...alarmDefaults}}
+if(!Array.isArray(alarmState.alarms))alarmState.alarms=[];
+let lastAlarmTick=null, audioCtx=null;
+function saveAlarms(){try{localStorage.setItem(alarmKey,JSON.stringify(alarmState))}catch(e){$('alarm-status').textContent='Settings could not be saved on this device.'}}
+function alarmMessage(message){$('alarm-status').textContent=message}
+function silence(){if('speechSynthesis'in window)speechSynthesis.cancel();if(audioCtx){audioCtx.close().catch(()=>{});audioCtx=null}alarmMessage('Silenced.')}
+function soundAlarm(message,force=false){
+ if(!force&&!alarmState.master)return;
+ if(!force&&inQuietHours())return;
+ alarmMessage(message);
+ if(alarmState.tone){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=660;g.gain.value=Number(alarmState.volume)/100*.12;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.35);o.onended=()=>{if(audioCtx){audioCtx.close().catch(()=>{});audioCtx=null}}}catch(e){alarmMessage(message+' (Audio unavailable.)')}}
+ if(alarmState.speak&&'speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.volume=Number(alarmState.volume)/100;u.rate=Number(alarmState.rate);speechSynthesis.speak(u)}
+}
+function minutesOf(v){const a=v.split(':').map(Number);return a[0]*60+a[1]}
+function inQuietHours(){if(!alarmState.quiet)return false;const p=new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date());const n=minutesOf(p),a=minutesOf(alarmState.quietStart),b=minutesOf(alarmState.quietEnd);return a===b?false:a<b?(n>=a&&n<b):(n>=a||n<b)}
+function alarmClockValues(t,lon){
+ const J=jd(t),T=(J-2451545)/36525,gmst=wrap(280.46061837+360.98564736629*(J-2451545)+.000387933*T*T-T*T*T/38710000,360);
+ const utc=(t%day+day)%day/3600000,mean=wrap(utc+lon/15,24),D=J-2451545,g=wrap(357.529+.98560028*D,360)*rad,q=wrap(280.459+.98564736*D,360),L=wrap(q+1.915*Math.sin(g)+.020*Math.sin(2*g),360)*rad,e=(23.439-.00000036*D)*rad,alpha=wrap(Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L))/rad,360),eot=wrap(q-alpha+180,360)-180;
+ const civilParts=new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(t));
+ return {civil:minutesOf(civilParts),apparent:Math.floor(wrap(mean+eot/15,24)*60),sidereal:Math.floor(wrap(gmst+lon,360)*4)};
+}
+function checkAlarms(){
+ if(!live||!alarmState.master||document.hidden)return;
+ const now=Date.now(),lon=Number($('longitude').value);
+ if(!Number.isFinite(lon)||lon< -180||lon>180)return;
+ if(lastAlarmTick===null){lastAlarmTick=now;return}
+ const previous=lastAlarmTick;lastAlarmTick=now;
+ if(now-previous>65000)return;
+ const v=alarmClockValues(now,lon),prior=alarmClockValues(previous,lon);
+ const triggered=[];
+ for(const a of alarmState.alarms){if(!a.enabled)continue;const target=minutesOf(a.time),cur=v[a.kind],old=prior[a.kind];if(cur!==old&&cur===target)triggered.push(a.kind+' time is '+a.time)}
+ if(alarmState.interval>0&&v.civil!==prior.civil&&v.civil%alarmState.interval===0)triggered.push('The civil time is '+new Intl.DateTimeFormat(undefined,{timeZone:zone,hour:'numeric',minute:'2-digit'}).format(new Date(now)));
+ if(triggered.length)soundAlarm(triggered.join('. ')+'.');
+}
+function renderAlarmList(){
+ const box=$('alarm-list');box.replaceChildren();
+ if(!alarmState.alarms.length){const p=document.createElement('p');p.textContent='No alarms configured.';box.appendChild(p)}
+ alarmState.alarms.forEach(a=>{const row=document.createElement('div');row.className='alarm-row';const label=document.createElement('label'),toggle=document.createElement('input');toggle.type='checkbox';toggle.checked=!!a.enabled;toggle.addEventListener('change',()=>{a.enabled=toggle.checked;saveAlarms()});label.append(toggle,document.createTextNode(' '+a.kind+' — '+a.time));const del=document.createElement('button');del.type='button';del.textContent='Delete';del.addEventListener('click',()=>{alarmState.alarms=alarmState.alarms.filter(x=>x.id!==a.id);saveAlarms();renderAlarmList()});row.append(label,del);box.appendChild(row)})
+}
+document.querySelectorAll('[data-alarm-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-alarm-tab]').forEach(x=>x.setAttribute('aria-selected',String(x===b)));document.querySelectorAll('[data-alarm-pane]').forEach(x=>x.hidden=x.dataset.alarmPane!==b.dataset.alarmTab)}));
+const alarmControls={master:'alarm-master',speak:'alarm-speak',tone:'alarm-tone',interval:'alarm-interval',quiet:'alarm-quiet',quietStart:'alarm-quiet-start',quietEnd:'alarm-quiet-end',volume:'alarm-volume',rate:'alarm-rate'};
+Object.entries(alarmControls).forEach(([key,id])=>{const el=$(id);if(el.type==='checkbox')el.checked=!!alarmState[key];else el.value=alarmState[key];el.addEventListener('change',()=>{alarmState[key]=el.type==='checkbox'?el.checked:el.value;saveAlarms();lastAlarmTick=null})});
+$('alarm-add').addEventListener('click',()=>{alarmState.alarms.push({id:Date.now()+'-'+Math.random(),kind:$('alarm-kind').value,time:$('alarm-time').value,enabled:true});saveAlarms();renderAlarmList();alarmMessage('Alarm saved. Enable automatic alarms in Settings to activate it.')});
+$('alarm-test').addEventListener('click',()=>soundAlarm('This is a test of the Star Almanack astronomical alarm.',true));
+$('alarm-stop').addEventListener('click',silence);
+$('announce-now').addEventListener('click',()=>{const lon=Number($('longitude').value);if(!Number.isFinite(lon)||lon< -180||lon>180)return;const t=Date.now(),v=alarmClockValues(t,lon);const message='The local sidereal time is '+$('sidereal').textContent+'. The meridian calendar date is '+$('meridian').textContent+'.';const oldSpeak=alarmState.speak;alarmState.speak=true;soundAlarm(message,true);alarmState.speak=oldSpeak});
+document.addEventListener('visibilitychange',()=>{lastAlarmTick=null});
+renderAlarmList();setInterval(checkAlarms,1000);
+
 render();setInterval(()=>{if(live)render()},1000);
 })();
 </script></body></html>
