@@ -1,0 +1,74 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Astronomical Clock | Star Almanack</title>
+<link rel="stylesheet" href="css/star-almanack-nav-20261022.css">
+<style>
+.clock-panel{max-width:850px;margin:1.2rem auto;padding:1.2rem;border:1px solid #536982;border-radius:12px;background:#17283e;color:#f6f8fc}
+.clock-panel h2,.clock-panel label{color:#f6f8fc}.clock-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.clock-tile{padding:1rem;border:1px solid #607891;border-radius:8px;background:#243b54}.clock-tile output{display:block;font:600 clamp(1.25rem,4vw,1.9rem) system-ui;color:#fff;overflow-wrap:anywhere}.clock-panel input{font-size:16px;max-width:100%;padding:.55rem}.clock-panel button{padding:.65rem 1rem;margin:.5rem .5rem .5rem 0;min-height:44px}.clock-panel small{color:#dbe6f1}.clock-panel fieldset{border:1px solid #70859b;margin:1rem 0}.clock-panel legend{padding:0 .4rem}.clock-panel .choices{display:flex;gap:1rem;flex-wrap:wrap}.clock-panel .choices label{display:inline-flex;gap:.4rem;align-items:center}
+</style></head><body>
+{% include_relative includes/nav.html %}
+<main class="page-shell"><section class="hero"><p class="eyebrow">Star Almanack · Astronomy tools</p><h1>Astronomical Clock</h1><p class="tagline">Civil, solar and sidereal time — and the season of the stars on your meridian.</p></section>
+<section class="clock-panel">
+<label for="longitude">Observer longitude (degrees east; west is negative)</label><br><input id="longitude" type="number" min="-180" max="180" step="any" value="-117.2898"><p><small>Default: San Bernardino, California. Change longitude for your observing location. The clock uses your device's time zone for civil time.</small></p>
+<fieldset><legend>Choose displays</legend><div class="choices">
+<label><input type="checkbox" data-clock="civil" checked>Civil</label><label><input type="checkbox" data-clock="mean" checked>Mean solar</label><label><input type="checkbox" data-clock="apparent" checked>Apparent solar</label><label><input type="checkbox" data-clock="sidereal" checked>Sidereal</label><label><input type="checkbox" data-clock="meridian" checked>Meridian calendar</label>
+</div></fieldset>
+<button id="pause" type="button">Pause</button><button id="now" type="button">Now</button>
+<p id="status" role="status">Live astronomical time</p><div class="clock-grid">
+<div class="clock-tile" data-tile="civil"><h2>Civil time</h2><output id="civil">—</output></div>
+<div class="clock-tile" data-tile="mean"><h2>Local mean solar time</h2><output id="mean">—</output></div>
+<div class="clock-tile" data-tile="apparent"><h2>Local apparent solar time</h2><output id="apparent">—</output></div>
+<div class="clock-tile" data-tile="sidereal"><h2>Local sidereal time</h2><output id="sidereal">—</output><small>Right ascension crossing the meridian now.</small></div>
+<div class="clock-tile" data-tile="meridian"><h2>Meridian calendar</h2><output id="meridian">—</output><small>Approximate calendar date when the Sun occupies this right ascension. Stars at this RA culminate around local solar noon on that date; their midnight culmination occurs roughly six months away. Adjacent dates correspond to neighboring right ascensions.</small></div>
+</div><p><small>Solar and sidereal results are calculated from UTC and longitude, not from your device's displayed clock hour. Apparent solar time uses an approximate equation of time. The meridian calendar is a seasonal coordinate, not a claim that stars are visible in daylight.</small></p>
+</section></main>{% include_relative includes/footer.html %}
+<script>
+(function(){
+'use strict';
+const $=id=>document.getElementById(id), day=86400000, rad=Math.PI/180;
+let live=true, frozen=null;
+function wrap(x,n){return ((x%n)+n)%n}
+function jd(t){return t/day+2440587.5}
+function sunRA(t){
+ const T=(jd(t)-2451545)/36525;
+ const L=wrap(280.46646+36000.76983*T+.0003032*T*T,360);
+ const M=wrap(357.52911+35999.05029*T-.0001537*T*T,360)*rad;
+ const C=(1.914602-.004817*T)*Math.sin(M)+(.019993-.000101*T)*Math.sin(2*M)+.000289*Math.sin(3*M);
+ const omega=(125.04-1934.136*T)*rad;
+ const lambda=(L+C-.00569-.00478*Math.sin(omega))*rad;
+ const eps=(23.439291-.0130042*T+.00256*Math.cos(omega))*rad;
+ return wrap(Math.atan2(Math.cos(eps)*Math.sin(lambda),Math.cos(lambda))/rad,360);
+}
+function fmt(h){h=wrap(h,24);let sec=Math.floor(h*3600+.5)%86400;return [Math.floor(sec/3600),Math.floor(sec/60)%60,sec%60].map(x=>String(x).padStart(2,'0')).join(':')}
+function render(){
+ const t=live?Date.now():frozen, lon=Number($('longitude').value);
+ if(!Number.isFinite(lon)||lon< -180||lon>180){$('status').textContent='Enter a longitude between −180° and +180°.';return}
+ $('status').textContent=live?'Live astronomical time':'Paused at selected instant';
+ const J=jd(t),T=(J-2451545)/36525;
+ const gmst=wrap(280.46061837+360.98564736629*(J-2451545)+.000387933*T*T-T*T*T/38710000,360);
+ const lst=wrap(gmst+lon,360);
+ const utc=(t%day+day)%day/3600000;
+ const mean=wrap(utc+lon/15,24);
+ const D=J-2451545, g=wrap(357.529+0.98560028*D,360)*rad, q=wrap(280.459+0.98564736*D,360);
+ const L=wrap(q+1.915*Math.sin(g)+.020*Math.sin(2*g),360)*rad;
+ const e=(23.439-.00000036*D)*rad;
+ const alpha=wrap(Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L))/rad,360);
+ const eot=wrap(q-alpha+180,360)-180;
+ $('civil').textContent=new Date(t).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'medium'});
+ $('mean').textContent=fmt(mean);$('apparent').textContent=fmt(mean+eot/15);$('sidereal').textContent=fmt(lst/15)+' · '+lst.toFixed(2)+'° RA';
+ const year=new Date(t).getUTCFullYear(), start=Date.UTC(year,0,1);
+ let best=start,err=Infinity;
+ for(let i=-5;i<372;i++){let candidate=start+i*day;let d=Math.abs(wrap(sunRA(candidate)-lst+180,360)-180);if(d<err){err=d;best=candidate}}
+ $('meridian').textContent=new Date(best).toLocaleDateString(undefined,{month:'long',day:'numeric',timeZone:'UTC'});
+ document.querySelectorAll('[data-clock]').forEach(x=>{document.querySelector('[data-tile="'+x.dataset.clock+'"]').hidden=!x.checked});
+}
+$('longitude').addEventListener('input',render);
+document.querySelectorAll('[data-clock]').forEach(x=>x.addEventListener('change',render));
+$('pause').addEventListener('click',()=>{live=!live;if(!live)frozen=Date.now();$('pause').textContent=live?'Pause':'Resume';render()});
+$('now').addEventListener('click',()=>{live=true;frozen=null;$('pause').textContent='Pause';render()});
+render();setInterval(()=>{if(live)render()},1000);
+})();
+</script></body></html>
