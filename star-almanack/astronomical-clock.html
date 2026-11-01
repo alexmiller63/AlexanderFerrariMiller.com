@@ -38,7 +38,7 @@ layout: null
 <div class="alarm-row"><label><input type="checkbox" id="alarm-speak"> Speak announcements</label><label><input type="checkbox" id="alarm-tone" checked> Play tone</label></div>
 <div class="alarm-row"><label for="alarm-interval">Automatic time announcement</label><select id="alarm-interval"><option value="0">Off</option><option value="15">Every 15 minutes</option><option value="30">Every 30 minutes</option><option value="60">Every hour</option></select></div>
 <div class="alarm-row"><label><input type="checkbox" id="alarm-quiet"> Quiet hours</label><label for="alarm-quiet-start">From</label><input id="alarm-quiet-start" type="time" value="22:00"><label for="alarm-quiet-end">Until</label><input id="alarm-quiet-end" type="time" value="07:00"></div>
-<div class="alarm-row"><label for="alarm-volume">Volume</label><input type="range" id="alarm-volume" min="0" max="100" value="80"><label for="alarm-rate">Speech speed</label><select id="alarm-rate"><option value="0.8">Slow</option><option value="1" selected>Normal</option><option value="1.2">Fast</option></select></div>
+<div class="alarm-row"><label for="alarm-voice">Speaking voice</label><select id="alarm-voice"><option value="">System default</option></select><button type="button" id="alarm-preview-voice">Preview voice</button></div><div class="alarm-row"><label for="alarm-volume">Volume</label><input type="range" id="alarm-volume" min="0" max="100" value="80"><label for="alarm-rate">Speech speed</label><select id="alarm-rate"><option value="0.8">Slow</option><option value="1" selected>Normal</option><option value="1.2">Fast</option></select></div>
 <button type="button" id="alarm-test">Test alarm</button><button type="button" id="alarm-stop">Silence</button><p class="alarm-note"><small>Alarms work only while this page is open and active. Browsers and phones may suspend background tabs, silence audio, or block speech until you interact with the page. These are not system alarms or guaranteed notifications.</small></p>
 </div></section>
 </main>{% include_relative includes/footer.html %}
@@ -92,7 +92,7 @@ $('pause').addEventListener('click',()=>{live=!live;if(!live)frozen=Date.now();$
 $('now').addEventListener('click',()=>{live=true;frozen=null;$('pause').textContent='Pause';render()});
 
 const alarmKey='star-almanack-clock-alarms-v1';
-const alarmDefaults={master:false,speak:false,tone:true,interval:0,quiet:false,quietStart:'22:00',quietEnd:'07:00',volume:80,rate:1,alarms:[]};
+const alarmDefaults={master:false,speak:false,tone:true,interval:0,quiet:false,quietStart:'22:00',quietEnd:'07:00',volume:80,rate:1,voice:'',alarms:[]};
 let alarmState;try{alarmState={...alarmDefaults,...JSON.parse(localStorage.getItem(alarmKey)||'{}')}}catch(e){alarmState={...alarmDefaults}}
 if(!Array.isArray(alarmState.alarms))alarmState.alarms=[];
 let lastAlarmTick=null, audioCtx=null;
@@ -104,7 +104,7 @@ function soundAlarm(message,force=false){
  if(!force&&inQuietHours())return;
  alarmMessage(message);
  if(alarmState.tone){try{audioCtx=new (window.AudioContext||window.webkitAudioContext)();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=660;g.gain.value=Number(alarmState.volume)/100*.12;o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.35);o.onended=()=>{if(audioCtx){audioCtx.close().catch(()=>{});audioCtx=null}}}catch(e){alarmMessage(message+' (Audio unavailable.)')}}
- if(alarmState.speak&&'speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.volume=Number(alarmState.volume)/100;u.rate=Number(alarmState.rate);speechSynthesis.speak(u)}
+ if(alarmState.speak&&'speechSynthesis'in window){speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(message);u.volume=Number(alarmState.volume)/100;u.rate=Number(alarmState.rate);const selected=speechSynthesis.getVoices().find(v=>v.voiceURI===alarmState.voice);if(selected)u.voice=selected;speechSynthesis.speak(u)}
 }
 function minutesOf(v){const a=v.split(':').map(Number);return a[0]*60+a[1]}
 function inQuietHours(){if(!alarmState.quiet)return false;const p=new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date());const n=minutesOf(p),a=minutesOf(alarmState.quietStart),b=minutesOf(alarmState.quietEnd);return a===b?false:a<b?(n>=a&&n<b):(n>=a||n<b)}
@@ -145,6 +145,19 @@ $('alarm-test').addEventListener('click',()=>soundAlarm('This is a test of the S
 $('alarm-stop').addEventListener('click',silence);
 $('announce-now').addEventListener('click',()=>{const lon=Number($('longitude').value);if(!Number.isFinite(lon)||lon< -180||lon>180)return;const t=Date.now(),v=alarmClockValues(t,lon);const message='The local sidereal time is '+spokenSidereal(t,lon)+'. The meridian calendar date is '+spokenCalendarDate(t)+'.';const oldSpeak=alarmState.speak;alarmState.speak=true;soundAlarm(message,true);alarmState.speak=oldSpeak});
 document.addEventListener('visibilitychange',()=>{lastAlarmTick=null});
+
+function populateAlarmVoices(){
+ const select=$('alarm-voice'),voices=('speechSynthesis'in window?speechSynthesis.getVoices():[]),previous=alarmState.voice;
+ select.replaceChildren(new Option('System default',''));
+ const english=voices.filter(v=>/^en([-_]|$)/i.test(v.lang));
+ english.sort((a,b)=>Number(b.localService)-Number(a.localService)||a.name.localeCompare(b.name));
+ english.forEach(v=>select.add(new Option(v.name+' ('+v.lang+')'+(v.localService?' · device':''),v.voiceURI)));
+ if(english.some(v=>v.voiceURI===previous))select.value=previous;
+ else{select.value='';if(previous){alarmState.voice='';saveAlarms()}}
+}
+if('speechSynthesis'in window){populateAlarmVoices();speechSynthesis.addEventListener?.('voiceschanged',populateAlarmVoices)}
+$('alarm-voice').addEventListener('change',()=>{alarmState.voice=$('alarm-voice').value;saveAlarms()});
+$('alarm-preview-voice').addEventListener('click',()=>{if(!('speechSynthesis'in window)){alarmMessage('Speech is unavailable in this browser.');return}speechSynthesis.cancel();const u=new SpeechSynthesisUtterance('Good evening. This is your Star Almanack astronomical clock. Sirius is crossing the meridian.');const selected=speechSynthesis.getVoices().find(v=>v.voiceURI===alarmState.voice);if(selected)u.voice=selected;u.rate=Number(alarmState.rate);u.volume=Number(alarmState.volume)/100;speechSynthesis.speak(u)});
 renderAlarmList();setInterval(checkAlarms,1000);
 
 render();setInterval(()=>{if(live)render()},1000);
