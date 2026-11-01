@@ -22,8 +22,8 @@ layout: null
 <div class="clock-tile" data-tile="mean"><h2>Local mean solar time</h2><output id="mean">—</output></div>
 <div class="clock-tile" data-tile="apparent"><h2>Local apparent solar time</h2><output id="apparent">—</output></div>
 <div class="clock-tile" data-tile="sidereal"><h2>Local sidereal time</h2><output id="sidereal">—</output><small>Right ascension crossing the meridian now.</small></div>
-<div class="clock-tile" data-tile="meridian"><h2>Meridian calendar</h2><output id="meridian">—</output><small>Approximate calendar date when this right ascension culminates at local midnight. Neighboring dates correspond to neighboring stars along the meridian.</small></div>
-</div><p><small>Solar and sidereal results are calculated from UTC and longitude, not from your device's displayed clock hour. Apparent solar time uses an approximate equation of time. The meridian calendar is referenced to midnight culmination, not noon.</small></p>
+<div class="clock-tile" data-tile="meridian"><h2>Meridian calendar</h2><output id="meridian">—</output><small>Approximate calendar date when this right ascension culminates at 9:00 p.m. local apparent solar time (LAT). Neighboring dates correspond to neighboring stars along the meridian.</small></div>
+</div><p><small>Solar and sidereal results are calculated from UTC and longitude, not from your device's displayed clock hour. Apparent solar time uses an approximate equation of time. The meridian calendar uses the 9 p.m. local apparent time culmination convention (approximately Sun RA + 9 hours).</small></p>
 </section></main>{% include_relative includes/footer.html %}
 <script>
 (function(){
@@ -62,7 +62,7 @@ function render(){
  $('mean').textContent=fmt(mean);$('apparent').textContent=fmt(mean+eot/15);$('sidereal').textContent=fmt(lst/15)+' · '+lst.toFixed(2)+'° RA';
  const year=new Date(t).getUTCFullYear(), start=Date.UTC(year,0,1);
  let best=start,err=Infinity;
- for(let i=-5;i<372;i++){let candidate=start+i*day;let midnightRA=wrap(sunRA(candidate)+180,360);let d=Math.abs(wrap(midnightRA-lst+180,360)-180);if(d<err){err=d;best=candidate}}
+ for(let i=-5;i<372;i++){let candidate=start+i*day;let eveningRA=wrap(sunRA(candidate)+135,360);let d=Math.abs(wrap(eveningRA-lst+180,360)-180);if(d<err){err=d;best=candidate}}
  $('meridian').textContent=new Date(best).toLocaleDateString(undefined,{month:'long',day:'numeric',timeZone:'UTC'});
  document.querySelectorAll('[data-clock]').forEach(x=>{document.querySelector('[data-tile="'+x.dataset.clock+'"]').hidden=!x.checked});
 }
