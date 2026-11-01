@@ -114,6 +114,11 @@ function alarmClockValues(t,lon){
  const civilParts=new Intl.DateTimeFormat('en-GB',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(t));
  return {civil:minutesOf(civilParts),apparent:Math.floor(wrap(mean+eot/15,24)*60),sidereal:Math.floor(wrap(gmst+lon,360)*4)};
 }
+
+function spokenClockTime(hours,minutes){const h=hours%12||12;const suffix=hours<12?'A M':'P M';if(minutes===0)return h+' o’clock '+suffix;if(minutes<10)return h+' oh '+minutes+' '+suffix;return h+' '+minutes+' '+suffix}
+function spokenDurationTime(hours,minutes,seconds){return hours+' hours, '+minutes+' minutes, and '+seconds+' seconds'}
+function spokenSidereal(t,lon){const J=jd(t),T=(J-2451545)/36525,gmst=wrap(280.46061837+360.98564736629*(J-2451545)+.000387933*T*T-T*T*T/38710000,360),h=wrap(gmst+lon,360)/15;const total=Math.floor(h*3600+.5)%86400;return spokenDurationTime(Math.floor(total/3600),Math.floor(total/60)%60,total%60)}
+function spokenCalendarDate(t){const monthDay=$('meridian').textContent;return monthDay.replace(/\\d+/g,n=>{const v=Number(n),ord=v%100>=11&&v%100<=13?'th':v%10===1?'st':v%10===2?'nd':v%10===3?'rd':'th';return v+ord})}
 function checkAlarms(){
  if(!live||!alarmState.master||document.hidden)return;
  const now=Date.now(),lon=Number($('longitude').value);
@@ -123,8 +128,8 @@ function checkAlarms(){
  if(now-previous>65000)return;
  const v=alarmClockValues(now,lon),prior=alarmClockValues(previous,lon);
  const triggered=[];
- for(const a of alarmState.alarms){if(!a.enabled)continue;const target=minutesOf(a.time),cur=v[a.kind],old=prior[a.kind];if(cur!==old&&cur===target)triggered.push(a.kind+' time is '+a.time)}
- if(alarmState.interval>0&&v.civil!==prior.civil&&v.civil%alarmState.interval===0)triggered.push('The civil time is '+new Intl.DateTimeFormat(undefined,{timeZone:zone,hour:'numeric',minute:'2-digit'}).format(new Date(now)));
+ for(const a of alarmState.alarms){if(!a.enabled)continue;const target=minutesOf(a.time),cur=v[a.kind],old=prior[a.kind];if(cur!==old&&cur===target)triggered.push((a.kind==='civil'?'Civil':a.kind==='apparent'?'Local apparent solar':'Sidereal')+' time is '+(a.kind==='sidereal'?spokenDurationTime(target/60|0,target%60,0):spokenClockTime(target/60|0,target%60)))}
+ if(alarmState.interval>0&&v.civil!==prior.civil&&v.civil%alarmState.interval===0)triggered.push('The civil time is '+spokenClockTime(v.civil/60|0,v.civil%60));
  if(triggered.length)soundAlarm(triggered.join('. ')+'.');
 }
 function renderAlarmList(){
@@ -138,7 +143,7 @@ Object.entries(alarmControls).forEach(([key,id])=>{const el=$(id);if(el.type==='
 $('alarm-add').addEventListener('click',()=>{alarmState.alarms.push({id:Date.now()+'-'+Math.random(),kind:$('alarm-kind').value,time:$('alarm-time').value,enabled:true});saveAlarms();renderAlarmList();alarmMessage('Alarm saved. Enable automatic alarms in Settings to activate it.')});
 $('alarm-test').addEventListener('click',()=>soundAlarm('This is a test of the Star Almanack astronomical alarm.',true));
 $('alarm-stop').addEventListener('click',silence);
-$('announce-now').addEventListener('click',()=>{const lon=Number($('longitude').value);if(!Number.isFinite(lon)||lon< -180||lon>180)return;const t=Date.now(),v=alarmClockValues(t,lon);const message='The local sidereal time is '+$('sidereal').textContent+'. The meridian calendar date is '+$('meridian').textContent+'.';const oldSpeak=alarmState.speak;alarmState.speak=true;soundAlarm(message,true);alarmState.speak=oldSpeak});
+$('announce-now').addEventListener('click',()=>{const lon=Number($('longitude').value);if(!Number.isFinite(lon)||lon< -180||lon>180)return;const t=Date.now(),v=alarmClockValues(t,lon);const message='The local sidereal time is '+spokenSidereal(t,lon)+'. The meridian calendar date is '+spokenCalendarDate(t)+'.';const oldSpeak=alarmState.speak;alarmState.speak=true;soundAlarm(message,true);alarmState.speak=oldSpeak});
 document.addEventListener('visibilitychange',()=>{lastAlarmTick=null});
 renderAlarmList();setInterval(checkAlarms,1000);
 
