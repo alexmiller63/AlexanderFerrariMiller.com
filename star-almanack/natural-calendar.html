@@ -8,7 +8,7 @@ layout: null
 <style>
 .natural{max-width:1100px;margin:1rem auto;padding:1rem;background:#17283e;color:#f7f9fc;border:1px solid #71869e;border-radius:12px}
 .natural label{color:#fff}.natural select,.natural button{font:inherit;padding:.55rem;margin:.3rem;min-height:44px}.natural .scroll{overflow-x:auto}
-.natural table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.natural th,.natural td{border:1px solid #73849a;padding:.45rem;text-align:center}.natural th{background:#30475f;color:white}.natural td:first-child{text-align:left}.natural .thirtyone{background:#315d4c;color:#fff;font-weight:bold}.natural .leap{background:#72562a;color:#fff;font-weight:bold}.natural small{color:#dce5f0}
+.natural table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.natural th,.natural td{border:1px solid #73849a;padding:.45rem;text-align:center}.natural th{background:#30475f;color:white}.natural td:first-child{text-align:left}.natural .zodiac{color:#d8b4fe;font-weight:700}.natural .thirtyone{background:#315d4c;color:#fff;font-weight:bold}.natural .leap{background:#72562a;color:#fff;font-weight:bold}.natural small{color:#dce5f0}
 </style></head><body>{% include_relative includes/nav.html %}
 <main class="page-shell"><section class="hero"><p class="eyebrow">Star Almanack · Calendar</p><h1>Natural Calendar</h1><p class="tagline">How many numbered calendar days does each astronomical zodiac month contain?</p></section>
 <section class="natural"><label for="year">Zodiac year</label><select id="year"></select>
@@ -52,6 +52,7 @@ for(let y=2025;y<=2037;y++){const o=document.createElement('option');o.value=y;o
 yearEl.value='2026';
 function cell(row,value,cls,head){const el=document.createElement(head?'th':'td');el.textContent=value;if(cls)el.className=cls;row.appendChild(el)}
 function row(values,classes,head){const tr=document.createElement('tr');values.forEach((v,i)=>cell(tr,v,classes?.[i],head));table.appendChild(tr)}
+function seasonDay(counts,i){const start=Math.floor(i/3)*3;return counts.slice(start,i+1).reduce((a,b)=>a+b,0)}
 function dateLabel(n){return new Date(n*day).toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric',year:'numeric'})}
 function render(){
  table.replaceChildren();
@@ -60,14 +61,14 @@ function render(){
  if(compare){
   const years=Array.from({length:13},(_,i)=>2025+i);
   row(['Zodiac month',...years],null,true);
-  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],...years.map(y=>get(y).counts[i])],[null,...years.map(y=>get(y).counts[i]===31?'thirtyone':'')]);
+  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],...years.map(y=>get(y).counts[i])],['zodiac',...years.map(y=>get(y).counts[i]===31?'thirtyone':'')]);
   for(let s=0;s<4;s++)row([seasons[s]+' total',...years.map(y=>get(y).counts.slice(s*3,s*3+3).reduce((a,b)=>a+b,0))]);
   row(['Natural year',...years.map(y=>get(y).total)],[null,...years.map(y=>get(y).total===366?'leap':'')]);
   row(['Gregorian leap?',...years.map(y=>y%4===0&&(y%100!==0||y%400===0)?'Yes':'No')]);
   summary.textContent='Green cells contain 31 calendar days; gold totals are natural leap years.';
  }else{
-  const data=get(y);row(['Zodiac month','UTC ingress date','Calendar days','Season'],null,true);
-  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],dateLabel(data.dates[i]),data.counts[i],seasons[Math.floor(i/3)]],[null,null,data.counts[i]===31?'thirtyone':'']);
+  const data=get(y);row(['Zodiac month','UTC ingress date','Calendar days','Season days through this month'],null,true);
+  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],dateLabel(data.dates[i]),data.counts[i],seasons[Math.floor(i/3)]+' '+seasonDay(data.counts,i)],[ 'zodiac',null,data.counts[i]===31?'thirtyone':'']);
   for(let s=0;s<4;s++)row([seasons[s]+' total','',data.counts.slice(s*3,s*3+3).reduce((a,b)=>a+b,0),'']);
   row(['Natural year','',data.total,data.total===366?'Natural leap year':'Ordinary year'],[null,null,data.total===366?'leap':'']);
   const leap=y%4===0&&(y%100!==0||y%400===0);
