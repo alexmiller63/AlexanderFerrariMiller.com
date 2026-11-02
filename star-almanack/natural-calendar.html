@@ -14,7 +14,7 @@ layout: null
 <section class="natural"><label for="year">Zodiac year</label><select id="year"></select>
 <label for="view">View</label><select id="view"><option value="single">One year</option><option value="compare">Compare 2025–2037</option></select>
 <p id="summary" role="status"></p><div class="scroll"><table id="counts"></table></div>
-<p><small>Aries 1 is the local civil date on which the Sun reaches 0° tropical ecliptic longitude. Taurus 1 begins at 30°, and so on. Each zodiac month includes its first date and ends the day before the next ingress date. The year runs from Aries 1 to the next Aries 1. Dates are assigned in America/Los_Angeles, including daylight saving time. A natural leap year has 366 numbered calendar days. Astronomical ingress times are approximated from a standard solar-longitude series; consult the Almanack ephemeris for precision near midnight.</small></p>
+<p><small>Aries 1 is the UTC calendar date on which the Sun reaches 0° tropical ecliptic longitude. Taurus 1 begins at 30°, and so on. Each zodiac month includes its first date and ends the day before the next ingress date. The year runs from Aries 1 to the next Aries 1. All ingress dates and calendar-day counts use UTC, without local time-zone or daylight-saving adjustments. A natural leap year has 366 numbered calendar days. Ingress times currently use an approximate solar-longitude series and have not been independently verified against a precision ephemeris; UTC dates near midnight may change after verification.</small></p>
 </section></main>{% include_relative includes/footer.html %}
 <script>
 (function(){
@@ -39,11 +39,7 @@ function ingress(year,sign){
  for(let i=0;i<50;i++){const mid=(a+b)/2;if(delta(mid)<0)a=mid;else b=mid}
  return (a+b)/2;
 }
-const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit'});
-function civil(ms){
- const p=Object.fromEntries(fmt.formatToParts(new Date(ms)).filter(x=>x.type!=='literal').map(x=>[x.type,Number(x.value)]));
- return Date.UTC(p.year,p.month-1,p.day)/day;
-}
+function civil(ms){return Math.floor(ms/day);}
 const cache={};
 function get(year){
  if(cache[year])return cache[year];
@@ -70,7 +66,7 @@ function render(){
   row(['Gregorian leap?',...years.map(y=>y%4===0&&(y%100!==0||y%400===0)?'Yes':'No')]);
   summary.textContent='Green cells contain 31 calendar days; gold totals are natural leap years.';
  }else{
-  const data=get(y);row(['Zodiac month','Aries/Taurus ingress date','Calendar days','Season'],null,true);
+  const data=get(y);row(['Zodiac month','UTC ingress date','Calendar days','Season'],null,true);
   for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],dateLabel(data.dates[i]),data.counts[i],seasons[Math.floor(i/3)]],[null,null,data.counts[i]===31?'thirtyone':'']);
   for(let s=0;s<4;s++)row([seasons[s]+' total','',data.counts.slice(s*3,s*3+3).reduce((a,b)=>a+b,0),'']);
   row(['Natural year','',data.total,data.total===366?'Natural leap year':'Ordinary year'],[null,null,data.total===366?'leap':'']);
