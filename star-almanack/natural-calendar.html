@@ -61,14 +61,14 @@ function render(){
  if(compare){
   const years=Array.from({length:13},(_,i)=>2025+i);
   row(['Zodiac month',...years],null,true);
-  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],...years.map(y=>get(y).counts[i])],['zodiac',...years.map(y=>get(y).counts[i]===31?'thirtyone':'')]);
+  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],...years.map(y=>get(y).counts[i])],['zodiac',...years.map(y=>[31,32].includes(get(y).counts[i])?'thirtyone':'')]);
   for(let s=0;s<4;s++)row([seasons[s]+' total',...years.map(y=>get(y).counts.slice(s*3,s*3+3).reduce((a,b)=>a+b,0))]);
   row(['Natural year',...years.map(y=>get(y).total)],[null,...years.map(y=>get(y).total===366?'leap':'')]);
   row(['Gregorian leap?',...years.map(y=>y%4===0&&(y%100!==0||y%400===0)?'Yes':'No')]);
-  summary.textContent='Green cells contain 31 calendar days; gold totals are natural leap years.';
+  summary.textContent='Green cells contain 31 or 32 calendar days; gold totals are natural leap years.';
  }else{
   const data=get(y);row(['Zodiac month','UTC ingress date','Calendar days','Season days through this month'],null,true);
-  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],dateLabel(data.dates[i]),data.counts[i],seasons[Math.floor(i/3)]+' '+seasonDay(data.counts,i)],[ 'zodiac',null,data.counts[i]===31?'thirtyone':'']);
+  for(let i=0;i<12;i++)row([symbols[i]+' '+names[i],dateLabel(data.dates[i]),data.counts[i],seasons[Math.floor(i/3)]+' '+seasonDay(data.counts,i)],[ 'zodiac',null,[31,32].includes(data.counts[i])?'thirtyone':'']);
   for(let s=0;s<4;s++)row([seasons[s]+' total','',data.counts.slice(s*3,s*3+3).reduce((a,b)=>a+b,0),'']);
   row(['Natural year','',data.total,data.total===366?'Natural leap year':'Ordinary year'],[null,null,data.total===366?'leap':'']);
   const leap=y%4===0&&(y%100!==0||y%400===0);
