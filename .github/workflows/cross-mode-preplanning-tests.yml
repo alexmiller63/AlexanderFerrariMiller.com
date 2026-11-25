@@ -1,0 +1,22 @@
+name: Cross-Mode Preplanning Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'tools/planet_finder_cross_mode.py'
+      - 'tests/test_planet_finder_cross_mode.py'
+      - '.github/workflows/cross-mode-preplanning-tests.yml'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install test dependencies
+        run: python -m pip install pytest skyfield
+      - name: Run cross-mode geometry tests
+        run: python -m pytest -q tests/test_planet_finder_cross_mode.py
